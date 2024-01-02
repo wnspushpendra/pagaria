@@ -1,0 +1,12 @@
+const String loginRoute = 'login';
+const String navigationRoute = 'navigation';
+const String homeRoute = 'home';
+const String profileRoute = 'profile';
+const String productRoute = 'product';
+const String customerRoute = 'customer';
+const String addCustomerRoute = 'add-customer';
+const String customerDetailRoute = 'customer-detail';
+const String createOrderRoute = 'create-order';
+const String orderRoute = 'order';
+const String orderDetailRoute = 'order-detail';
+const String paymentRoute = 'payment';

@@ -1,0 +1,98 @@
+/// ********* app name **************************
+const String appName = 'Mangalyam Metromonial';
+/// *****************************
+
+/// ********************** User Login Preferences **********************
+
+const String userLoginPrefecences = 'user-login';
+const String userIdPrefecences = 'user-id';
+const String userNamePrefecences = 'user-name';
+const String userImagePrefecences = 'user-image';
+const String userProfileDataPrefecences = 'user-profile';
+const String languageCodePreferences = 'language-code';
+
+/// ********************** Network Image Url **********************
+
+const String networkImage = 'https://pbs.twimg.com/profile_images/1075240418936160256/BYPSMMdz_400x400.jpg';
+const String pdfUrls = 'https://example.com/path_to_your_pdf.pdf';
+
+
+/// ********************** User Info **********************
+
+const String name = 'Name*';
+const String fistName = 'Fist Name*';
+const String lastName = 'Last Name*';
+const String email = 'Email';
+const String mobileNumber = 'Mobile Number';
+const String aadhar = 'Aadhar Number';
+const String street = 'Address*';
+const String city = 'City*';
+const String state = 'State*';
+const String pinCode = 'PinCode*';
+const String rupeesSymbol = '₹';
+const String firmName = 'Firm Name';
+const String address = 'Address';
+const String customerName = 'Customer Name';
+const String panCardNumber = 'PanCard Number';
+const String aadharNumber = 'AAdhar Number';
+const String gstNumber = 'GST Number';
+
+/// ********************** Button text **********************
+
+const String next = 'Next';
+const String register = 'Register';
+const String login = 'Login';
+const String submit = 'Submit';
+const String update = 'Update';
+const String changePassword = 'Change Password';
+
+
+
+
+/// ******** nav titles ******
+
+const String home = 'Home';
+const String aboutUs = 'About Us';
+const String profile = 'Profile';
+const String order = 'Order';
+const String product = 'Product';
+const String payment = 'Payment';
+const String customer = 'Customer';
+
+
+/// ********************** Select/Pic Image  **********************
+
+const String selectImage = 'Select Image';
+const String captureImage = 'Capture Image';
+const String pickGallery = 'Pic From Gallery';
+
+
+
+
+
+/// ********************** Password Fields  **********************
+
+const String message = 'Message*';
+const String change = 'Change';
+const String password = 'Password*';
+const String confirmPassword = 'Confirm Password';
+const String oldPassword = 'Old Password';
+const String newPassword = 'New Password';
+const String confirmNewPassword = 'Confirm New Password';
+
+/// ********************** Constant Text  **********************
+
+const String recentlyRegisteredProfiles = 'Registered Profiles';
+const String successStories = 'Success Stories';
+const String showStories = 'Show Stories';
+const String enterPertnerExpections = 'Enter Partner Expectation';
+const String loginIdNumber = 'Mobile No. / Email ID*';
+const String forgotPassword = 'Forgot Password';
+const String newMember = 'New Member';
+const String or = 'Or';
+const String exitApp = 'Exit App';
+const String exitWarning = 'Are you sure want to exit?';
+const String yes = 'Yes';
+const String no = 'NO';
+const String logout = 'Logout';
+const String search = 'Search By ID';

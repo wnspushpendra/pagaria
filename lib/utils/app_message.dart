@@ -1,0 +1,16 @@
+const String logoutMessage = 'Logout Successfully.';
+const String logoutWarningMessage = 'Are you sure want to logout.';
+const String nameMessage = 'Full Name is required !';
+const String fistNameMessage = 'Last Name is required !';
+const String lastNameMessage = 'First Name is required !';
+const String mobileNumberMessage = 'Mobile Number is required !';
+const String emailAddressMessage = 'Valid Email Address is required !';
+const String passwordMessage = 'Password is required !';
+const String aadharMessage = 'Valid Aadhar Number is required !';
+const String streetMessage = 'Street is required !';
+const String cityMessage = 'City is required !';
+const String stateMessage = 'State is required !';
+const String pinCodeMessage = 'PinCode is required !';
+const String panCardMessage = 'Pan Card is required !';
+const String aadharCardMessage = 'Aadhar Card Number is required !';
+const String gstNumberMessage = 'GST Number is required !';

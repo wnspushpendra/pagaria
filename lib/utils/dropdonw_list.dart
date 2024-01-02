@@ -1,0 +1,1 @@
+const profileFor = ['For me/எனக்கு','Forson/daughter/மகனுக்கு/மகளுக்கு','ForBrother/Sister/சககோதரனுக்கு/சககோதரிக்கு','Forrelative/உறவினருக்கு','For Friend / நண் பருக்கு'];
