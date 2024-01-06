@@ -4,7 +4,10 @@ import 'package:webnsoft_solution/app_common_widges/app_body_text.dart';
 import 'package:webnsoft_solution/app_common_widges/home_appbar.dart';
 import 'package:webnsoft_solution/app_common_widges/normal_text.dart';
 import 'package:webnsoft_solution/app_common_widges/space.dart';
+import 'package:webnsoft_solution/modal/login/MarketingExecutiveLoginResponse.dart';
+import 'package:webnsoft_solution/routes/route_constatns.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
+import 'package:webnsoft_solution/utils/app_preferences.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
 import 'package:webnsoft_solution/utils/download_pdf_util.dart';
 
@@ -35,8 +38,12 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               color: Colors.white,
               size: 24,
             ),
-            onPressed: () {
-              },
+            onPressed: () async {
+              User? user = await getUserPref(userProfileDataPrefecences);
+              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                Navigator.pushReplacementNamed(context, homeRoute,arguments: user);
+              });
+            },
           ),
           titleSpacing: 0,
           title: const NormalText(text:'Order Detail' ),

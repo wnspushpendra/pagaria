@@ -14,7 +14,7 @@ class SelectGender extends StatelessWidget {
           flex: 1,
           child: RadioListTile(
               title: const BodyText(text: 'Male'),
-              value: 'Male',
+              value: 'male',
               groupValue: gender,
               onChanged: (value) => onChange(value!)),
         ),
@@ -22,7 +22,7 @@ class SelectGender extends StatelessWidget {
           flex: 1,
           child: RadioListTile(
               title: const BodyText(text: 'Female'),
-              value: 'Female',
+              value: 'female',
               groupValue: gender,
               onChanged: (value) => onChange(value!)),
         ),

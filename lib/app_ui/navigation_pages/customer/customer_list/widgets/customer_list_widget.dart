@@ -30,7 +30,7 @@ class CustomerListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding:  EdgeInsets.all(12.h),
+      padding:  const EdgeInsets.all(8),
       margin: EdgeInsets.all(4.h),
       alignment: Alignment.center,
       decoration: defaultDecoration,
@@ -58,9 +58,9 @@ class CustomerListItem extends StatelessWidget {
               Row(
                 children: [
                   AssetButton(image: visibility, onPressed: () => Navigator.pushReplacementNamed(context, customerDetailRoute,arguments: 0)),
+                  AssetButton(image: createOrder, onPressed: () => Navigator.pushReplacementNamed(context, createOrderRoute,)),
+                  AssetButton(image: paymentIcon, onPressed: () => Navigator.pushReplacementNamed(context, customerDetailRoute,arguments: 2)),
                   AssetButton(image: history, onPressed: () => Navigator.pushReplacementNamed(context, customerDetailRoute,arguments: 1)),
-                  AssetButton(image: paymentIcon, onPressed: () => Navigator.pushReplacementNamed(context, paymentRoute,arguments: 3)),
-                  AssetButton(image: createOrder, onPressed: () => Navigator.pushReplacementNamed(context, createOrderRoute)),
                 ],
               ),
             ],
@@ -98,24 +98,21 @@ class CustomerListItem extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded(
-                flex: 6,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                      const BodyText(text:address,fontSize: 16,color: primaryColor,),
-                    BodyText(text: add, color: bodyBlack,),
-                  ],
-                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                    const BodyText(text:address,fontSize: 16,color: primaryColor,),
+                  BodyText(text: add,color: bodyBlack,),
+                ],
               ),
-              const Space(width: 6,),
+              const Space(width: 4,),
               CustomButton(
                   buttonText: 'Ledger',
                   buttonTextSize: 11,
                   buttonTextColor: bodyWhite,
-                  padding: 0,
+                  margin: 0,
                   radius: 18,
-                  buttonWidth: 128,
+                  buttonWidth: 110,
                   buttonHeight: 36,
                   image: downloadLedger,
                   onClick: () {
@@ -130,23 +127,4 @@ class CustomerListItem extends StatelessWidget {
     );
   }
 
-  void _sendFileOnWhatsApp() async {
-    String filePath = pdfUrls;
-
-    // Check if WhatsApp is installed
-/*    bool whatsappInstalled = await canLaunch('whatsapp://');
-    if (!whatsappInstalled) {
-      print('WhatsApp is not installed on the device.');
-      return;
-    }*/
-
-    // Launch WhatsApp with the file attached
-    var phone = '8962904087';
-    String whatsappUrl = 'https://wa.me?$phone=&text=$filePath';
-    if (await canLaunch(whatsappUrl)) {
-      await launch(whatsappUrl);
-    } else {
-      print('Could not launch WhatsApp.');
-    }
-  }
 }

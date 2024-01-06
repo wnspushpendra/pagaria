@@ -4,12 +4,14 @@ import 'package:webnsoft_solution/app_common_widges/custom_button.dart';
 import 'package:webnsoft_solution/app_common_widges/custom_textfield.dart';
 import 'package:webnsoft_solution/app_common_widges/heading_text.dart';
 import 'package:webnsoft_solution/app_common_widges/space.dart';
-import 'package:webnsoft_solution/app_ui/login/login_bloc.dart';
-import 'package:webnsoft_solution/app_ui/login/login_event.dart';
-import 'package:webnsoft_solution/app_ui/login/login_state.dart';
+import 'package:webnsoft_solution/app_ui/auth/login/bloc/login_bloc.dart';
+import 'package:webnsoft_solution/app_ui/auth/login/bloc/login_event.dart';
+import 'package:webnsoft_solution/app_ui/auth/login/bloc/login_state.dart';
+import 'package:webnsoft_solution/modal/login/MarketingExecutiveLoginResponse.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
 import 'package:webnsoft_solution/utils/app_message.dart';
+import 'package:webnsoft_solution/utils/app_preferences.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
 import 'package:webnsoft_solution/utils/asset_images.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
@@ -24,16 +26,22 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  bool? isValidEmail, isValidPassword;
+  bool? isValidEmail, isValidPassword,isLoading;
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<LoginBloc, LoginState>(
       listener: (context, state) {
-        if(state is LoginSuccess){
-          onPopReplace(context, homeRoute);
+        if(state is LoginLoading){
+          setState(() => isLoading = true);
+        } if(state is LoginSuccess){
+          onLoginSuccess(context,state);
         }
         if(state is LoginError){
+          isLoading = false;
+          if(state.message != null ){
+            snackBar(context, state.message.toString());
+          }
           setState(() => createLoginErrorState(state));
         }
       },
@@ -74,6 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   CustomButton(
                       buttonText: login,
                       buttonTextColor: bodyWhite,
+                      showLoading: isLoading,
                       onClick: () => onLoginClick())
                 ],
               ),
@@ -87,9 +96,19 @@ class _LoginScreenState extends State<LoginScreen> {
   onLoginClick() {
     context.read<LoginBloc>().add(LoginClickEvent(email : emailController.text,password : passwordController.text));
   }
+  void onLoginSuccess(BuildContext context, LoginSuccess state) {
+   /* User user = state.user;
+    setBoolPref(userLoginPrefecences,true);
+    setStringPref(userProfileDataPrefecences,user.toJson().toString());
+    setStringPref(userProfileDataPrefecences,user.toJson().toString());
+    saveUserPref(state.user,userProfileDataPrefecences);*/
+    Navigator.pushReplacementNamed(context, homeRoute,arguments: state.user);
 
+  }
   createLoginErrorState(LoginError state) {
     isValidEmail = state.email;
     isValidPassword = state.password;
   }
+
+
 }

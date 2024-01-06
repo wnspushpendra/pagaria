@@ -23,7 +23,8 @@ class OrderScreen extends StatelessWidget {
       body: Container(
         padding:  EdgeInsets.all(12.h),
         child: ListView.builder(
-          itemCount: 10, itemBuilder: (context,state){
+          itemCount: 10,
+            itemBuilder: (context,state){
           return Container(
             padding:  EdgeInsets.all(12.h),
             margin:  EdgeInsets.fromLTRB(2.h, 5.h, 2.h, 5.h),
@@ -69,7 +70,7 @@ class OrderScreen extends StatelessWidget {
                       Expanded(
                         flex: 2,
                         child: CustomButton(buttonText: 'Detail',buttonTextSize: 12,
-                            buttonWidth : 96,buttonHeight: 30,padding: 0,
+                            buttonWidth : 96,buttonHeight: 30,margin: 0,
                             radius: 15,
                             onClick: ()=> onPopReplace(context, orderDetailRoute)),
                       )

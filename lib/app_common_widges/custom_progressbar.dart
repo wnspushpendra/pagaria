@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:webnsoft_solution/utils/app_colors.dart';
 
 class CustomProgressBar extends StatelessWidget {
   final double? widthV;
@@ -13,7 +14,7 @@ class CustomProgressBar extends StatelessWidget {
       alignment: Alignment.center,
       child: const SizedBox(
         width: 30, height: 30,
-          child: CircularProgressIndicator()),
+          child: CircularProgressIndicator(color: bodyWhite,)),
     );;
   }
 }

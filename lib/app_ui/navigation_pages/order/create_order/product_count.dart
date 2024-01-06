@@ -22,17 +22,23 @@ class _CountState extends State<Count> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          IconButton(
-            padding: const EdgeInsets.all(0),
-              onPressed: (){
-            widget.onChange(widget.count -1);
-            }, icon: const Icon(Icons.remove_circle,color: primaryColor,size: 24,)),
-          BodyText(text: widget.count.toString()),
-          IconButton(
-            padding: const EdgeInsets.all(0),
-              onPressed: (){
-            widget.onChange(widget.count+1);
-          }, icon: const Icon(Icons.add_circle_outlined,color: primaryColor,size: 24,)),
+          SizedBox(
+            width: 25,
+            child: IconButton(
+              padding: const EdgeInsets.all(0),
+                onPressed: (){
+              widget.onChange(widget.count -1);
+              }, icon: const Icon(Icons.remove_circle,color: primaryColor,size: 24,)),
+          ),
+          BodyText(text: widget.count.toString(),fontSize: 11,fontWeight: FontWeight.bold,),
+          SizedBox(
+            width: 26,
+            child: IconButton(
+              padding: const EdgeInsets.all(0),
+                onPressed: (){
+              widget.onChange(widget.count+1);
+            }, icon: const Icon(Icons.add_circle_outlined,color: primaryColor,size: 24,)),
+          ),
         ],
       ),
     );

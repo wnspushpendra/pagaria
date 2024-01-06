@@ -36,13 +36,16 @@ class _CustomDropDownState extends State<CustomDropDown> {
       height: 54,
       margin: const EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: const BorderRadius.all(Radius.circular(8)),
-          border: Border.all(color: Colors.black26)),
+        color: Colors.white,
+        borderRadius: const BorderRadius.all(Radius.circular(8)),
+        border: Border.all(color: Colors.black26),
+      ),
       child: DropdownButtonHideUnderline(
         child: ButtonTheme(
           alignedDropdown: true,
           child: DropdownButton(
+            dropdownColor: bodyWhite,
+            borderRadius: BorderRadius.circular(8),
               isExpanded: true,
               value: widget.selectedValue,
               hint: Padding(

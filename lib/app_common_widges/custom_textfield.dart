@@ -54,7 +54,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         controller: widget.controller,
         obscureText: widget.isPasswordField ? true : false,
         inputFormatters: widget.inputFormatter,
-        maxLines: widget.isPasswordField ? 1 : widget.maxLines,
+        maxLines: widget.isPasswordField ? 1 : widget.maxLines ??1,
         minLines: 1,
         enabled: widget.editable,
         textAlign: TextAlign.start,

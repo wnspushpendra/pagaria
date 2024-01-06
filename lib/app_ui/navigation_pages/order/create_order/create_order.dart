@@ -20,6 +20,7 @@ import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_bloc/p
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_bloc/product_state.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
+import 'package:webnsoft_solution/utils/asset_images.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
 class CreateOrderScreen extends StatefulWidget {
@@ -70,9 +71,8 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: appBarWidget(context, 'Create Order',
-            () => onPopReplace(context, navigationRoute)),
+            () => Navigator.pushReplacementNamed(context, homeRoute)),
         body: Stack(children: <Widget>[
-
           BlocConsumer<ProductBloc, ProductState>(
             listener: (context, state) {},
             builder: (context, state) {
@@ -88,11 +88,13 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                     activeButton
                         ? LinearListViewProduct(
                       productList: productList,
+                      from: 'create',
                       selectedProduct: (List<String> value) {
                       },
                     )
                         : GridListViewProduct(
                       productList: productList,
+                      from: 'create',
                       selectedProduct: (List<String> value) {
 
                       },
@@ -103,7 +105,6 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
               );
             },
           ),
-
           BottomWidget(selectedProduct: userSelectedProducts, onClick: () => showSheet()),
           Row(
             children: [
@@ -138,8 +139,16 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                         return  SizedBox(
                           width: 100,
                           height: MediaQuery.of(context).size.height.h,
-                          child: CategoryList(
-                            categoryList: categoryList,
+                          child: Column(
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 8.0),
+                                child: BodyText(text: 'Category',fontWeight: FontWeight.bold,fontSize: 14,),
+                              ),
+                              CategoryList(
+                                categoryList: categoryList,
+                              ),
+                            ],
                           ),
                         );
                       },
@@ -296,7 +305,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                               buttonHeight: 40,
                               buttonColor: Colors.green,
                               radius: 0,
-                              padding: 0,
+                              margin: 0,
                               onClick: () {}),
                         ),
                         Expanded(
@@ -305,7 +314,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                               buttonText: 'Cancel',
                               buttonTextSize: 11,
                               buttonHeight: 40,
-                              padding: 0,
+                              margin: 0,
                               radius: 0,
                               onClick: () {
                                 setState(() {

@@ -64,7 +64,7 @@ class _BottomWidgetState extends State<BottomWidget> {
                   buttonWidth: 110,
                   buttonHeight: 30,
                   radius: 15,
-                  padding: 0,
+                  margin: 0,
                   buttonTextSize: 14,
                   onClick: () => widget.onClick())
             ],
@@ -123,7 +123,7 @@ class _BottomWidgetState extends State<BottomWidget> {
                             buttonText: 'Place Order',
                             buttonTextSize: 11,
                             buttonHeight: 40,
-                            padding: 0,
+                            margin: 0,
                             onClick: () {}),
                       ),
                       const Space(
@@ -135,7 +135,7 @@ class _BottomWidgetState extends State<BottomWidget> {
                             buttonText: 'Cancel',
                             buttonTextSize: 11,
                             buttonHeight: 40,
-                            padding: 0,
+                            margin: 0,
                             onClick: () {
                               setState(() {
                                 Navigator.pop(context);

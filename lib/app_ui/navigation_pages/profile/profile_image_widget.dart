@@ -10,9 +10,9 @@ import 'package:image_picker_platform_interface/image_picker_platform_interface.
 
 
 class ProfileImageWidget extends StatefulWidget {
-  final String networkUrl;
-  final ValueChanged<File> onFileChange;
-  const ProfileImageWidget({required this.networkUrl,required this.onFileChange,super.key});
+   String networkUrl;
+  final ValueChanged<XFile> onFileChange;
+   ProfileImageWidget({required this.networkUrl,required this.onFileChange,super.key});
 
   @override
   State<ProfileImageWidget> createState() => _ProfileImageWidgetState();
@@ -26,7 +26,7 @@ class _ProfileImageWidgetState extends State<ProfileImageWidget> {
       children: [
         InkWell(
           onTap: (){
-         //  picCaptureImageDialog();
+           picCaptureImageDialog();
            }
              ,
           child: ClipRRect(
@@ -53,16 +53,6 @@ class _ProfileImageWidgetState extends State<ProfileImageWidget> {
             ),
           ),
         ),
-        /*file != null
-            ? Positioned(
-            top: -10,
-            right: 0,
-            child: IconButton(
-                onPressed: () =>
-                    setState(() => file = null),
-                icon: Image.asset(cross, width: 24, height: 24,
-                )))
-            : const SizedBox.shrink()*/
       ],
     );
   }
@@ -80,9 +70,10 @@ class _ProfileImageWidgetState extends State<ProfileImageWidget> {
               onTap: () {
                 picCameraImage().then((value) {
                 setState(() {
-                  file = value;
+                  file = File(value!.path);
                   widget.onFileChange(value);
-                 // context.read<UserProfileBloc>().add(UpdateProfileImageEvent(profileImage: file));
+                  Navigator.of(context).pop();
+                  // context.read<UserProfileBloc>().add(UpdateProfileImageEvent(profileImage: file));
                 });
               });
             },
@@ -93,8 +84,9 @@ class _ProfileImageWidgetState extends State<ProfileImageWidget> {
               onTap: () {
                 pickSingleFile().then((value) {
                   setState(() {
-                    file = value;
+                    file = File(value.path);
                     widget.onFileChange(value);
+                    Navigator.of(context).pop();
                     // context.read<UserProfileBloc>().add(UpdateProfileImageEvent(profileImage: file));
                   });
                 });               },

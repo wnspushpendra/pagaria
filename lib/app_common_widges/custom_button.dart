@@ -15,7 +15,7 @@ class CustomButton extends StatelessWidget {
   final double? buttonHeight;
   final double? buttonTextSize;
   final String? image;
-  final double? padding;
+  final double? margin;
   final double? radius;
   final bool? showLoading;
 
@@ -28,7 +28,7 @@ class CustomButton extends StatelessWidget {
       this.buttonWidth,
       this.buttonTextSize,
       this.image,
-        this.padding,
+        this.margin,
         this.radius,
         this.showLoading,
       Key? key})
@@ -37,6 +37,41 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: buttonWidth?? MediaQuery.of(context).size.width.h,
+      height: buttonHeight ?? 52.h,
+      margin:  EdgeInsets.symmetric(vertical: margin??24.h),
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: buttonColor ?? primaryColor,
+        borderRadius: BorderRadius.circular(radius ?? 20),
+      ),
+      child: TextButton(
+        onPressed: ()   => onClick(),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Flexible(child: BodyText(text:buttonText.toUpperCase(),fontSize: buttonTextSize,fontWeight: FontWeight.bold,color: buttonTextColor?? bodyWhite, )),
+            showLoading ==true ? Container(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: const CustomProgressBar(widthV: 20,heightV: 20,)) :  Container(),
+            image != null
+                ? Padding(
+                  padding: const EdgeInsets.fromLTRB(6,0,0,0),
+                  child: Image.asset(
+                    image!,
+                    width: 24,
+                    height: 24,
+                    color: bodyWhite,
+                  ),
+                )
+                : const SizedBox.shrink(),
+          ],
+        )),
+    );
+
+
+    /*return Container(
       width: buttonWidth?? MediaQuery.of(context).size.width.h,
       height: buttonHeight ?? 52.h,
       margin:  EdgeInsets.symmetric(vertical: padding??24.h),
@@ -52,16 +87,17 @@ class CustomButton extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              BodyText(text:buttonText.toUpperCase(),fontSize: buttonTextSize,fontWeight: FontWeight.bold,color: buttonTextColor?? bodyWhite, ),
-              showLoading != null ? const CustomProgressBar() : const SizedBox.shrink(),
+              Flexible(child: BodyText(text:buttonText.toUpperCase(),fontSize: buttonTextSize,fontWeight: FontWeight.bold,color: buttonTextColor?? bodyWhite, )),
+              const Space(width: 4,),
+              showLoading ==true ? const CustomProgressBar(widthV: 20,heightV: 20,) :  Container(),
               const Space(width: 4,),
               image != null
                   ? Row(
                 children: [
                   Image.asset(
                     image!,
-                    width: 24.h,
-                    height: 24.h,
+                    width: 24,
+                    height: 24,
                     color: bodyWhite,
                   ),
                 ],
@@ -69,6 +105,6 @@ class CustomButton extends StatelessWidget {
                   : const SizedBox.shrink(),
             ],
           )),
-    );
+    );*/
   }
 }

@@ -6,7 +6,9 @@ import 'package:webnsoft_solution/bloc_provider/bloc_providers.dart';
 import 'package:webnsoft_solution/routes/custom_router.dart';
 import 'package:webnsoft_solution/splash_screen.dart';
 import 'package:webnsoft_solution/theme/app_theme.dart';
+import 'package:webnsoft_solution/utils/app_colors.dart';
 import 'package:webnsoft_solution/utils/permisson_handler.dart';
+import 'package:flutter_statusbarcolor_ns/flutter_statusbarcolor_ns.dart';
 
 
 
@@ -18,6 +20,7 @@ void main() async {
     print(value);
   }
 );
+  await FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
 
   runApp(const MyApp());
 }

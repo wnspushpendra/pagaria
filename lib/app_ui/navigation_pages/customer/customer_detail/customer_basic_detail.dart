@@ -44,7 +44,7 @@ class CustomerBasicDetails extends StatelessWidget {
               right: 0,
               left: 0,
               child: CustomButton(buttonText: 'Ledger Book',
-                padding: 0,radius: 0,
+                margin: 0,radius: 0,
                 image: downloadLedger,
                 onClick: (){},))
         ],

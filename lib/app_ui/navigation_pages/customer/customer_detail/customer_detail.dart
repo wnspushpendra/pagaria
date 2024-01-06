@@ -7,7 +7,8 @@ import 'package:webnsoft_solution/app_common_widges/normal_text.dart';
 import 'package:webnsoft_solution/app_common_widges/space.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/customer/customer_detail/customer_basic_detail.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/customer/customer_detail/ledget_book.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/order/order.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/customer/customer_payment/customer_payment.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/order/order_list/order.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/payment/payment.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
@@ -52,7 +53,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
             children:[
               CustomerBasicDetails(),
               OrderScreen(),
-              PaymentScreen(),
+              CustomerPaymentScreen(),
               LedgetBookScreen(),
             ] ),
       ),

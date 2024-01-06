@@ -3,13 +3,19 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webnsoft_solution/app_common_widges/app_body_text.dart';
+import 'package:webnsoft_solution/modal/login/MarketingExecutiveLoginResponse.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:webnsoft_solution/utils/app_preferences.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
+import 'package:intl/intl.dart';
+
+Future<User> getUser() async{
+  return await getUserPref(userProfileDataPrefecences);
+}
 
 
-/*
 String getStringDateDDMMYYYY(String oldDate) {
   DateTime date = DateFormat('dd/MM/yyyy').parse(oldDate);
   String formattedDate = DateFormat('yyyy-MM-dd').format(date);
@@ -19,7 +25,7 @@ String getDDMMYYYYDateString(DateTime dateFormat) {
   final DateFormat formatter = DateFormat('yyyy-MM-dd');
   String formattedDate = formatter.format(dateFormat);
   return formattedDate;
-}*/
+}
 
 snackBar(BuildContext context, String message) {
   var snackBar = SnackBar(
@@ -44,7 +50,7 @@ const String recipientNumber = '8827176446'; // Replace with the recipient's num
   }
 }
 
-/*Future<String> selectDate(BuildContext context,DateTime selectedDate) async {
+Future<String> selectDate(BuildContext context) async {
   String selectedCalendarDate = '';
   var todayDate =  DateTime.now();
 
@@ -53,12 +59,11 @@ const String recipientNumber = '8827176446'; // Replace with the recipient's num
       initialDate: DateTime(todayDate.year-10, todayDate.month, todayDate.day),
       firstDate: DateTime(todayDate.year-100,todayDate.month, todayDate.day),
       lastDate: DateTime(todayDate.year-10, todayDate.month, todayDate.day));
-  if (picked != null && picked != selectedDate) {
-      selectedDate = picked;
-     selectedCalendarDate =  getDDMMYYYYDateString(selectedDate);
+  if (picked != null ) {
+     selectedCalendarDate = getDDMMYYYYDateString(picked);
   }
   return selectedCalendarDate;
-}*/
+}
 
 Future<String> selectTime(BuildContext context,TimeOfDay selectedTime) async {
   String time = '';
@@ -78,14 +83,14 @@ Future<String> selectTime(BuildContext context,TimeOfDay selectedTime) async {
   return time;
 }
 
-Future<File> pickSingleFile() async {
+Future<XFile> pickSingleFile() async {
    final XFile? image = await ImagePicker().pickImage(source: ImageSource.gallery);
-  return File(image!.path);
+  return image!;
 }
 
-Future<File> picCameraImage() async{
+Future<XFile?> picCameraImage() async{
   final XFile? image = await ImagePicker().pickImage(source: ImageSource.camera);
-  return File(image!.path);
+  return image;
 }
 
 Future<List<File>> pickMultipleImage() async {

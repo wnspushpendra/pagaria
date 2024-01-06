@@ -33,13 +33,15 @@ dependencies:
   flutter_bloc:
   salomon_bottom_bar:
   http:
+  intl:
+  flutter_svg:
+  flutter_statusbarcolor_ns:
   image_picker:
   file_picker:
   shared_preferences:
   permission_handler:
   percent_indicator:
   cached_network_image:
-  fl_chart:
   geolocator:
   location:
   flutter_screenutil:
@@ -51,6 +53,10 @@ dependencies:
   pdf_render:
   dio:
   open_file:
+  animated_text_kit:
+  animated_splash_screen:
+  zwidget:
+
 
 
 
@@ -61,6 +67,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -84,6 +91,7 @@ flutter:
   assets:
     - assets/
     - assets/pagaria_logo.gif
+    - assets/forgot_password.svg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

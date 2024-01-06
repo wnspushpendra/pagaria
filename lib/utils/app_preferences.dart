@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:webnsoft_solution/modal/login/MarketingExecutiveLoginResponse.dart';
 
 setBoolPref(String key, bool value) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -33,4 +36,18 @@ Future<int?> getIntPref(String key) async {
 clearPref() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.clear();
+}
+
+
+Future<void> saveUserPref(User user,String key) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String userJson = json.encode(user.toJson()); // Convert User object to JSON string
+  await prefs.setString(key, userJson); // Save JSON string in SharedPreferences
+}
+
+Future<User> getUserPref(String key) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? userJson = prefs.getString(key);
+  Map<String, dynamic> userMap = json.decode(userJson!);
+  return User.fromJson(userMap);
 }

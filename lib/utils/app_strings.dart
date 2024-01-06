@@ -6,6 +6,7 @@ const String appName = 'Mangalyam Metromonial';
 
 const String userLoginPrefecences = 'user-login';
 const String userIdPrefecences = 'user-id';
+const String userTokenPrefecences = 'token';
 const String userNamePrefecences = 'user-name';
 const String userImagePrefecences = 'user-image';
 const String userProfileDataPrefecences = 'user-profile';
@@ -13,28 +14,33 @@ const String languageCodePreferences = 'language-code';
 
 /// ********************** Network Image Url **********************
 
+
 const String networkImage = 'https://pbs.twimg.com/profile_images/1075240418936160256/BYPSMMdz_400x400.jpg';
+const String productImage = 'https://img.freepik.com/premium-psd/cosmetic-product_986960-1496.jpg';
+const String productImage1 = 'https://vn.canon/media/migration/shared/live/products/EN/powershotg1markiii-large1.png';
 const String pdfUrls = 'https://example.com/path_to_your_pdf.pdf';
 
 
 /// ********************** User Info **********************
 
 const String name = 'Name*';
+const String fullName = 'Full Name*';
 const String fistName = 'Fist Name*';
 const String lastName = 'Last Name*';
 const String email = 'Email';
+const String dob = 'Date of Birth';
 const String mobileNumber = 'Mobile Number';
 const String aadhar = 'Aadhar Number';
 const String street = 'Address*';
-const String city = 'City*';
-const String state = 'State*';
-const String pinCode = 'PinCode*';
+const String city = 'City';
+const String state = 'State';
+const String pinCode = 'PinCode';
 const String rupeesSymbol = '₹';
 const String firmName = 'Firm Name';
 const String address = 'Address';
 const String customerName = 'Customer Name';
 const String panCardNumber = 'PanCard Number';
-const String aadharNumber = 'AAdhar Number';
+const String aadharNumber = 'Aadhar Number';
 const String gstNumber = 'GST Number';
 
 /// ********************** Button text **********************
@@ -44,7 +50,7 @@ const String register = 'Register';
 const String login = 'Login';
 const String submit = 'Submit';
 const String update = 'Update';
-const String changePassword = 'Change Password';
+const String resetPassword = 'Reset Password';
 
 
 
@@ -58,6 +64,7 @@ const String order = 'Order';
 const String product = 'Product';
 const String payment = 'Payment';
 const String customer = 'Customer';
+const String pickupToAddress = 'Pickup To Address';
 
 
 /// ********************** Select/Pic Image  **********************

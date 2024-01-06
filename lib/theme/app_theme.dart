@@ -7,6 +7,7 @@ get appTheme => ThemeData(
     primary: primaryColor,
     secondary: primaryColor,
   ),
+  primaryColor: bodyWhite,
   scaffoldBackgroundColor: bodyWhite,
   textTheme:  TextTheme(
     headlineMedium: TextStyle(fontSize: 26.h,color: primaryColor,fontWeight: FontWeight.bold),
@@ -16,5 +17,6 @@ get appTheme => ThemeData(
     bodyLarge: TextStyle(fontSize: 18.h,color: bodyWhite ),
     bodyMedium: TextStyle(fontSize: 16.h,color: bodyLightBlack ),
     bodySmall: TextStyle(fontSize: 14.h,color: bodyBlack ),
-  )
+  ),
+  dialogBackgroundColor: bodyWhite,
 );

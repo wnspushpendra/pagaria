@@ -42,11 +42,11 @@ class CustomAppbar extends StatelessWidget {
 AppBar appBarWidget(BuildContext context, String title, Function onPressed) =>
     AppBar(
       backgroundColor: primaryColor,
-      elevation: 0,
+      elevation: 2,
       leading: IconButton(
         icon: const Icon(
           Icons.arrow_back_ios,
-          color: Colors.white,
+          color: bodyWhite,
           size: 24,
         ),
         onPressed: () {

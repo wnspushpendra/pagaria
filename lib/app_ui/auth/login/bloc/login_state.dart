@@ -1,9 +1,16 @@
 
+import 'package:webnsoft_solution/modal/login/MarketingExecutiveLoginResponse.dart';
+
 abstract class LoginState {}
 
 class LoginInitial extends LoginState {}
 class LoginClick extends LoginState {}
-class LoginSuccess extends LoginState {}
+class LoginLoading extends LoginState {}
+class LoginSuccess extends LoginState {
+
+  User user;
+  LoginSuccess({required this.user});
+}
 class LoginError extends LoginState {
   bool? email;
   bool? password;

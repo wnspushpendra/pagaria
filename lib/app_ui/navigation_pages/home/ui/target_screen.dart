@@ -1,13 +1,9 @@
-
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:webnsoft_solution/app_common_widges/app_body_text.dart';
 import 'package:webnsoft_solution/app_common_widges/custom_button.dart';
-import 'package:webnsoft_solution/app_common_widges/heading_text.dart';
 import 'package:webnsoft_solution/app_common_widges/space.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/home/ui/target_widget.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
 
 class TargetScreen extends StatefulWidget {
@@ -18,7 +14,7 @@ class TargetScreen extends StatefulWidget {
 }
 
 class _TargetScreenState extends State<TargetScreen> {
-  List<String> targetList = ['MONTH','QUARTER','HALF YEAR','YEAR'];
+  List<String> targetList = ['MONTHLY','QUARTERLY','HALF YEARLY','YEARLY'];
   int targetIndex = 0;
   bool? showTarget;
   bool showMonthTarget = true;
@@ -34,27 +30,39 @@ class _TargetScreenState extends State<TargetScreen> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-           SizedBox(
-             width: 100.h,
-             height: 160.h,
-             child: ListView.builder(
-               itemCount: targetList.length,
-                 itemBuilder: (context,index){
-                 return GestureDetector(
-                   onTap: (){
-                     setState(() {
-                       targetIndex = index;
-                     });
-                   },
-                   child: Padding(
-                       padding:  EdgeInsets.symmetric(vertical: 4.h),
-                       child: BodyText(text: targetList[index],
-                         align: TextAlign.start,
-                         fontWeight: FontWeight.bold,
-                         color: index == targetIndex ? Colors.green : bodyBlack,),
-                     ),
-                 );
-                 }),
+           Column(
+             children: [
+
+               CustomButton(buttonText: 'Check-out',
+                   buttonWidth: 110,
+                   buttonHeight: 40,
+                   margin: 0,
+                   buttonTextSize: 12,
+                   onClick: (){}),
+               SizedBox(
+                 width: 100,
+                 height: 140,
+                 child: ListView.builder(
+                   itemCount: targetList.length,
+                     itemBuilder: (context,index){
+                     return GestureDetector(
+                       onTap: (){
+                         setState(() {
+                           targetIndex = index;
+                         });
+                       },
+                       child: Padding(
+                           padding:  EdgeInsets.symmetric(vertical: 4.h),
+                           child: BodyText(text: targetList[index],
+                             fontSize: 14,
+                             align: TextAlign.start,
+                             fontWeight: FontWeight.bold,
+                             color: index == targetIndex ? Colors.green : bodyBlack,),
+                         ),
+                     );
+                     }),
+               ),
+             ],
            ),
           Expanded(
             flex:  2,

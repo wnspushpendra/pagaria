@@ -28,7 +28,7 @@ class _ListGridButtonState extends State<ListGridButton> {
                     },
                   buttonText: 'ListView',
                   radius: 0,
-                  padding: 0,
+                  margin: 0,
                   buttonTextSize: 14,
                   buttonColor: widget.activeButton ? primaryColor : bodyLightBlack,
                 )),
@@ -40,7 +40,7 @@ class _ListGridButtonState extends State<ListGridButton> {
                   },
                   buttonText: 'GridView',
                   radius: 0,
-                  padding: 0,
+                  margin: 0,
                   buttonTextSize: 14,
                   buttonColor: widget.activeButton ? bodyLightBlack : primaryColor,
                 ))

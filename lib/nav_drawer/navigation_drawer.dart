@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:webnsoft_solution/app_common_widges/app_body_text.dart';
 import 'package:webnsoft_solution/app_common_widges/space.dart';
-import 'package:webnsoft_solution/left_navbar/drawer_item.dart';
+import 'package:webnsoft_solution/modal/login/MarketingExecutiveLoginResponse.dart';
+import 'package:webnsoft_solution/nav_drawer/drawer_item.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
+import 'package:webnsoft_solution/utils/app_preferences.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
 import 'package:webnsoft_solution/utils/asset_images.dart';
 import 'package:webnsoft_solution/utils/dialogs.dart';
@@ -12,19 +14,21 @@ import 'package:webnsoft_solution/utils/util_methods.dart';
 
 
 class MyDrawer extends StatelessWidget {
-  const MyDrawer({super.key});
+  final User user;
+  const MyDrawer({required this.user,super.key});
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: Material(
+        color: bodyWhite,
         child: Stack(
           children: [
             SingleChildScrollView(
               child: Column(
                 children: [
                   const Space(height: 16,),
-                  headerWidget(context, ''),
+                  headerWidget(context, user),
                   Container(
                     color: primaryColor,
                     height: MediaQuery.of(context).size.height,
@@ -34,17 +38,23 @@ class MyDrawer extends StatelessWidget {
                         DrawerItem(
                             name: home,
                             icon: homeIcon,
-                            onPressed: () {
+                            onPressed: () async{
                               Scaffold.of(context).closeDrawer();
-                              onPopReplace(context, navigationRoute);
+                              User? user = await getUserPref(userProfileDataPrefecences);
+                                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                                  Navigator.pushReplacementNamed(context, homeRoute,arguments: user);
+                                });
                             }),
                         const Space(height: 10,),
                         DrawerItem(
                             name: profile,
                             icon: profileIcon,
-                            onPressed: () {
+                            onPressed: () async{
                               Scaffold.of(context).closeDrawer();
-                              onPopReplace(context, profileRoute);
+                              User? user = await getUserPref(userProfileDataPrefecences);
+                              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                                Navigator.pushReplacementNamed(context, profileRoute,arguments: user);
+                              });
                             }),
                         const Space(height: 10,),
                         DrawerItem(
@@ -52,7 +62,7 @@ class MyDrawer extends StatelessWidget {
                             icon:productIcon,
                             onPressed: () {
                               Scaffold.of(context).closeDrawer();
-                              onPopReplace(context, productRoute);
+                              Navigator.pushReplacementNamed(context, productRoute);
                             }),
                         const Space(height: 10,),
                         DrawerItem(
@@ -60,15 +70,7 @@ class MyDrawer extends StatelessWidget {
                             icon: orderIcon,
                             onPressed: () {
                               Scaffold.of(context).closeDrawer();
-                              onPopReplace(context, customerRoute);
-                            }),
-                        const Space(height: 10,),
-                        DrawerItem(
-                            name: order,
-                            icon: customerIcon,
-                            onPressed: () {
-                              Scaffold.of(context).closeDrawer();
-                              onPopReplace(context, orderRoute);
+                              Navigator.pushReplacementNamed(context, customerRoute);
                             }),
                         const Space(height: 10,),
                         DrawerItem(
@@ -76,7 +78,15 @@ class MyDrawer extends StatelessWidget {
                             icon: paymentIcon,
                             onPressed: () {
                               Scaffold.of(context).closeDrawer();
-                              onPopReplace(context, paymentRoute);
+                              Navigator.pushReplacementNamed(context, paymentRoute);
+                            }),
+                        const Space(height: 10,),
+                        DrawerItem(
+                            name: resetPassword,
+                            icon: resetPasswordIcon,
+                            onPressed: () {
+                              Scaffold.of(context).closeDrawer();
+                              onPopReplace(context, resetPasswordRoute);
                             }),
                         const Space(height: 10,),
                         DrawerItem(
@@ -97,7 +107,7 @@ class MyDrawer extends StatelessWidget {
     );
   }
 
-  Widget headerWidget(BuildContext context, String name) {
+  Widget headerWidget(BuildContext context, User user,) {
     return Container(
       height: 147.h,
       color: bodyWhite,
@@ -122,7 +132,7 @@ class MyDrawer extends StatelessWidget {
           ),
           Padding(
            padding: EdgeInsets.symmetric(horizontal: 8.h),
-           child: const BodyText(text: 'User Name',color: primaryColor,),
+           child:  BodyText(text: user.fullName.toString(),color: primaryColor,),
          ),
           const Space(height: 3,),
 
