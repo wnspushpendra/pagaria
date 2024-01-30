@@ -1,5 +1,5 @@
 
-import 'package:webnsoft_solution/modal/login/MarketingExecutiveLoginResponse.dart';
+import 'package:webnsoft_solution/modal/login/login_response.dart';
 
 abstract class LoginState {}
 

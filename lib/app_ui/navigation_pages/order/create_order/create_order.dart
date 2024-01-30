@@ -18,6 +18,7 @@ import 'package:webnsoft_solution/app_ui/navigation_pages/product/category_bloc/
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_bloc/product_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_bloc/product_event.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_bloc/product_state.dart';
+import 'package:webnsoft_solution/modal/category_list.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
 import 'package:webnsoft_solution/utils/asset_images.dart';
@@ -32,7 +33,7 @@ class CreateOrderScreen extends StatefulWidget {
 
 class _CreateOrderScreenState extends State<CreateOrderScreen> {
   TextEditingController searchController = TextEditingController();
-  List<String> categoryList = [];
+  List<Categories> categoryList = [];
   List<String> productList = [
     'Machine',
     'Mouse',
@@ -52,18 +53,10 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
   bool addItem = false;
   bool showCategory = true;
 
-  addCategories() {
-    categoryList.add('Repairing');
-    categoryList.add('Menufacturing');
-    categoryList.add('Chocolate');
-    categoryList.add('Biscuit');
-    categoryList.add('Driving');
-  }
 
   @override
   void initState() {
     //  context.read<CategoryBloc>().add(CategoryLoadEvent());
-    addCategories();
     super.initState();
   }
 
@@ -71,13 +64,13 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: appBarWidget(context, 'Create Order',
-            () => Navigator.pushReplacementNamed(context, homeRoute)),
+            () async => Navigator.pushReplacementNamed(context, homeRoute,arguments: await getUser())),
         body: Stack(children: <Widget>[
           BlocConsumer<ProductBloc, ProductState>(
             listener: (context, state) {},
             builder: (context, state) {
               if(state is ProductSuccess){
-                productList = state.productList;
+              //  productList = state.productList;
               }
               return Container(
                 padding:  EdgeInsets.fromLTRB(showCategory ? 100.h:0, 68, 0, 0),
@@ -95,9 +88,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                         : GridListViewProduct(
                       productList: productList,
                       from: 'create',
-                      selectedProduct: (List<String> value) {
-
-                      },
+                      selectedProduct: (List<String> value) => print(value),
                     ),
                     const Space(height: 120,)
                   ],
@@ -129,7 +120,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                         :  BlocConsumer<CategoryBloc, CategoryState>(
                       listener: (context, state) {
                         if (state is CategorySuccess) {
-                          context.read<ProductBloc>().add(ProductLoadEvent());
+                          //context.read<ProductBloc>().add(ProductLoadEvent());
                         }
                       },
                       builder: (context, state) {
@@ -146,14 +137,13 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                                 child: BodyText(text: 'Category',fontWeight: FontWeight.bold,fontSize: 14,),
                               ),
                               CategoryList(
-                                categoryList: categoryList,
+                                categoryList: [],
                               ),
                             ],
                           ),
                         );
                       },
                     ),
-
                     Expanded(
                       flex: 5,
                       child: ListGridButton(

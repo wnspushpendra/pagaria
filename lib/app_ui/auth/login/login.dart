@@ -7,11 +7,9 @@ import 'package:webnsoft_solution/app_common_widges/space.dart';
 import 'package:webnsoft_solution/app_ui/auth/login/bloc/login_bloc.dart';
 import 'package:webnsoft_solution/app_ui/auth/login/bloc/login_event.dart';
 import 'package:webnsoft_solution/app_ui/auth/login/bloc/login_state.dart';
-import 'package:webnsoft_solution/modal/login/MarketingExecutiveLoginResponse.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
 import 'package:webnsoft_solution/utils/app_message.dart';
-import 'package:webnsoft_solution/utils/app_preferences.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
 import 'package:webnsoft_solution/utils/asset_images.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
@@ -28,24 +26,30 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController passwordController = TextEditingController();
   bool? isValidEmail, isValidPassword,isLoading;
 
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<LoginBloc, LoginState>(
-      listener: (context, state) {
-        if(state is LoginLoading){
+      listener: (context, loginState) {
+        /// * state for showing progressbar
+        if(loginState is LoginLoading){
           setState(() => isLoading = true);
-        } if(state is LoginSuccess){
-          onLoginSuccess(context,state);
         }
-        if(state is LoginError){
+        /// * state for success
+        if(loginState is LoginSuccess){
+          onLoginSuccess(context,loginState);
+        }
+        /// * state for error
+        if(loginState is LoginError){
           isLoading = false;
-          if(state.message != null ){
-            snackBar(context, state.message.toString());
+          if(loginState.message != null ){
+            snackBar(context, loginState.message.toString());
           }
-          setState(() => createLoginErrorState(state));
+          setState(() => createLoginErrorState(loginState));
         }
       },
       builder: (context, state) {
+        /// * ui for login
         return Scaffold(
           backgroundColor: bodyWhite,
           body: SingleChildScrollView(
@@ -83,6 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       buttonText: login,
                       buttonTextColor: bodyWhite,
                       showLoading: isLoading,
+                      /// * login click action
                       onClick: () => onLoginClick())
                 ],
               ),
@@ -94,21 +99,29 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   onLoginClick() {
+    /// * api call for login and check validate
     context.read<LoginBloc>().add(LoginClickEvent(email : emailController.text,password : passwordController.text));
   }
+
+  /// * on login success response
   void onLoginSuccess(BuildContext context, LoginSuccess state) {
-   /* User user = state.user;
-    setBoolPref(userLoginPrefecences,true);
-    setStringPref(userProfileDataPrefecences,user.toJson().toString());
-    setStringPref(userProfileDataPrefecences,user.toJson().toString());
-    saveUserPref(state.user,userProfileDataPrefecences);*/
     Navigator.pushReplacementNamed(context, homeRoute,arguments: state.user);
 
   }
+  /// * on login validation error
   createLoginErrorState(LoginError state) {
     isValidEmail = state.email;
     isValidPassword = state.password;
   }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+
 
 
 }

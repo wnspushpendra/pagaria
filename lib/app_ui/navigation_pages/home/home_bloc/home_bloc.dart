@@ -1,19 +1,105 @@
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:location_platform_interface/location_platform_interface.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/home/home_bloc/home_apis.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/home_bloc/home_event.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/home_bloc/home_state.dart';
+import 'package:webnsoft_solution/modal/checkin_checkout/check_in_status.dart';
+import 'package:webnsoft_solution/modal/checkin_checkout/checkin_checkout.dart';
+import 'package:webnsoft_solution/modal/distributor_list.dart';
+import 'package:webnsoft_solution/modal/login/login_response.dart';
+import 'package:webnsoft_solution/utils/app_preferences.dart';
+import 'package:webnsoft_solution/utils/app_strings.dart';
+import 'package:webnsoft_solution/utils/util_methods.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc() : super(HomeLoading()) {
-    on<HomeTargetFetchEvent>((event, emit) {
-      fetchTargetApi(event);
-    });
-    on<HomeCustomerFetchEvent>((event, emit) {
-      fetchCustomerApi(event);
-    });
+    on<HomeTargetFetchEvent>((event, emit) {fetchTargetApi(event);});
+    on<HomeCustomerFetchEvent>((event, emit) => fetchCustomerApi(event));
+    on<HomeCheckInStatusEvent>((event, emit) => checkInOutStatusApi(event));
+    on<HomeCheckInOutUpdateEvent>((event, emit) {checkInOutApi(event);});
   }
 
   void fetchTargetApi(HomeTargetFetchEvent event) {}
 
-  void fetchCustomerApi(HomeCustomerFetchEvent event) {}
+  void checkInOutStatusApi(HomeCheckInStatusEvent event) async {
+    /***************** getting token from preference      ****************/
+    String token = await getStringPref(userTokenPrefecences);
+    /***************** getting user from preference  method  ****************/
+    User user = await getUser();
+
+    Map<String, String> header = {
+      "Authorization": "Bearer $token",
+    };
+
+
+    Map<String, dynamic> body = <String, dynamic>{};
+    body['user_id'] =  user.id.toString();
+
+    CheckInDetails response = await checkInDetailsApi(header, body);
+    if(response.status == true && response.checkInData != null){
+      emit(HomeSuccess(checkInData : response.checkInData!));
+    }else{
+      emit(HomeError(error : response.message.toString()));
+    }
+  }
+
+
+  void checkInOutApi(HomeCheckInOutUpdateEvent event) async {
+    /***************** getting token from preference      ****************/
+    String token = await getStringPref(userTokenPrefecences);
+    /***************** getting user from preference  method  ****************/
+    User user = await getUser();
+
+    Map<String, String> header = {
+      "Authorization": "Bearer 462|VJpz5kEp2ziu6xze891HhYE08C1ytxJ9cR6jz91040a7fc73",
+    };
+
+    String address = '${event.placeMark?.street}, ${event.placeMark?.locality}, ${event.placeMark?.administrativeArea}, ${event.placeMark?.country}';
+    String zipCode = '${event.placeMark?.postalCode}';
+
+    Map<String, dynamic> body = <String, dynamic>{};
+    body['marketing_executive_id'] =  user.id.toString();
+    body['status_type'] = event.checkInOutStatus;
+    body['latitude'] = event.locationData.latitude.toString();
+    body['longitude'] = event.locationData.longitude.toString();
+    body['address'] = address;
+    body['zip_code'] = zipCode;
+
+    emit(HomeCheckInOutLoading());
+
+    CheckInCheckOutResponse response = await checkInOutUpdateApi(header, body);
+    if(response.status == true && response.checkInOutRecord != null){
+      emit(HomeSuccess(checkInOutRecord : response.checkInOutRecord!));
+    }else{
+      emit(HomeError(error : response.message.toString()));
+    }
+  }
+
+
+  void fetchCustomerApi(HomeCustomerFetchEvent event) async {
+    /***************** getting token from preference      ****************/
+    String token = await getStringPref(userTokenPrefecences);
+    /***************** getting user from preference  method  ****************/
+    User user = await getUser();
+
+    Map<String, String> header = {
+      "Authorization": "Bearer $token",
+    };
+
+    Map<String, dynamic> body = <String, dynamic>{};
+    body['user_id'] = user.id.toString();
+    body['data_type'] = 'type_distributor';
+
+    DistributorListResponse response = await distributorListApi(header, body);
+    if(response.status == true && response.customerList != null){
+      emit(HomeSuccess(distributorList : response.customerList!));
+    }else{
+      emit(HomeError(error : response.message.toString()));
+    }
+
+  }
+
+
 }

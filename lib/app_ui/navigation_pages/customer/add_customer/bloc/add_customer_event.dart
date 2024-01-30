@@ -1,7 +1,7 @@
 
 abstract class AddCustomerEvent {}
 
-/// ******** event for adding distributor *******************
+/// ******** event for create distributor *******************
 
  class AddDistributorClickEvent  extends AddCustomerEvent{
   final String fullName;
@@ -24,7 +24,7 @@ abstract class AddCustomerEvent {}
 
  }
 
-/// ******** event for adding customer *******************
+/// ******** event for create customer *******************
 
 class AddCustomerClickEvent  extends AddCustomerEvent{
   final String fullName;

@@ -1,30 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:webnsoft_solution/app_common_widges/app_body_text.dart';
 import 'package:webnsoft_solution/app_common_widges/asset_button.dart';
 import 'package:webnsoft_solution/app_common_widges/custom_button.dart';
 import 'package:webnsoft_solution/app_common_widges/home_appbar.dart';
 import 'package:webnsoft_solution/app_common_widges/normal_text.dart';
 import 'package:webnsoft_solution/app_common_widges/space.dart';
+import 'package:webnsoft_solution/modal/customer_detail.dart';
+import 'package:webnsoft_solution/modal/distributor_list.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
 import 'package:webnsoft_solution/utils/asset_images.dart';
 
 class CustomerListItem extends StatelessWidget {
+  final Customer customerDetails;
   final String name;
   final String contactNumber;
   final String emailAddress;
   final String add;
-  final Function onPressed;
 
   const CustomerListItem(
-      {required this.name,
+      {
+        required this.customerDetails,
+        required this.name,
       required this.contactNumber,
       required this.emailAddress,
       required this.add,
-        required this.onPressed,
       super.key});
 
   @override
@@ -35,7 +37,7 @@ class CustomerListItem extends StatelessWidget {
       alignment: Alignment.center,
       decoration: defaultDecoration,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Row(
@@ -49,7 +51,7 @@ class CustomerListItem extends StatelessWidget {
                       text: customerName,fontSize: 16,color: primaryColor,
                     ),
                     BodyText(
-                      text: name,
+                      text: customerDetails.fullName.toString(),
                       color: bodyBlack,
                     ),
                   ],
@@ -57,69 +59,68 @@ class CustomerListItem extends StatelessWidget {
               ),
               Row(
                 children: [
-                  AssetButton(image: visibility, onPressed: () => Navigator.pushReplacementNamed(context, customerDetailRoute,arguments: 0)),
-                  AssetButton(image: createOrder, onPressed: () => Navigator.pushReplacementNamed(context, createOrderRoute,)),
-                  AssetButton(image: paymentIcon, onPressed: () => Navigator.pushReplacementNamed(context, customerDetailRoute,arguments: 2)),
-                  AssetButton(image: history, onPressed: () => Navigator.pushReplacementNamed(context, customerDetailRoute,arguments: 1)),
+                  AssetButton(image: createOrder, onPressed: () => Navigator.pushReplacementNamed(context, productRoute,arguments: 'create')),
+                  AssetButton(image: visibility, onPressed: () => Navigator.pushReplacementNamed(context, customerDetailRoute,arguments: CustomerDetailModal(customerDetails: customerDetails),)),
+                  AssetButton(image: paymentIcon, onPressed: () => Navigator.pushReplacementNamed(context, customerDetailRoute,arguments: CustomerDetailModal(index: 2,customerDetails: customerDetails))),
+                  AssetButton(image: history, onPressed: () => Navigator.pushReplacementNamed(context, customerDetailRoute,arguments: CustomerDetailModal(index: 1,customerDetails: customerDetails))),
                 ],
               ),
             ],
           ),
-           Space(height: 6.h,),
+           const Space(height: 6,),
            Row(
             children: [
               Expanded(
-                  flex: 1,
+                flex: 1,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                       const BodyText(text: mobileNumber,fontSize: 16,color: primaryColor,),
+                       const BodyText(text: mobileNumber,fontSize: 16,color: primaryColor,align: TextAlign.start,),
                       BodyText(
-                        text: contactNumber,
+                        text: customerDetails.contactNo.toString(),
                         color: bodyBlack,
                       ),
                     ],
                   )),
               Expanded(
-                  flex: 1,
+                flex: 1,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                        const BodyText(text: email,fontSize: 16,color: primaryColor,),
-                      BodyText(
-                        text: emailAddress,
-                        color: bodyBlack,
-                      ),
+                      NormalText(text: customerDetails.email.toString(), color: bodyBlack,),
                     ],
                   )),
             ],
           ),
-           Space(height:6.h ,),
+           const Space(height:6 ,),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                    const BodyText(text:address,fontSize: 16,color: primaryColor,),
-                  BodyText(text: add,color: bodyBlack,),
-                ],
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                      const BodyText(text:address,fontSize: 16,color: primaryColor,),
+                    NormalText(text: "${customerDetails.address},${customerDetails.city},${customerDetails.state},${customerDetails.zipCode}",color: bodyBlack,),
+                  ],
+                ),
               ),
               const Space(width: 4,),
-              CustomButton(
-                  buttonText: 'Ledger',
-                  buttonTextSize: 11,
-                  buttonTextColor: bodyWhite,
-                  margin: 0,
-                  radius: 18,
-                  buttonWidth: 110,
-                  buttonHeight: 36,
-                  image: downloadLedger,
-                  onClick: () {
-                   // sendWhatappMessage();
-                   //_sendFileOnWhatsApp();
-                   // onPressed();
-                  })
+              Container(
+                width: 140,
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: CustomButton(
+                    buttonText: 'Ledger',
+                    buttonTextSize: 11,
+                    buttonTextColor: bodyWhite,
+                    margin: 0,
+                    radius: 18,
+                    buttonWidth: 110,
+                    buttonHeight: 36,
+                    image: downloadLedger,
+                    onClick: () {}),
+              )
             ],
           ),
         ],

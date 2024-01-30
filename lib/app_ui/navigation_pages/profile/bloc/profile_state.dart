@@ -1,9 +1,21 @@
 
+import 'package:webnsoft_solution/modal/login/login_response.dart';
+import 'package:webnsoft_solution/modal/profile_detail.dart';
+
 abstract class ProfileState {}
 
 class ProfileInitial extends ProfileState {}
+class ProfileFetchLoading extends ProfileState {}
+
+class ProfileFetchSuccess extends ProfileState {
+  final Profile user;
+  ProfileFetchSuccess({required this.user});
+}
 class ProfileLoading extends ProfileState {}
-class ProfileSuccess extends ProfileState {}
+class ProfileSuccess extends ProfileState {
+  final String message;
+  ProfileSuccess({required this.message});
+}
 class ProfileError extends ProfileState {
   final bool? fullName;
   final bool? mobileNumber;

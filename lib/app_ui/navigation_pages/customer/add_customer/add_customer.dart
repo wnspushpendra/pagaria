@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,7 +15,7 @@ import 'package:webnsoft_solution/app_ui/navigation_pages/customer/add_customer/
 import 'package:webnsoft_solution/app_ui/navigation_pages/customer/add_customer/bloc/add_customer_state.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/profile/gender_widget.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/profile/profile_image_widget.dart';
-import 'package:webnsoft_solution/modal/login/MarketingExecutiveLoginResponse.dart';
+import 'package:webnsoft_solution/modal/login/login_response.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
 import 'package:webnsoft_solution/utils/app_message.dart';
 import 'package:webnsoft_solution/utils/app_preferences.dart';
@@ -46,6 +45,7 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
   TextEditingController pinCodeController = TextEditingController();
   bool? isFullName, isMobileNumber, isEmail,isDob,isGender,isFirmName,isPanCardNumber,isAadharNumber,isGstNumber, isAddress, isCity, isState, isPinCode,isProfileImage;
   String genderValue = '',path = '';
+  bool showLoading = false;
 
 
   @override
@@ -53,43 +53,44 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
     return Scaffold(
       appBar: appBarWidget(
           context, 'Add Distributor', () async{
-            User user = await getUserPref(userProfileDataPrefecences);
-            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-              Navigator.pushReplacementNamed(context, homeRoute,arguments: user);
-            });
+            Navigator.pushReplacementNamed(context, homeRoute,arguments: await getUser());
+
       }),
       body: BlocConsumer<AddCustomerBloc, AddCustomerState>(
-        listener: (context, addCustomerState) async{
-          User user = await getUserPref(userProfileDataPrefecences);
+        listener: (context, addCustomerState) {
+          /***************** add distributor/customer loading state ****************/
+          if (addCustomerState is AddCustomerLoading)  {
+            setState(() => showLoading = !showLoading);
+          }
+          /***************** add distributor/customer error state ****************/
           if (addCustomerState is AddCustomerError)  {
             setState(() => updateErrorUi(addCustomerState));
           }
-          if (addCustomerState is AddCustomerSuccess)  {
-            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-              Navigator.pushReplacementNamed(context, homeRoute,arguments: user);
+          /***************** add distributor/customer success state ****************/
+          if (addCustomerState is AddCustomerSuccess) {
+            WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+              Navigator.pushReplacementNamed(context, homeRoute,arguments: await getUser());
             });
           }
         },
         builder: (context, addCustomerState) {
-          if (addCustomerState is AddCustomerLoading) {
-            return const CustomProgressBar();
-          }
-          var width = MediaQuery.of(context).size.width;
+
           return SingleChildScrollView(
             child: Container(
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: <Widget>[
-                   ProfileImageWidget(onFileChange: (XFile value) => setState((){
+                   ProfileImageWidget(
+                     onFileChange: (XFile value) => setState((){
                      path = value.path;
-                     isProfileImage = !isProfileImage!;
+                     isProfileImage = false;
                    }), networkUrl: '',),
                   isProfileImage == null || isProfileImage == false ? const SizedBox.shrink() : CustomErrorWidget(validate: !isProfileImage! , errorMessage: profileImageMessage),
-                  const Space(height: 2,),
+                   Space(height: 20.h,),
                   mobileView(),
-                  CustomButton(buttonText: 'Add', onClick: () {
-                    addDistributor();
-                  })
+                  CustomButton(buttonText: 'Add',
+                      showLoading: showLoading,
+                      onClick: () => addDistributor())
                 ],
               ),
             ),
@@ -97,30 +98,6 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
         },
       ),
     );
-  }
-  addDistributor() {
-    context.read<AddCustomerBloc>().add(AddDistributorClickEvent(
-        fullName: fullNameController.text, mobileNumber: mobileNumberController.text, email: emailController.text, 
-        dob: dobController.text, gender: genderValue, firmName: firmNameController.text, aadharNumber: aadharCardController.text,
-        panCardNumber: panCardController.text, gstNumber: gstNumberController.text, address: addressController.text,
-        city: cityController.text, state: stateController.text, pinCode: pinCodeController.text,
-        profileImage: path));
-  }
-
-  void updateErrorUi(AddCustomerError addCustomerState) {
-    isFullName = addCustomerState.name;
-    isMobileNumber = addCustomerState.mobileNumber;
-    isEmail = addCustomerState.email;
-    isDob = addCustomerState.dob;
-    isGender = addCustomerState.gender;
-    isFirmName = addCustomerState.firmName;
-    isAadharNumber = addCustomerState.aadharNumber;
-    isPanCardNumber = addCustomerState.panCardNumber;
-    isAddress = addCustomerState.address;
-    isCity = addCustomerState.city;
-    isState = addCustomerState.state;
-    isPinCode = addCustomerState.pinCode;
-    isProfileImage = addCustomerState.profileImage;
   }
 
   Widget mobileView() {
@@ -137,6 +114,8 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
         CustomTextField(
             hint: "$mobileNumber*",
             label: "$mobileNumber*",
+            inputFormatter: InputFieldFormatter.numberFormat,
+            maxLength: 10,
             controller: mobileNumberController,
             validate: isMobileNumber,
             errorMessage: mobileNumberMessage,
@@ -144,28 +123,33 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
         CustomTextField(
             hint: "$email*",
             label: "$email*",
+            inputFormatter: InputFieldFormatter.emailTextFormat,
             controller: emailController,
             validate: isEmail,
             errorMessage: emailAddressMessage,
             onTextChange: (value) => setState(() => isEmail = value)),
         GestureDetector(
           onTap: (){
-            var date =  selectDate(context).then((value) => print(value));
-            print(date);
-          },
+            selectDate(context).then((value){
+              dobController.text = value;
+              isDob = false;
+            });
+            },
           child: CustomTextField(
               hint: "$dob*",
               label: "$dob*",
               controller: dobController,
               validate: isDob,
+              editable: false,
               icon: const Icon(Icons.calendar_month),
               errorMessage: dobMessage,
               onTextChange: (value) => setState(() => isDob = value)),
         ),
         const BodyText(text: 'Select Gender',fontSize: 14,),
         SelectGender(gender: genderValue, onChange: (String value) => setState(() {
-            genderValue = value;
-          }
+          isGender = false;
+          genderValue = value;
+        }
         ),),
         isGender == null || isGender == false ? const SizedBox.shrink() : CustomErrorWidget(validate: !isGender! , errorMessage: genderMessage),
         const Space(height: 2,),
@@ -197,6 +181,7 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
             hint: "$gstNumber*",
             label: "$gstNumber*",
             controller: gstNumberController,
+            maxLength: 15,
             validate: isGstNumber,
             errorMessage: gstNumberMessage,
             onTextChange: (value) => setState(() => isGstNumber = value)),
@@ -246,6 +231,50 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
       ],
     );
   }
+  addDistributor() {
+    /***************** call api and validate for distributor ****************/
+    context.read<AddCustomerBloc>().add(AddDistributorClickEvent(
+        fullName: fullNameController.text, mobileNumber: mobileNumberController.text, email: emailController.text, 
+        dob: dobController.text, gender: genderValue, firmName: firmNameController.text, aadharNumber: aadharCardController.text,
+        panCardNumber: panCardController.text, gstNumber: gstNumberController.text, address: addressController.text,
+        city: cityController.text, state: stateController.text, pinCode: pinCodeController.text,
+        profileImage: path));
+  }
+
+  void updateErrorUi(AddCustomerError addCustomerState) {
+    isFullName = addCustomerState.name;
+    isMobileNumber = addCustomerState.mobileNumber;
+    isEmail = addCustomerState.email;
+    isDob = addCustomerState.dob;
+    isGender = addCustomerState.gender;
+    isFirmName = addCustomerState.firmName;
+    isAadharNumber = addCustomerState.aadharNumber;
+    isPanCardNumber = addCustomerState.panCardNumber;
+    isAddress = addCustomerState.address;
+    isCity = addCustomerState.city;
+    isState = addCustomerState.state;
+    isPinCode = addCustomerState.pinCode;
+    isProfileImage = addCustomerState.profileImage;
+  }
+
+
+
+  @override
+  void dispose() {
+    fullNameController.dispose();
+    emailController.dispose();
+    mobileNumberController.dispose();
+    aadharCardController.dispose();
+    panCardController.dispose();
+    gstNumberController.dispose();
+    dobController.dispose();
+    addressController.dispose();
+    cityController.dispose();
+    stateController.dispose();
+    pinCodeController.dispose();
+    super.dispose();
+  }
+
 }
 
 

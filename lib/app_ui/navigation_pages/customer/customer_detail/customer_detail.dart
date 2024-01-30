@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:webnsoft_solution/app_common_widges/app_body_text.dart';
-import 'package:webnsoft_solution/app_common_widges/custom_appbar.dart';
-import 'package:webnsoft_solution/app_common_widges/home_appbar.dart';
 import 'package:webnsoft_solution/app_common_widges/normal_text.dart';
-import 'package:webnsoft_solution/app_common_widges/space.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/customer/customer_detail/customer_basic_detail.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/customer/customer_detail/ledget_book.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/customer/customer_payment/customer_payment.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/order/order_list/order.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/payment/payment.dart';
+import 'package:webnsoft_solution/modal/customer_detail.dart';
+import 'package:webnsoft_solution/modal/distributor_list.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
 class CustomerDetailScreen extends StatefulWidget {
-  final int index;
-  const CustomerDetailScreen( {required this.index,super.key});
+  final CustomerDetailModal customerDetailModal;
+/*  final Customer? customer;
+  final int? from;*/
+  const CustomerDetailScreen({ required this.customerDetailModal,super.key});
 
   @override
   State<CustomerDetailScreen> createState() => _CustomerDetailScreenState();
@@ -27,16 +26,16 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 4,
-      initialIndex: widget.index??1,
+      initialIndex:widget.customerDetailModal.index ?? 0,
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: primaryColor,
           centerTitle: true,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new,color: bodyWhite,),
-            onPressed: ()=> onPopReplace(context, homeRoute),
+            onPressed: () async=> Navigator.pushReplacementNamed(context, homeRoute,arguments:  await getUser()),
           ),
-          title: const NormalText(text: 'Customer Detail',),
+          title: const NormalText(text: 'Customer Summary',),
           bottom:   const TabBar(
               isScrollable: true,
               tabAlignment: TabAlignment.start,
@@ -49,12 +48,12 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
                 Tab(child: BodyText(text: 'Ledger Book',color: bodyWhite,fontWeight: FontWeight.bold,),),
               ]),
         ),
-        body:  const TabBarView(
+        body:   TabBarView(
             children:[
-              CustomerBasicDetails(),
-              OrderScreen(),
-              CustomerPaymentScreen(),
-              LedgetBookScreen(),
+              CustomerBasicDetails(customer : widget.customerDetailModal.customerDetails!),
+               OrderScreen(distributorId: widget.customerDetailModal.customerDetails!.id.toString()),
+              const CustomerPaymentScreen(),
+              const LedgetBookScreen(),
             ] ),
       ),
     );

@@ -3,9 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:webnsoft_solution/app_ui/auth/login/login_api.dart';
 import 'package:webnsoft_solution/app_ui/auth/login/bloc/login_event.dart';
 import 'package:webnsoft_solution/app_ui/auth/login/bloc/login_state.dart';
-import 'package:webnsoft_solution/modal/login/MarketingExecutiveLoginResponse.dart';
+import 'package:webnsoft_solution/modal/login/login_response.dart';
 import 'package:webnsoft_solution/utils/app_preferences.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
+import 'package:webnsoft_solution/utils/validation.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc() : super(LoginInitial()) {
@@ -16,6 +17,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
       if(!email && !password){
         emit(LoginLoading());
+
+        /// * api calling for login user
         checkLoginApi(event);
       }else{
         emit(LoginError(email: email,password: password));
@@ -28,12 +31,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     map['email'] = event.email;
     map['password'] = event.password;
 
-    MarketingExecutiveLoginResponse response = await userLoginStatus(map);
+    UserResponse response = await userLoginStatus(map);
     if(response.status == true ){
-      setStringPref(userTokenPrefecences, response.record!.token!);
-      saveUserPref(response.record!.user!,userProfileDataPrefecences);
+      /// * saving user required information and login status
+      setStringPref(userTokenPrefecences, response.profileData!.token!);
+      saveUserPref(response.profileData!.user!,userProfileDataPrefecences);
       setBoolPref(userLoginPrefecences,true);
-      emit(LoginSuccess(user : response.record!.user!));
+
+      emit(LoginSuccess(user : response.profileData!.user!));
     }else{
       emit(LoginError(message: response.message));
     }

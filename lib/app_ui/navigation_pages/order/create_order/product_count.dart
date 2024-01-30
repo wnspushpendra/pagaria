@@ -4,8 +4,13 @@ import 'package:webnsoft_solution/utils/app_colors.dart';
 
 class Count extends StatefulWidget {
    int count;
+   double? sizedBoxWidth;
   final ValueChanged<int> onChange;
-  Count({required this.count,required this.onChange,super.key});
+
+  Count({
+    this.sizedBoxWidth,
+    required this.count,
+    required this.onChange,super.key});
 
   @override
   State<Count> createState() => _CountState();
@@ -23,21 +28,21 @@ class _CountState extends State<Count> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           SizedBox(
-            width: 25,
+            width: widget.sizedBoxWidth ?? 25,
             child: IconButton(
               padding: const EdgeInsets.all(0),
                 onPressed: (){
               widget.onChange(widget.count -1);
-              }, icon: const Icon(Icons.remove_circle,color: primaryColor,size: 24,)),
+              }, icon:  Icon(Icons.remove_circle,color: primaryColor,size: widget.sizedBoxWidth ?? 24,)),
           ),
-          BodyText(text: widget.count.toString(),fontSize: 11,fontWeight: FontWeight.bold,),
+          BodyText(text: widget.count.toString(),fontSize: widget.sizedBoxWidth != null  ? 28 :  11,fontWeight: FontWeight.bold,),
           SizedBox(
-            width: 26,
+            width: widget.sizedBoxWidth ?? 25,
             child: IconButton(
               padding: const EdgeInsets.all(0),
                 onPressed: (){
               widget.onChange(widget.count+1);
-            }, icon: const Icon(Icons.add_circle_outlined,color: primaryColor,size: 24,)),
+            }, icon:  Icon(Icons.add_circle_outlined,color: primaryColor,size: widget.sizedBoxWidth ??24,)),
           ),
         ],
       ),

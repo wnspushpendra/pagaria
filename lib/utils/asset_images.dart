@@ -17,5 +17,10 @@ const history = 'assets/history.png';
 const addressIcon = 'assets/address.png';
 const cartIcon = 'assets/cart.png';
 const resetPasswordIcon = 'assets/reset_password.png';
+const galleryImage = 'assets/gallery.png';
+const cameraImage = 'assets/camera.png';
+const networkErrorImage = 'assets/network_error.png';
 const changePasswordImage = 'assets/change_password.svg';
 const forgotPasswordImage = 'assets/forgot_password.svg';
+const defaultImage = 'assets/default_image.png';
+

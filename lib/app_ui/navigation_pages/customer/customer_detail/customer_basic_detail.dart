@@ -7,14 +7,15 @@ import 'package:webnsoft_solution/app_common_widges/home_appbar.dart';
 import 'package:webnsoft_solution/app_common_widges/space.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/customer/customer_detail/row_detail_widget.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/profile/profile_image_widget.dart';
+import 'package:webnsoft_solution/modal/distributor_list.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
 import 'package:webnsoft_solution/utils/asset_images.dart';
 
 
 class CustomerBasicDetails extends StatelessWidget {
-
-  const CustomerBasicDetails({super.key});
+  final Customer customer;
+  const CustomerBasicDetails( {required this.customer,super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,14 +28,24 @@ class CustomerBasicDetails extends StatelessWidget {
               padding:  EdgeInsets.all(16.h),
               margin: const EdgeInsets.fromLTRB(0, 0, 0, 60),
               child:  Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ProfileImageWidget(networkUrl: networkImage, onFileChange: (file){}),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                      alignment: Alignment.center,
+                      child: ProfileImageWidget(networkUrl: customer.profileImageUrl.toString(), onFileChange: (file){})),
                   const Space(height: 10,),
-                  const RowDetailWidget(titleLeft: firmName, valueLeft: 'new firm', titleRight: customerName, valueRight: 'abc',),
-                  const RowDetailWidget(titleLeft: mobileNumber, valueLeft: '989897989', titleRight: panCardNumber, valueRight: 'abcd9788dc',),
-                  const RowDetailWidget(titleLeft: gstNumber, valueLeft: 'klsdjd ', titleRight: aadharNumber, valueRight: '1212223323',),
-                  const RowDetailWidget(titleLeft: email, valueLeft: 'yuvi@gmail.com ', titleRight: address, valueRight: '54 vijay nagar indore',),
+                   RowDetailWidget(titleLeft: firmName, valueLeft: customer.firmName.toString(), titleRight: customerName, valueRight: customer.fullName.toString(),),
+                   RowDetailWidget(titleLeft: mobileNumber, valueLeft: customer.contactNo.toString(), titleRight: panCardNumber, valueRight: customer.panCardNo.toString(),),
+                   RowDetailWidget(titleLeft: gstNumber, valueLeft: customer.gstNo.toString() , titleRight: aadharNumber, valueRight: customer.aadharNo.toString(),),
+                   RowDetailWidget(titleLeft: email, valueLeft:  customer.email.toString(), titleRight: address, valueRight: '',showSingleDetail: true,),
+                  const BodyText(text:'$address :',fontSize: 16),
+                  BodyText(
+                    text: "${customer.address},${customer.city},${customer.state},${customer.zipCode}",
+                    align: TextAlign.start,
+                    color: primaryColor,
+                  ),
+
                 ],
               ),
             ),

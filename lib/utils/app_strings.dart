@@ -65,6 +65,7 @@ const String product = 'Product';
 const String payment = 'Payment';
 const String customer = 'Customer';
 const String pickupToAddress = 'Pickup To Address';
+const String orderList = 'Order List';
 
 
 /// ********************** Select/Pic Image  **********************
@@ -100,6 +101,7 @@ const String or = 'Or';
 const String exitApp = 'Exit App';
 const String exitWarning = 'Are you sure want to exit?';
 const String yes = 'Yes';
+const String confirm = 'Confirm';
 const String no = 'NO';
 const String logout = 'Logout';
 const String search = 'Search By ID';

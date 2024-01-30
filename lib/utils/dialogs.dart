@@ -1,15 +1,21 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:webnsoft_solution/app_common_widges/app_body_text.dart';
 import 'package:webnsoft_solution/app_common_widges/heading_text.dart';
+import 'package:webnsoft_solution/app_common_widges/home_appbar.dart';
 import 'package:webnsoft_solution/app_common_widges/normal_text.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/home/logout_bloc/logout_bloc.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/home/logout_bloc/logout_event.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/home/logout_bloc/logout_state.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
 import 'package:webnsoft_solution/utils/app_message.dart';
 import 'package:webnsoft_solution/utils/app_preferences.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
+import 'package:webnsoft_solution/utils/asset_images.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
 Future<bool> onBackNavigationScreen(BuildContext context) async {
@@ -49,10 +55,6 @@ Future<bool> onBackNavigationScreen(BuildContext context) async {
 }
 
 
-
-
-
-
 Future<void> logoutDialog(BuildContext context) async {
   return showDialog<void>(
     context: context,
@@ -73,27 +75,27 @@ Future<void> logoutDialog(BuildContext context) async {
             onPressed: () async {
               clearPref();
               Navigator.pop(context);
-              onPopReplace(context, loginRoute);
+              Navigator.pushReplacementNamed(context, loginRoute);
               snackBar(context,logoutMessage);
             },
           ),
 
-          /*BlocConsumer<LogoutBloc,LogoutState>(
+        /*  BlocConsumer<LogoutBloc,LogoutState>(
               listener: (context,states) async {
-                if(states is LogoutDataState) {
+                if(states is LogoutSuccess) {
                   clearPref();
                   Navigator.pop(context);
-                  Navigator.pushNamed(context, loginRoute);
-                  toast(logoutMessage);
-                } else if (states is LogoutErrorState){
-                  toast(logoutMessage);
+                  Navigator.pushReplacementNamed(context, loginRoute);
+                  snackBar(context,states.message);
+                } else if (states is LogoutError){
+                  snackBar(context,states.error);
                 }
               },
               builder: (context,state){
                 return TextButton(
-                  child: Text(Constant.confirm),
+                  child: const Text(yes),
                   onPressed: () async {
-                    context.read<LogoutBloc>().add(LogoutDataEvent());
+                    context.read<LogoutBloc>().add(LogoutClickEvent());
                   },
                 );
               }),*/

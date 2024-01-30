@@ -7,8 +7,9 @@ class RowDetailWidget extends StatelessWidget {
   final String titleRight;
   final String valueLeft;
   final String valueRight;
+  final bool? showSingleDetail;
 
-  const RowDetailWidget({required this.titleLeft,required this.titleRight,required this.valueLeft,required this.valueRight,super.key});
+  const RowDetailWidget({required this.titleLeft,required this.titleRight,required this.valueLeft,required this.valueRight,this.showSingleDetail = false,super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +31,7 @@ class RowDetailWidget extends StatelessWidget {
             ],
           ),
         ),
-        Expanded(
+      showSingleDetail == true ? Container() :   Expanded(
           flex: 1,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,

@@ -4,7 +4,8 @@ import 'package:webnsoft_solution/utils/app_colors.dart';
 class CustomProgressBar extends StatelessWidget {
   final double? widthV;
   final double? heightV;
-  const CustomProgressBar({this.widthV,this.heightV,super.key});
+  final Color? color;
+  const CustomProgressBar({this.widthV,this.heightV,this.color,super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -12,9 +13,9 @@ class CustomProgressBar extends StatelessWidget {
       width:widthV ?? MediaQuery.of(context).size.width,
       height: heightV ?? MediaQuery.of(context).size.height,
       alignment: Alignment.center,
-      child: const SizedBox(
+      child:  SizedBox(
         width: 30, height: 30,
-          child: CircularProgressIndicator(color: bodyWhite,)),
+          child: CircularProgressIndicator(color: color ?? primaryColor,)),
     );;
   }
 }

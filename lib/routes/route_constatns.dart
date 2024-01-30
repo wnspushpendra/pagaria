@@ -13,3 +13,4 @@ const String orderRoute = 'order';
 const String orderDetailRoute = 'order-detail';
 const String paymentRoute = 'payment';
 const String customerPaymentRoute = 'customer-payment';
+const String checkOutRoute = 'checkout';

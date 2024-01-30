@@ -16,6 +16,7 @@ class ProfileUpdateClickEvent extends ProfileEvent {
   final String state;
   final String pinCode;
   final String path;
+  final bool isNewImage;
 
   ProfileUpdateClickEvent({
     required this.fullName,
@@ -31,5 +32,6 @@ class ProfileUpdateClickEvent extends ProfileEvent {
     required this.state,
     required this.pinCode,
     required this.path,
+    required this.isNewImage
   });
 }

@@ -52,6 +52,10 @@
     <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
     <string>Your message for always location permission</string>
 
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Your location is required for...</string>
+
+
       <key>NSPhotoLibraryUsageDescription</key>
         <string>Please grant photo gallery access</string>
         <key>NSCameraUsageDescription</key>

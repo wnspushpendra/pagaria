@@ -30,32 +30,33 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_bloc:
-  salomon_bottom_bar:
-  http:
-  intl:
-  flutter_svg:
-  flutter_statusbarcolor_ns:
-  image_picker:
-  file_picker:
-  shared_preferences:
-  permission_handler:
-  percent_indicator:
-  cached_network_image:
-  geolocator:
-  location:
-  flutter_screenutil:
-  url_launcher:
+
+
+  flutter_bloc:  # adding bloc patten in app
+  provider :
+  connectivity: # checking internet status
+  http:   # for server request using http
+  intl:  # for getting util requirements
+  flutter_statusbarcolor_ns:  # change app status bar color
+  image_picker:  # pick image file from gallery and capture image
+  file_picker:   # pick file from file manager
+  shared_preferences:  # saving app user data
+  permission_handler:  # required app permission
+  percent_indicator:  # showing progress for user
+  cached_network_image:  # loading image from cache network
+  geolocator:  # geo location getting
+  location:   # location permission and getting
+  geocoding:
+  flutter_screenutil:  # change ui into multiple screens
+  url_launcher:   # launching url out side app
   flutter_downloader:
   path_provider:
   flutter_local_notifications:
   syncfusion_flutter_pdfviewer:
-  pdf_render:
-  dio:
-  open_file:
-  animated_text_kit:
+  open_file:  # opening specific file from app.
   animated_splash_screen:
-  zwidget:
+  shimmer_loading:
+  flutter_html:
 
 
 
@@ -90,8 +91,6 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/
-    - assets/pagaria_logo.gif
-    - assets/forgot_password.svg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
