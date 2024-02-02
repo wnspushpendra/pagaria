@@ -53,19 +53,17 @@ class ResetPasswordBloc
 
     //header
     Map<String, String> header = {
-     // 'Content-Type': 'multipart/form-data',
       "Authorization": "Bearer $token",
     };
 
     //body - form data
     Map<String,String> map = <String, String>{};
-  //  map['user_id'] = user.id;
+   map['user_id'] = user.id.toString();
     map['old_password'] = event.oldPassword;
     map['password'] = event.newPassword;
     map['confirm_password'] = event.confirmNewPassword;
 
-
-
+    emit(ResetPasswordLoading());
     // request for api
     UserResponse response = await resetPasswordStatus(header, map,user.id!);
     // checking response status and emitting state.

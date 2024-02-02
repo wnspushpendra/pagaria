@@ -88,11 +88,12 @@ class _TargetScreenState extends State<TargetScreen> {
                       radius: 55.h,
                       lineWidth: 10.h,
                       percent: 0.90,
+                      backgroundColor: Colors.red,
                       center:  Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          BodyText(text: 'achieved',fontSize: 10.h,color: Colors.deepOrange),
+                          BodyText(text: 'Achieved',fontSize: 10.h,color: Colors.deepOrange),
                           BodyText(text: '1000',fontSize: 14.h,color: Colors.deepOrange,fontWeight: FontWeight.bold,)
                         ],
                       ),
@@ -112,13 +113,13 @@ class _TargetScreenState extends State<TargetScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                              BodyText(text: 'Remaining : ',fontSize: 14.h, ),
+                              BodyText(text: 'Remaining Target : ',fontSize: 14.h, ),
                               BodyText(text: '4000',fontSize: 14.h,color: Colors.red, ),
                             ],),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                              BodyText(text: 'Target : ',fontSize: 14.h,),
+                              BodyText(text: 'Total Target : ',fontSize: 14.h,),
                               BodyText(text: '40000',fontSize: 14.h, color: Colors.green,),
                             ],),
                           ],

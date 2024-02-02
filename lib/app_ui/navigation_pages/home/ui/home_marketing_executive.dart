@@ -46,12 +46,20 @@ class _HomeScreenState extends State<HomeScreen> {
   bool homeLoading = false;
   bool checkInOutLoading = false;
   List<Customer> customerList = [];
+  LocationData? locationData;
+  Placemark? placeMark;
+
 
   @override
   void initState() {
     context.read<HomeBloc>().add(HomeCheckInStatusEvent());
     context.read<HomeBloc>().add(HomeCustomerFetchEvent());
+    checkLocation();
     super.initState();
+  }
+  checkLocation() async{
+     locationData =  await checkLocationPermission();
+    placeMark = await getAddressFromLatLng(locationData!);
   }
 
   @override
@@ -98,9 +106,9 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         actions: [
           IconButton(
-              onPressed: () => logoutDialog(context),
+              onPressed: () => Navigator.pushReplacementNamed(context, notificationRoute),
               icon: const Icon(
-                Icons.logout_rounded,
+                Icons.notifications_active_outlined,
                 color: bodyWhite,
               ))
         ],
@@ -173,8 +181,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               children: [
                                 BodyText(
                                   text:  checkInStatus == 'check_in'
-                                      ? 'Last check-In'
-                                      : 'Last check-Out',
+                                      ? 'Working Status'//'Check-In'
+                                      : 'Working Status',
                                   fontSize: 16.h,
                                 ),
                                  BodyText(
@@ -194,18 +202,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                     : Colors.red,
                                 buttonTextSize: 12,
                                 showLoading: checkInOutLoading,
-                                onClick: () async {
-                                 LocationData? locationData =  await checkLocationPermission();
-                                 Placemark? placeMark = await getAddressFromLatLng(locationData!);
-
-                                 WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-                                     if(locationData != null){
-                                       context.read<HomeBloc>().add(HomeCheckInOutUpdateEvent(checkInOutStatus : checkInStatus == 'check_in' ? 'check_out' : 'check_in',locationData : locationData,placeMark : placeMark));
-                                   }else{
-                                     checkLocationPermission();
-                                     snackBar(context, 'No location permission please on your location');
-                                   }
-                                   });
+                                onClick: ()  {
+                                  if(locationData != null){
+                                    context.read<HomeBloc>().add(HomeCheckInOutUpdateEvent(checkInOutStatus : checkInStatus == 'check_in' ? 'check_out' : 'check_in',locationData : locationData!,placeMark : placeMark));
+                                  }else{
+                                    checkLocationPermission();
+                                    snackBar(context, 'No location permission please on your location');
+                                  }
                                 })
                           ],
                         ),
@@ -256,18 +259,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: bodyBlack,
                     fontWeight: FontWeight.bold,
                   ),
-                  GestureDetector(
-                      onTap: () {
-                        Navigator.pushReplacementNamed(
-                          context,
-                          customerRoute,
-                        );
-                      },
-                      child: const BodyText(
-                        text: 'View All',
-                        fontSize: 12,
-                        color: primaryColor,
-                      )),
+                  Row(
+                    children: [
+                      IconButton(onPressed: () => Navigator.pushReplacementNamed(context, customerRoute,),
+                          icon: const Icon(Icons.search)),
+                      GestureDetector(
+                          onTap: () =>  Navigator.pushReplacementNamed(context, customerRoute,),
+                          child: const BodyText(
+                            text: 'View All',
+                            fontSize: 12,
+                          )),
+                    ],
+                  ),
                 ],
               )),
           const CustomerList(

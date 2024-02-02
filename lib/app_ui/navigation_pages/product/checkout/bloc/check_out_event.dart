@@ -1,6 +1,8 @@
 
 abstract class CheckOutEvent {}
  class CheckOutListEvent extends CheckOutEvent {}
+ class CheckOutCartItemEvent extends CheckOutEvent {}
+ class CartItemCountEvent extends CheckOutEvent {}
  class CheckOutUpdateQuantityEvent extends CheckOutEvent {
  String productQty;
  String cartItemId;

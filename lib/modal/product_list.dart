@@ -159,7 +159,7 @@ class CategoryDetails {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['id'] = this.id;
     data['cat_name'] = this.catName;
     return data;
@@ -196,6 +196,8 @@ class IsCart {
   int? id;
   String? quantity;
   String? productId;
+  String? unitPrice;
+  int? amount;
 
   IsCart({this.id, this.quantity, this.productId});
 
@@ -203,13 +205,17 @@ class IsCart {
     id = json['id'];
     quantity = json['quantity'];
     productId = json['product_id'];
+    unitPrice = json['unit_price'];
+    amount = json['amount'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
-    data['quantity'] = this.quantity;
-    data['product_id'] = this.productId;
+    data['quantity'] = quantity;
+    data['product_id'] = productId;
+    data['unit_price'] = unitPrice;
+    data['amount'] = amount;
     return data;
   }
 }

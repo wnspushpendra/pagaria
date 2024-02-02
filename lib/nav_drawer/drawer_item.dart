@@ -24,7 +24,7 @@ class DrawerItem extends StatelessWidget {
           height: 40.h,
           child: Row(
             children: [
-              const Space(height: 20,),
+               Space(height: 14.h,),
               Image.asset(
                 icon,
                 color: Colors.white,
@@ -36,7 +36,7 @@ class DrawerItem extends StatelessWidget {
               ),
               Text(
                 name,
-                style:  TextStyle(fontSize: 20.h, color: Colors.white),
+                style:  TextStyle(fontSize: 18.h, color: Colors.white),
               )
             ],
           ),

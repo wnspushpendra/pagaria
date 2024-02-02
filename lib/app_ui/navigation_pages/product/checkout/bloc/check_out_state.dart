@@ -10,9 +10,10 @@ class CheckOutSuccess extends CheckOutState {
  final List<CartItem>? cartList;
  final String? productAmount;
  final CartItem? cartItem;
+ final int? cartItemCount;
 
 
-  CheckOutSuccess({this.cartList, this.productAmount,this.cartItem});
+  CheckOutSuccess({this.cartList, this.productAmount,this.cartItem,this.cartItemCount});
 }
 class CheckOutError extends CheckOutState {
   final String error;

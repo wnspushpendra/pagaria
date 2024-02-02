@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:webnsoft_solution/app_common_widges/custom_progressbar.dart';
+import 'package:webnsoft_solution/app_common_widges/custom_textfield.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/customer/customer_list/widgets/customer_list_widget.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/home_bloc/home_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/home_bloc/home_event.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/home_bloc/home_state.dart';
 import 'package:webnsoft_solution/modal/distributor_list.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
+import 'package:webnsoft_solution/utils/app_strings.dart';
+import 'package:webnsoft_solution/utils/util_methods.dart';
 
 class CustomerList extends StatefulWidget {
   final  bool? fromHome;
@@ -18,7 +21,9 @@ class CustomerList extends StatefulWidget {
 }
 
 class _CustomerListState extends State<CustomerList> {
+  TextEditingController searchController = TextEditingController();
   List<Customer> customerList = [];
+  List<Customer> filteredList = [];
   bool loading = true;
 
   @override
@@ -27,6 +32,15 @@ class _CustomerListState extends State<CustomerList> {
     super.initState();
   }
 
+  void filterList(String query) {
+    setState(() {
+      filteredList = customerList.where((contact) {
+        return contact.fullName!.toLowerCase().contains(query.toLowerCase()) ||
+            contact.contactNo!.contains(query) ||
+            contact.email!.toLowerCase().contains(query.toLowerCase());
+      }).toList();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,8 +52,15 @@ class _CustomerListState extends State<CustomerList> {
         if(homeState is HomeSuccess){
           loading = false;
           if(homeState.distributorList != null){
-            setState(() => customerList = homeState.distributorList!);
+            setState(() {
+              customerList = homeState.distributorList!;
+              filteredList = customerList;
+            });
           }
+        }
+        if(homeState is HomeError){
+          setState(() => loading = false);
+          snackBar(context,homeState.error );
         }
       },
 
@@ -48,24 +69,32 @@ class _CustomerListState extends State<CustomerList> {
         const Center(
           child: CustomProgressBar(),
         ) :
-        GridView.builder(
-            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 500,
-                mainAxisExtent: 210//MediaQuery.of(context).size.height/3.2
-            ),
-            physics: widget.fromHome== true ? const NeverScrollableScrollPhysics() : null,
-            shrinkWrap: true,
-            itemCount: widget.fromHome== true && customerList.length>5 ? 5  :  customerList.length,
-            itemBuilder: (context, index) {Customer customer = customerList[index];
+        ListView(
+          shrinkWrap: true,
+          physics: widget.fromHome== true ? const NeverScrollableScrollPhysics() : null,
+          children: [
+            widget.fromHome== true ? Container() :
+            CustomTextField(hint: 'Search Customer', label: 'Search customer', controller: searchController, onTextChange: (value) => filterList(searchController.text)),
+            GridView.builder(
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 500,
+                    mainAxisExtent: 210//MediaQuery.of(context).size.height/3.2
+                ),
+                physics: widget.fromHome== true ? const NeverScrollableScrollPhysics() : null,
+                shrinkWrap: true,
+                itemCount: widget.fromHome== true && filteredList.length>5 ? 5  :  filteredList.length,
+                itemBuilder: (context, index) {Customer customer = filteredList[index];
 
-              return CustomerListItem(
-                customerDetails : customerList[index],
-                name: customer.fullName.toString(),
-                contactNumber: customer.contactNo.toString(),
-                emailAddress: customer.email.toString(),
-                add: "${customer.address},${customer.city},${customer
-                    .state},${customer.zipCode}",);
-            });
+                  return CustomerListItem(
+                    customerDetails : filteredList[index],
+                    name: customer.fullName.toString(),
+                    contactNumber: customer.contactNo.toString(),
+                    emailAddress: customer.email.toString(),
+                    add: "${customer.address},${customer.city},${customer
+                        .state},${customer.zipCode}",);
+                }),
+          ],
+        );
       },
     );
   }

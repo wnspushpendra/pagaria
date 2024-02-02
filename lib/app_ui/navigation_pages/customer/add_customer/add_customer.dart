@@ -52,7 +52,7 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBarWidget(
-          context, 'Add Distributor', () async{
+          context, 'Add Customer', () async{
             Navigator.pushReplacementNamed(context, homeRoute,arguments: await getUser());
 
       }),
@@ -145,7 +145,7 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
               errorMessage: dobMessage,
               onTextChange: (value) => setState(() => isDob = value)),
         ),
-        const BodyText(text: 'Select Gender',fontSize: 14,),
+        const BodyText(text: 'Select Gender *',fontSize: 14,),
         SelectGender(gender: genderValue, onChange: (String value) => setState(() {
           isGender = false;
           genderValue = value;
@@ -175,7 +175,7 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
             controller: panCardController,
             maxLength: 10,
             validate: isPanCardNumber,
-            errorMessage: panCardNumber,
+            errorMessage: panCardMessage,
             onTextChange: (value) => setState(() => isPanCardNumber = value)),
         CustomTextField(
             hint: "$gstNumber*",
@@ -250,6 +250,7 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
     isFirmName = addCustomerState.firmName;
     isAadharNumber = addCustomerState.aadharNumber;
     isPanCardNumber = addCustomerState.panCardNumber;
+    isGstNumber = addCustomerState.gstNumber;
     isAddress = addCustomerState.address;
     isCity = addCustomerState.city;
     isState = addCustomerState.state;

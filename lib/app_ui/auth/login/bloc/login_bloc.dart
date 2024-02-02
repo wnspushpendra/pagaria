@@ -32,12 +32,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     map['password'] = event.password;
 
     UserResponse response = await userLoginStatus(map);
+
+    // emitting login states
     if(response.status == true ){
       /// * saving user required information and login status
       setStringPref(userTokenPrefecences, response.profileData!.token!);
       saveUserPref(response.profileData!.user!,userProfileDataPrefecences);
       setBoolPref(userLoginPrefecences,true);
-
       emit(LoginSuccess(user : response.profileData!.user!));
     }else{
       emit(LoginError(message: response.message));

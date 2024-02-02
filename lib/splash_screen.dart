@@ -4,7 +4,7 @@ import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:webnsoft_solution/app_ui/auth/login/login.dart';
-import 'package:webnsoft_solution/modal/home_arguments/HomeArgument.dart';
+import 'package:webnsoft_solution/modal/argument_modal/HomeArgument.dart';
 import 'package:webnsoft_solution/modal/login/login_response.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
@@ -131,7 +131,12 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     await Future.delayed(const Duration(seconds: 1), () {
       if (login != null && login == true) {
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-          Navigator.pushReplacementNamed(context, homeRoute,arguments: await getUser());
+          User user = await getUser();
+          if(user.roleId == '4'){
+           WidgetsBinding.instance.addPostFrameCallback((timeStamp) {  Navigator.pushReplacementNamed(context, homeRoute,arguments: user);});
+          }else{
+            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {  Navigator.pushReplacementNamed(context, homeDistributorRoute,arguments: user);});
+          }
         });
       } else {
         Navigator.pushReplacementNamed(context, loginRoute);

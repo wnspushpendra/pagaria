@@ -41,7 +41,7 @@ class MyDrawer extends StatelessWidget {
                             icon: homeIcon,
                             onPressed: () async{
                               Scaffold.of(context).closeDrawer();
-                              Navigator.pushReplacementNamed(context, homeRoute,arguments:  [await getUser(),await checkConnection()]);
+                              Navigator.pushReplacementNamed(context,user.roleId =='4' ? homeRoute : homeDistributorRoute,arguments:  await getUser());
                             }),
                         const Space(height: 10,),
                         /**** moving to user profile page *********/
@@ -59,17 +59,17 @@ class MyDrawer extends StatelessWidget {
                             icon:productIcon,
                             onPressed: () {
                               Scaffold.of(context).closeDrawer();
-                              Navigator.pushReplacementNamed(context, productRoute,arguments: 'home');
+                              Navigator.pushReplacementNamed(context, productRoute,arguments:  user.roleId =='5' ? user.id.toString() : null);
                             }),
                         const Space(height: 10,),
                         /**** moving to customer page *********/
-                        DrawerItem(
+                     user.roleId == '4' ?    DrawerItem(
                             name: customer,
                             icon: customerIcon,
                             onPressed: () {
                               Scaffold.of(context).closeDrawer();
                               Navigator.pushReplacementNamed(context, customerRoute);
-                            }),
+                            }) : Container(),
                         const Space(height: 10,),
                         /**** moving to order list page *********/
                         DrawerItem(
@@ -122,7 +122,7 @@ class MyDrawer extends StatelessWidget {
       height: 147.h,
       color: bodyWhite,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const Space(height: 20,),
           Stack(

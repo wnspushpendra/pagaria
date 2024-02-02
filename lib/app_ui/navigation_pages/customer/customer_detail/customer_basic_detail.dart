@@ -33,7 +33,9 @@ class CustomerBasicDetails extends StatelessWidget {
                   Container(
                     width: MediaQuery.of(context).size.width,
                       alignment: Alignment.center,
-                      child: ProfileImageWidget(networkUrl: customer.profileImageUrl.toString(), onFileChange: (file){})),
+                      child: ProfileImageWidget(
+                        showIcon: false,
+                          networkUrl: customer.profileImageUrl.toString(), onFileChange: (file){})),
                   const Space(height: 10,),
                    RowDetailWidget(titleLeft: firmName, valueLeft: customer.firmName.toString(), titleRight: customerName, valueRight: customer.fullName.toString(),),
                    RowDetailWidget(titleLeft: mobileNumber, valueLeft: customer.contactNo.toString(), titleRight: panCardNumber, valueRight: customer.panCardNo.toString(),),

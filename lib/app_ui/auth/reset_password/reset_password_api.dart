@@ -8,7 +8,7 @@ import 'package:webnsoft_solution/modal/login/login_response.dart';
 
 /// * api call for reset password
 Future<UserResponse> resetPasswordStatus(Map<String, String> header, Map<String, String> map, int id) async {
-  var response = await http.post(Uri.parse("$baseUrl$resetPasswordApi/$id"), headers: header, body: map);
+  var response = await http.post(Uri.parse("$baseUrl$resetPasswordApi"), headers: header, body: map);
   UserResponse apiResponse = UserResponse.fromJson(jsonDecode(response.body));
   return apiResponse;
 }

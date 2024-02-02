@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:location/location.dart';
 import 'package:webnsoft_solution/app_common_widges/app_body_text.dart';
 import 'package:webnsoft_solution/modal/login/login_response.dart';
+import 'package:webnsoft_solution/routes/route_constatns.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
@@ -16,6 +17,14 @@ import 'package:intl/intl.dart';
 
 
 
+// back user home screen
+
+Future<void> backUserHome(BuildContext context) async{
+  User user =  await getUser();
+  WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    Navigator.pushReplacementNamed(context, user.roleId == '4' ?homeRoute :homeDistributorRoute, arguments: user);
+  });
+}
 
 /// * check internet connection
 Future<bool> checkConnection() async {
@@ -112,10 +121,13 @@ Future<String> selectDate(BuildContext context) async {
   var todayDate =  DateTime.now();
 
   final DateTime? picked = await showDatePicker(
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
       context: context,
       initialDate: DateTime(todayDate.year-10, todayDate.month, todayDate.day),
       firstDate: DateTime(todayDate.year-100,todayDate.month, todayDate.day),
-      lastDate: DateTime(todayDate.year-10, todayDate.month, todayDate.day));
+      lastDate: DateTime(todayDate.year-10, todayDate.month, todayDate.day)
+  );
+
   if (picked != null ) {
      selectedCalendarDate = getDDMMYYYYDateString(picked);
   }

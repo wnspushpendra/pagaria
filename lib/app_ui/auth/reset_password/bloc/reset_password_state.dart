@@ -5,7 +5,7 @@ abstract class ResetPasswordState {}
 
 class ResetPasswordInitial extends ResetPasswordState {}
 
-class ChangePasswordLoading extends ResetPasswordState {}
+class ResetPasswordLoading extends ResetPasswordState {}
 
 class ResetPasswordSuccess extends ResetPasswordState {
   final String message;

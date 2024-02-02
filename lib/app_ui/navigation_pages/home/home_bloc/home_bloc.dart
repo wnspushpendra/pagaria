@@ -53,7 +53,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     User user = await getUser();
 
     Map<String, String> header = {
-      "Authorization": "Bearer 462|VJpz5kEp2ziu6xze891HhYE08C1ytxJ9cR6jz91040a7fc73",
+      "Authorization": "Bearer $token",
     };
 
     String address = '${event.placeMark?.street}, ${event.placeMark?.locality}, ${event.placeMark?.administrativeArea}, ${event.placeMark?.country}';

@@ -37,7 +37,7 @@ class OrderList {
   String? adminId;
   String? orderStatus;
   String? trackingId;
-  Null? remark;
+  String? remark;
   String? createdAt;
   String? updatedAt;
   BookedUser? bookedUser;

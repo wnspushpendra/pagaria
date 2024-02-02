@@ -32,8 +32,9 @@ class _ChangePassword extends State<ResetPassword> {
   var oldPasswordController = TextEditingController();
   var newPasswordController = TextEditingController();
   var confirmNewPasswordController = TextEditingController();
-  bool oldPasswordVisible = true,newPasswordVisible = true,isOldPasswordField = true,isNewPasswordField = true;
+  bool oldPasswordVisible = false,newPasswordVisible = false,isOldPasswordField = true,isNewPasswordField = true;
   bool? oldPass, newPass, confirmNewPass,isSamePass;
+  bool? resetPasswordLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +45,14 @@ class _ChangePassword extends State<ResetPassword> {
         }),
         body: BlocConsumer<ResetPasswordBloc, ResetPasswordState>(
           listener: (context, changePasswordState) {
-            /// * reset password error state
+            /// * reset password loading state
+            if(changePasswordState is ResetPasswordLoading){
+              setState(() => resetPasswordLoading = true);
+            }/// * reset password error state
+            if(changePasswordState is ResetPasswordSuccess){
+            }/// * reset password error state
             if(changePasswordState is ResetPasswordError){
+              resetPasswordLoading = false;
               setState(() => resetPassErrorState(changePasswordState));
             }
           },
@@ -97,11 +104,9 @@ class _ChangePassword extends State<ResetPassword> {
                           })),
                       if(isSamePass != null && !isSamePass!)
                       CustomErrorWidget(validate: isSamePass , errorMessage: unMatchPasswordMessage),
-
-
-
                       const Space(height: 20,),
                       CustomButton(buttonText: 'Submit',
+                          showLoading: resetPasswordLoading,
                           /// * reset password click action
                           onClick: () => resetButtonClick())
                     ]),

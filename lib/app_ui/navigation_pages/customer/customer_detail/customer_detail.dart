@@ -30,12 +30,11 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: primaryColor,
-          centerTitle: true,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new,color: bodyWhite,),
             onPressed: () async=> Navigator.pushReplacementNamed(context, homeRoute,arguments:  await getUser()),
           ),
-          title: const NormalText(text: 'Customer Summary',),
+          title: const BodyText(text: 'Customer Summary',color: bodyWhite,),
           bottom:   const TabBar(
               isScrollable: true,
               tabAlignment: TabAlignment.start,

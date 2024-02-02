@@ -105,7 +105,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   /// * on login success response
   void onLoginSuccess(BuildContext context, LoginSuccess state) {
-    Navigator.pushReplacementNamed(context, homeRoute,arguments: state.user);
+    if(state.user.roleId == '4'){
+      Navigator.pushReplacementNamed(context, homeRoute,arguments: state.user);
+    }else{
+      Navigator.pushReplacementNamed(context, homeDistributorRoute,arguments: state.user);
+    }
 
   }
   /// * on login validation error

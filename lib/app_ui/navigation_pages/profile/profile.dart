@@ -53,7 +53,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   late File file;
   String path =  '';
   String networkFile = '',showGender = '';
-  String title = 'Profile',selectedDate = '';
+  String title = 'My Profile',selectedDate = '';
   Profile user = Profile();
   bool profileLoading = true;
 
@@ -89,10 +89,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
         if(editProfile){
           setState((){
             editProfile = false;
-            title = 'Profile';
+            title = 'My Profile';
           });
         }else{
-            Navigator.pushReplacementNamed(context, homeRoute,arguments: await getUser());
+          backUserHome(context);
+           // Navigator.pushReplacementNamed(context,user.roleId =='4'? homeRoute : homeDistributorRoute,arguments: await getUser());
         }
       }),
       body: /*profileLoading ? const Center(
@@ -135,9 +136,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Container(
               padding: const EdgeInsets.all(16),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   /// * select image from gallery oro capture image
                   ProfileImageWidget(
+                    showIcon: editProfile ? true : false,
                      onFileChange: (XFile value) {
                        setState(() {
                          isNewImage = true;

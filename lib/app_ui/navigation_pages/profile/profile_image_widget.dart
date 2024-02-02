@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:webnsoft_solution/app_common_widges/app_body_text.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
@@ -23,41 +24,45 @@ class _ProfileImageWidgetState extends State<ProfileImageWidget> {
   File? file;
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        InkWell(
-          onTap: ()=> picCaptureImageDialog()
-             ,
-          child: ClipRRect(
-            borderRadius:
-            const BorderRadius.all(Radius.circular(50)),
-            child:
-                file != null ?
-                Image.file(
-                  file!,
-                  fit: BoxFit.fill,
-                  height: 100.0,
-                  width: 100.0,
-                ) :
-            widget.networkUrl.isNotEmpty? CachedNetworkImage(
-              imageUrl: widget.networkUrl,
-              fit: BoxFit.fill,
-              height: 100.0,
-              width: 100.0,
-              placeholder: (context,url) => Image.asset(defaultImage,),
-              errorWidget: (context, url, error) => Image.asset(defaultImage), // Replace errorImage with the path to your error image
-            ) : Image.asset(
-              logo,
-              height: 100.0,
-              width: 100.0,
-            )
+    return Container(
+      width: 100,
+      height: 100,
+      child: Stack(
+        children: [
+          InkWell(
+            onTap: ()=> picCaptureImageDialog()
+               ,
+            child: ClipRRect(
+              borderRadius:
+              const BorderRadius.all(Radius.circular(50)),
+              child:
+                  file != null ?
+                  Image.file(
+                    file!,
+                    fit: BoxFit.fill,
+                    height: 100.0,
+                    width: 100.0,
+                  ) :
+              widget.networkUrl.isNotEmpty? CachedNetworkImage(
+                imageUrl: widget.networkUrl,
+                fit: BoxFit.fill,
+                height: 100.0,
+                width: 100.0,
+                placeholder: (context,url) => Image.asset(defaultImage,),
+                errorWidget: (context, url, error) => Image.asset(defaultImage), // Replace errorImage with the path to your error image
+              ) : Image.asset(
+                defaultImage,
+                height: 100.0,
+                width: 100.0,
+              )
+            ),
           ),
-        ),
-       widget.showIcon == true ? Positioned(
-          bottom: -10,
-            right: -10,
-            child: IconButton(onPressed: ()=>picCaptureImageDialog(), icon: const Icon(Icons.edit,color: primaryColor,size: 32,))) : Container()
-      ],
+         widget.showIcon == true ? Positioned(
+            bottom: -10,
+              right: -10,
+              child: IconButton(onPressed: ()=>picCaptureImageDialog(), icon: const Icon(Icons.edit,color: primaryColor,size: 32,))) : Container()
+        ],
+      ),
     );
   }
 

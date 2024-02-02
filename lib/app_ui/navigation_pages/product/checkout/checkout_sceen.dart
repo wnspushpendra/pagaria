@@ -39,9 +39,12 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
   List<CartItem> cartList = [];
   CartItem? cartItem;
   String productAmount = '';
+  int singleItemAmount = 0;
   int selectedIndex = -1;
   String? quantity;
   bool? productAddRemove;
+  bool showDelete = true;
+  int? cartId;
 
   @override
   void initState() {
@@ -73,9 +76,11 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                   element.quantity = state.cartItem!.quantity;
                   element.amount = state.cartItem!.amount;
                   if(productAddRemove== true){
-                    productAmount = '${int.parse(productAmount)+state.cartItem!.amount!}';
+                    var newTotal  = int.parse(productAmount) + int.parse(state.cartItem!.unitPrice!);
+                    productAmount = newTotal.toString();
                   }else{
-                    productAmount = '${int.parse(productAmount)-state.cartItem!.amount!}';
+                    var newTotal  = int.parse(productAmount) - int.parse(state.cartItem!.unitPrice!);
+                    productAmount = newTotal.toString();
                   }
                 }
               }
@@ -102,9 +107,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                     )
                   : Stack(
                       children: [
-                        CheckOutList(cartList: cartList, productAddRemove: productAddRemove) ,
-
-                       /* Container(
+                        Container(
                           margin: const EdgeInsets.fromLTRB(0, 0, 0, 120),
                           padding: const EdgeInsets.fromLTRB(8, 6, 8, 0),
                           child: GridView.builder(
@@ -155,20 +158,24 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                                       }
                                                     }
                                                     if (state is ProductError) {
+                                                      showDelete = true;
+                                                      setState(() {});
                                                       snackBar(context, state.error);
                                                     }
+
                                                   },
                                                   builder: (context, state) {
-                                                    return IconButton(
+                                                    return cartItem.id != cartId  ? IconButton(
                                                         onPressed: () {
                                                           selectedIndex = index;
-                                                          context.read<ProductBloc>().add(RemoveProductCartEvent(cartItemId: cartItem!.id.toString()));
+                                                          setState(() => cartId = cartItem.id!);
+                                                          context.read<ProductBloc>().add(RemoveProductCartEvent(cartItemId: cartItem.id.toString()));
                                                         },
                                                         icon: const Icon(
                                                           Icons.delete_forever_outlined,
                                                           size: 28,
                                                           color: bodyLightBlack,
-                                                        ));
+                                                        )) : Container();
                                                   },
                                                 )
                                               ],
@@ -182,7 +189,8 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                                 BodyText(
                                                   text: rupeesSymbol + cartItem.amount.toString(),
                                                   fontWeight: FontWeight.bold, color: primaryColor,),
-                                            *//*    SizedBox(
+                                               UpdateQuantityWidget(cartItem: cartItem, quantity: quantity!, productAddRemove: productAddRemove)
+                                               /* SizedBox(
                                                   height: 36,
                                                   child: Row(
                                                     children: [
@@ -215,19 +223,18 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                                               )),
                                                         ],
                                                       ),
-                                                      SizedBox(
+                                                 *//*     SizedBox(
                                                         width: 30,height: 30,
                                                         child: AssetButton(image: edit,
                                                           onPressed: () {
                                                           Future<String?> futureQty = quantityDialog(context, cartItem);
-
                                                           },),
-                                                      )
+                                                      )*//*
                                                     ],
 
                                                   ),
-                                                )*//*
-                                                UpdateQuantityWidget(cartItem: cartItem, quantity: quantity!, productAddRemove: productAddRemove)
+                                                ),*/
+                                               // UpdateQuantityWidget(cartItem: cartItem, quantity: quantity!, productAddRemove: productAddRemove)
                                               ],
                                             ),
                                           ),
@@ -237,35 +244,13 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                   ),
                                 );
                               }),
-                        ),*/
+                        ),
                         Positioned(
                             bottom: 0,
                             right: 0,
                             left: 0,
                             child: CheckoutBottomWidget(totalCartAmount: productAmount,distributorId : widget.distributorId)
-                          /*Container(
-                              decoration: defaultDecoration,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 12.0, vertical: 6),
-                                    child: BodyText(
-                                      text:
-                                          'Cart Amount : $rupeesSymbol$productAmount',
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  CustomButton(
-                                    buttonText: 'Place Order',
-                                    radius: 0,
-                                    margin: 0,
-                                    onClick: () {},
-                                  ),
-                                ],
-                              ),
-                            )*/)
+                          )
                       ],
                     );
         },
@@ -278,6 +263,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
     if(from == 'add'){
       productAddRemove = true;
       qty = '${int.parse(item.quantity!)+1}';
+      singleItemAmount = item.amount!;
       context.read<CheckOutBloc>().add(CheckOutUpdateQuantityEvent(productQty:qty.toString() , cartItemId: item.id.toString(), ));
     /*  if(int.parse(item.productDetails!.prodInventory!) < qty){
       }*/
@@ -285,6 +271,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
       productAddRemove = false;
       if(int.parse(item.quantity!) != 1 ){
         qty = int.parse(item.quantity!)-1;
+        singleItemAmount = item.amount!;
       }
       if(int.parse(item.productDetails!.prodMinDistrubutorQty!)  <=  qty){
          context.read<CheckOutBloc>().add(CheckOutUpdateQuantityEvent(productQty:qty.toString() , cartItemId: item.id.toString(), ));

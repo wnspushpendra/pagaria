@@ -8,23 +8,31 @@ import 'package:webnsoft_solution/app_common_widges/custom_textfield.dart';
 import 'package:webnsoft_solution/app_common_widges/home_appbar.dart';
 import 'package:webnsoft_solution/app_common_widges/normal_text.dart';
 import 'package:webnsoft_solution/app_common_widges/space.dart';
+import 'package:webnsoft_solution/app_common_widges/update_product_qty.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/order/create_order/product_count.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/bloc/check_out_bloc.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/bloc/check_out_state.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/update_qty_widget.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_bloc/product_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_bloc/product_event.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_bloc/product_state.dart';
+import 'package:webnsoft_solution/modal/argument_modal/ProductArgument.dart';
 import 'package:webnsoft_solution/modal/cart/add_cart_product.dart';
+import 'package:webnsoft_solution/modal/cart/cart_list_modal.dart';
 import 'package:webnsoft_solution/modal/product_list.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
 import 'package:webnsoft_solution/utils/app_regex.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
 import 'package:webnsoft_solution/utils/asset_images.dart';
+import 'package:webnsoft_solution/utils/util_methods.dart';
 
 class ProductList extends StatefulWidget {
   final List<Product> productList;
-  final String from;
+  final String? distributorId;
+  // final String from;
 
-  const ProductList({required this.productList, super.key, required this.from});
+  const ProductList({required this.productList, super.key, required this.distributorId,});
 
   @override
   State<ProductList> createState() => _ProductListState();
@@ -35,7 +43,13 @@ class _ProductListState extends State<ProductList> {
   bool addItem = false;
   late int count;
   CartProduct cartProduct = CartProduct();
+  CartItem cartValue = CartItem();
   int selectedIndex = -1;
+  String? quantity;
+  String? productPrice;
+  bool? productAddRemove;
+  int? productId;
+
 
 
   @override
@@ -46,18 +60,53 @@ class _ProductListState extends State<ProductList> {
 
   @override
   Widget build(BuildContext context) {
+    return BlocConsumer<CheckOutBloc, CheckOutState>(
+  listener: (context, state) {
+    if (state is CheckOutSuccess) {
+          if(state.cartItem != null){
+            for (var element in widget.productList) {
+              if(element.id.toString() ==  state.cartItem!.productId){
+                quantity = state.cartItem!.quantity;
+                productPrice = state.cartItem!.amount.toString();
+                element.prodDistributorPrice = state.cartItem!.amount.toString();
+                element.isCart![0].quantity = state.cartItem!.quantity;
+                element.isCart![0].productId = state.cartItem!.productId;
+                element.isCart![0].amount = state.cartItem!.amount;
+            }
+            }
+          }
+          setState(() {});
+        }
+    if (state is CheckOutError) {
+      snackBar(context, state.error);
+      setState(() {});
+    }
+    },
+  builder: (context, state) {
     return SizedBox(
       height: MediaQuery.of(context).size.height,
       child: GridView.builder(
           itemCount: widget.productList.length,
           shrinkWrap: true,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2, mainAxisExtent: 210),
+              crossAxisCount: 2, mainAxisExtent: 230),
           itemBuilder: (context, index) {
             Product product = widget.productList[index];
+            productPrice = product.prodDistributorPrice;
+            CartItem cartItem = CartItem();
+            if(product.isCart!.isNotEmpty){
+              cartItem.id = product.isCart?[0].id;
+              cartItem.productId = product.isCart?[0].productId;
+              cartItem.quantity = product.isCart?[0].quantity;
+              cartItem.amount = product.isCart?[0].amount;
+              productPrice = product.isCart?[0].amount.toString();
+              productAddRemove = true;
+            }
+
+
             return GestureDetector(
               onTap: () {
-                Navigator.pushReplacementNamed(context, productDetailRoute, arguments: widget.from);
+                Navigator.pushReplacementNamed(context, productDetailRoute, arguments: ProductArgument(productId: product.id.toString(),product: product,distributorId: widget.distributorId));
               },
               child: Container(
                 padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
@@ -92,72 +141,46 @@ class _ProductListState extends State<ProductList> {
                           textSize: 12,
                           color: bodyLightBlack,
                         ),
+                        BodyText(
+                          text: rupeesSymbol + productPrice!,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            BodyText(
-                              text: rupeesSymbol +
-                                  product.prodDistributorPrice.toString(),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
-                            widget.from == 'create'
+                            widget.distributorId != null
                                 ? product.isCart!.isEmpty
                                     ? BlocConsumer<ProductBloc, ProductState>(
                                         listener: (context, state) {
                                           if(state is CartProductAddSuccess){
                                             cartProduct = state.cartProduct;
                                             if(selectedIndex == index){
-                                              product.prodMinDistrubutorQty = cartProduct.quantity.toString();
-                                              product.prodDistributorPrice = cartProduct.amount.toString();
-                                              IsCart cart = IsCart();
-                                              cart.id = cartProduct.id;
-                                              cart.quantity = cartProduct.quantity.toString();
-                                              cart.productId = cartProduct.productId.toString();
-                                              product.isCart!.add(cart);
-                                              print(product.isCart);
+                                              IsCart cartItem = IsCart();
+                                              cartItem.id = cartProduct.id;
+                                              cartItem.quantity = cartProduct.quantity;
+                                             // cartItem.amount = cartProduct.amount;
+                                              product.isCart!.add(cartItem);
+                                              productAddRemove = true;
                                               setState(() {});
                                             }
                                           }
                                           },
 
                                    builder: (context, state) {
-                                          return AssetButton(
+                                          return product.id != productId ?
+                                            AssetButton(
                                             image: cartIcon,
                                             padding: 0,
                                             onPressed: () {
                                               selectedIndex = index;
+                                              setState(() => productId = product.id!);
                                               context.read<ProductBloc>().add(AddProductCartEvent(productId: product.id.toString()));
-                                              });
+                                              }) : Container();
                                             },
                                           )
 
-                                : Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          Count(
-                                              count: int.parse(product.prodMinDistrubutorQty!),
-                                              onChange: (value) {
-                                                setState(() {
-                                                  count = value;
-                                                  quantityController.text = count.toString();
-                                                });
-                                              }),
-                                          SizedBox(
-                                              height: 32,
-                                              width: 28,
-                                              child: IconButton(
-                                                  onPressed: () =>
-                                                      _quantityDialog(context,
-                                                          'my product name'),
-                                                  icon: const Icon(
-                                                    Icons.edit,
-                                                    size: 20,
-                                                    color: primaryColor,
-                                                  ))),
-                                        ],
-                                      )
+                                : UpdateQuantityWidget(cartItem: cartItem, quantity: cartItem.quantity!,distributorMinQty: product.prodMinDistrubutorQty, productAddRemove: productAddRemove,iconSize:24,textSize: 16,)
                                 : Container()
                           ],
                         )
@@ -169,70 +192,8 @@ class _ProductListState extends State<ProductList> {
             );
           }),
     );
+  },
+);
   }
 
-  Future<void> _quantityDialog(BuildContext context, String productName) async {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(12))),
-          contentPadding: EdgeInsets.zero,
-          content: Container(
-              height: 215,
-              //  color: bodyWhite,
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-              decoration: defaultDecoration,
-              child: Column(
-                children: [
-                  BodyText(text: productName),
-                  CustomTextField(
-                    controller: quantityController,
-                    maxLength: 4,
-                    inputFormatter: InputFieldFormatter.numberFormat,
-                    hint: 'Quantity',
-                    label: 'Quantity',
-                    onTextChange: (bool value) {},
-                  ),
-                  SizedBox(
-                    height: 90,
-                    child: Row(
-                      children: [
-                        Expanded(
-                            flex: 1,
-                            child: CustomButton(
-                                buttonText: 'Cancel',
-                                buttonHeight: 40,
-                                buttonTextSize: 14,
-                                radius: 20,
-                                margin: 0,
-                                onClick: () {
-                                  Navigator.of(context).pop();
-                                })),
-                        const Space(
-                          width: 10,
-                        ),
-                        Expanded(
-                            flex: 1,
-                            child: CustomButton(
-                                buttonText: 'Ok',
-                                buttonHeight: 40,
-                                buttonTextSize: 14,
-                                radius: 20,
-                                margin: 0,
-                                onClick: () {
-                                  String qty = quantityController.text;
-                                  setState(() => count = int.parse(qty));
-                                  Navigator.of(context).pop();
-                                })),
-                      ],
-                    ),
-                  ),
-                ],
-              )),
-        );
-      },
-    );
-  }
 }

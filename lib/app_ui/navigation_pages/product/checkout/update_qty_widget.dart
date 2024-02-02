@@ -14,9 +14,13 @@ import 'package:webnsoft_solution/utils/util_methods.dart';
 class UpdateQuantityWidget extends StatefulWidget {
   final CartItem cartItem;
   final String quantity;
+  final String? distributorMinQty;
   bool? productAddRemove;
+  double? iconSize;
+  double? textSize;
 
-  UpdateQuantityWidget({required this.cartItem,required this.quantity, required this.productAddRemove,super.key});
+
+  UpdateQuantityWidget({required this.cartItem,required this.quantity,this.distributorMinQty, required this.productAddRemove,this.iconSize,this.textSize,super.key});
 
   @override
   State<UpdateQuantityWidget> createState() => _UpdateQuantityWidgetState();
@@ -25,47 +29,45 @@ class UpdateQuantityWidget extends StatefulWidget {
 class _UpdateQuantityWidgetState extends State<UpdateQuantityWidget> {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 36,
+    return Container(
+      height: widget.iconSize != null  ? 32 :36,
       child: Row(
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               IconButton(
                   padding: const EdgeInsets.all(0),
                   onPressed: () => updateQty('remove',widget.cartItem),
-                  icon: const Icon(
+                  icon:  Icon(
                     Icons.remove_circle,
                     color: primaryColor,
-                    size: 28,
+                    size: widget.iconSize ?? 28,
                   )),
               BodyText(
                 text: widget.quantity,
-                fontSize: 20,
+                fontSize: widget.iconSize ?? 20,
                 fontWeight:
                 FontWeight.bold,
               ),
               IconButton(
-                  padding:
-                  const EdgeInsets
-                      .all(0),
+                  padding: const EdgeInsets.all(0),
                   onPressed: () => updateQty('add',widget.cartItem),
-                  icon: const Icon(
+                  icon:  Icon(
                     Icons.add_circle_outlined,
                     color: primaryColor,
-                    size: 28,
+                    size: widget.iconSize ?? 28
                   )),
             ],
           ),
-          SizedBox(
-            width: 30,height: 30,
+         /* SizedBox(
+            width: 30,height:30,
             child: AssetButton(image: edit,
               onPressed: () {
                 Future<String?> futureQty = quantityDialog(context, widget.cartItem);
-
-              },),
-          )
+ },),
+          )*/
         ],
       ),
     );
@@ -73,23 +75,19 @@ class _UpdateQuantityWidgetState extends State<UpdateQuantityWidget> {
   updateQty(String from,CartItem item) {
     var qty;
     if(from == 'add'){
-      widget.productAddRemove = true;
       qty = '${int.parse(item.quantity!)+1}';
       context.read<CheckOutBloc>().add(CheckOutUpdateQuantityEvent(productQty:qty.toString() , cartItemId: item.id.toString(), ));
-      /*  if(int.parse(item.productDetails!.prodInventory!) < qty){
-      }*/
+
     }else{
-      widget.productAddRemove = false;
-      if(int.parse(item.quantity!) != 1 ){
-        qty = int.parse(item.quantity!)-1;
-      }
-      if(int.parse(item.productDetails!.prodMinDistrubutorQty!)  <=  qty){
+      qty = '${int.parse(item.quantity!)-1}';
+
+      String minimumQty =  widget.distributorMinQty == null ? item.productDetails!.prodMinDistrubutorQty! : widget.distributorMinQty!;
+      if(int.parse(minimumQty)  <=  int.parse(qty)){
         context.read<CheckOutBloc>().add(CheckOutUpdateQuantityEvent(productQty:qty.toString() , cartItemId: item.id.toString(), ));
       }else{
-        snackBar(context, 'You can order minimum ${item.productDetails!.prodMinDistrubutorQty} for this item');
+        snackBar(context, 'You can order minimum $minimumQty for this item');
       }
     }
-
 
   }
 

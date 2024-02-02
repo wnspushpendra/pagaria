@@ -21,10 +21,10 @@ class ProductDetailsBloc extends Bloc<ProductDetailsEvent, ProductDetailsState> 
 
 
     Map<String, String> header = {
-      "Authorization": "Bearer 462|VJpz5kEp2ziu6xze891HhYE08C1ytxJ9cR6jz91040a7fc73",
+      "Authorization": "Bearer $token",
     };
     Map<String, dynamic> body = <String, dynamic>{};
-    body['product_id'] = "32";
+    body['product_id'] = event.productId;
 
     ProductDetailResponse response = await productDetailApi(header, body);
 

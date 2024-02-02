@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:webnsoft_solution/app_common_widges/app_body_text.dart';
+import 'package:webnsoft_solution/app_common_widges/asset_button.dart';
 import 'package:webnsoft_solution/app_common_widges/custom_appbar.dart';
 import 'package:webnsoft_solution/app_common_widges/custom_button.dart';
 import 'package:webnsoft_solution/app_common_widges/custom_progressbar.dart';
@@ -11,10 +12,12 @@ import 'package:webnsoft_solution/app_common_widges/space.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/order/order_bloc/order_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/order/order_bloc/order_event.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/order/order_bloc/order_state.dart';
+import 'package:webnsoft_solution/modal/login/login_response.dart';
 import 'package:webnsoft_solution/modal/order/order_list_modal.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
+import 'package:webnsoft_solution/utils/asset_images.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
 class OrderScreen extends StatefulWidget {
@@ -41,7 +44,7 @@ class _OrderScreenState extends State<OrderScreen> {
 
     return Scaffold(
       appBar: widget.showAppbar == true
-          ? appBarWidget(context, 'Order ',() async => Navigator.pushReplacementNamed(context, homeRoute, arguments: await getUser()))
+          ? appBarWidget(context, 'Order ',() => backUserHome(context))
           : null,
       body: BlocConsumer<OrderBloc, OrderState>(
         listener: (context, state) {
@@ -73,6 +76,7 @@ class _OrderScreenState extends State<OrderScreen> {
                     margin: EdgeInsets.fromLTRB(2.h, 5.h, 2.h, 5.h),
                     decoration: defaultDecoration,
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Row(children: [
                           Expanded(
@@ -102,6 +106,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                 ),
                                  BodyText(
                                   text: order.userData!.email!,
+                                  align: TextAlign.start,
                                   color: primaryColor,
                                 ),
                               ],
@@ -113,7 +118,22 @@ class _OrderScreenState extends State<OrderScreen> {
                         ),
                         Row(children: [
                            Expanded(
-                            flex: 4,
+                            flex: 1,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const BodyText(
+                                  text: 'Order Product',
+                                ),
+                                BodyText(
+                                  text: order.totalAmount ?? '',
+                                  color: primaryColor,
+                                ),
+                              ],
+                            ),
+                          ),
+                           Expanded(
+                            flex: 1,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -127,9 +147,14 @@ class _OrderScreenState extends State<OrderScreen> {
                               ],
                             ),
                           ),
-                          Expanded(
-                            flex: 2,
-                            child: CustomButton(
+                        ]),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            AssetButton(image: downloadLedger, onPressed: (){}),
+                            const Space(width: 20,),
+                            CustomButton(
                                 buttonText: 'Detail',
                                 buttonTextSize: 14,
                                 buttonWidth: 96,
@@ -137,8 +162,8 @@ class _OrderScreenState extends State<OrderScreen> {
                                 margin: 0,
                                 radius: 20,
                                 onClick: () => Navigator.pushReplacementNamed(context, orderDetailRoute,arguments: order)),
-                          )
-                        ]),
+                          ],
+                        )
                       ],
                     ),
                   );

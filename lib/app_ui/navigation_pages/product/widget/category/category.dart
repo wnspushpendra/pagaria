@@ -33,10 +33,8 @@ class _CategoryState extends State<Category> {
                   onTap: () {
                     setState(() => selectedIndex = index);
                     widget.onClick(category.id.toString());
-                  }
-                  ,
+                  },
                   child: Container(
-                    width: 100,
                     alignment: Alignment.center,
                     margin: const EdgeInsets.all(4),
                     padding: const EdgeInsets.fromLTRB(0, 0, 0, 4),

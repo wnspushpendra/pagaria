@@ -18,6 +18,7 @@ const String checkInStatusApi = 'marketing-ex-latest-status';
 const String addToCartProductApi = 'add-to-cart';
 const String removeFromCartProductApi = 'cart-item-remove';
 const String cartListApi = 'cart-show';
+const String cartItemCountApi = 'cart-item-count';
 const String updateProductQtyApi = 'add-prod-cart-qty';
 const String submitOrderApi = 'book-order';
 const String orderListApi = 'order-list';

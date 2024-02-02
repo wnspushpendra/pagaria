@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/order/order_bloc/order_api.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/order/order_bloc/order_event.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/order/order_bloc/order_state.dart';
+import 'package:webnsoft_solution/modal/login/login_response.dart';
 import 'package:webnsoft_solution/modal/order/order.dart';
 import 'package:webnsoft_solution/modal/order/order_list_modal.dart';
 import 'package:webnsoft_solution/utils/app_preferences.dart';
@@ -24,10 +25,12 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     "Authorization": "Bearer ${await getStringPref(userTokenPrefecences)}",
     };
 
+    User user = await getUserPref(userProfileDataPrefecences);
+
     // form body data
     Map<String, dynamic> body = <String, dynamic>{};
-    body['user_id'] = await getUserPref(userProfileDataPrefecences).then((value) => value.id.toString());
-    body['user_type'] = 'type_marketing_ex';
+    body['user_id'] = user.id.toString();
+    body['user_type'] = user.roleId == '4' ? 'type_marketing_ex' : 'type_customer';
 
 
     // request
@@ -45,17 +48,16 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     Map<String, String> header =  {
       "Authorization": "Bearer ${await getStringPref(userTokenPrefecences)}",
     };
-    String userId = await getUserPref(userProfileDataPrefecences).then((value) => value.id.toString());
+    User user = await getUserPref(userProfileDataPrefecences);
 
     // form body data
     Map<String, dynamic> body = <String, dynamic>{};
-    body['booked_by_id'] = await getUserPref(userProfileDataPrefecences).then((value) => value.id.toString());
-    body['user_type'] = 'type_marketing_ex';
-    body['user_id'] =  event.distributorId ;
+    body['booked_by_id'] = user.id.toString();
+    body['user_type'] = user.roleId == '4' ? 'type_marketing_ex' : 'type_customer';
+    body['user_id'] =  event.distributorId.toString() ;
     body['total_amount'] = event.totalAmount;
 
     emit(OrderLoading());
-
 
     // request
     OrderResponse response = await orderApi(header, body);

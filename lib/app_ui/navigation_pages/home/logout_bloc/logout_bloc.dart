@@ -28,7 +28,6 @@ class LogoutBloc extends Bloc<LogoutEvent, LogoutState> {
     User user = await getUser();
 
     Map<String, String> header = {
-      'Content-Type': 'multipart/form-data',
       "Authorization": "Bearer $token",
     };
     // request for logout

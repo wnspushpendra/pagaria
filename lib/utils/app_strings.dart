@@ -31,16 +31,16 @@ const String email = 'Email';
 const String dob = 'Date of Birth';
 const String mobileNumber = 'Mobile Number';
 const String aadhar = 'Aadhar Number';
-const String street = 'Address*';
+const String street = 'Address';
 const String city = 'City';
 const String state = 'State';
-const String pinCode = 'PinCode';
+const String pinCode = 'Pin Code';
 const String rupeesSymbol = '₹';
 const String firmName = 'Firm Name';
 const String address = 'Address';
 const String customerName = 'Customer Name';
-const String panCardNumber = 'PanCard Number';
-const String aadharNumber = 'Aadhar Number';
+const String panCardNumber = 'Pan Card Number';
+const String aadharNumber = 'Aadhaar Number';
 const String gstNumber = 'GST Number';
 
 /// ********************** Button text **********************
@@ -50,7 +50,7 @@ const String register = 'Register';
 const String login = 'Login';
 const String submit = 'Submit';
 const String update = 'Update';
-const String resetPassword = 'Reset Password';
+const String resetPassword = 'Change Password';
 
 
 

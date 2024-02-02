@@ -5,6 +5,7 @@ import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/bloc/
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/cart_api.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_bloc/product_api.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_bloc/product_event.dart';
+import 'package:webnsoft_solution/modal/cart/cart_item_count.dart';
 import 'package:webnsoft_solution/modal/cart/cart_list_modal.dart';
 import 'package:webnsoft_solution/modal/cart/remove_cart_item.dart';
 import 'package:webnsoft_solution/modal/cart/update_cart_qty.dart';
@@ -16,7 +17,7 @@ class CheckOutBloc extends Bloc<CheckOutEvent, CheckOutState> {
   CheckOutBloc() : super(CheckOutInitial()) {
     on<CheckOutListEvent>((event, emit) {checkOutListApi(event);});
     on<CheckOutUpdateQuantityEvent>((event, emit) {checkOutUpdateQuantity(event);});
-  //  on<CheckOutRemoveItemEvent>((event, emit) {removeCartProduct(event);});
+    on<CartItemCountEvent>((event, emit) {cartItemCount(event);});
   }
 
   checkOutListApi(CheckOutListEvent event) async {
@@ -30,7 +31,7 @@ class CheckOutBloc extends Bloc<CheckOutEvent, CheckOutState> {
     };
     Map<String, dynamic> body = <String, dynamic>{};
     body['user_id'] = user.id.toString();
-    body['user_type'] = 'type_marketing_ex';
+    body['user_type'] = user.roleId == '4' ? 'type_marketing_ex' : 'type_customer';
 
     CartProductResponseModal response = await cartListDataApi(header, body);
 
@@ -39,7 +40,6 @@ class CheckOutBloc extends Bloc<CheckOutEvent, CheckOutState> {
     }else{
       emit(CheckOutError(error: response.message.toString()));
     }
-
   }
 
   void checkOutUpdateQuantity(CheckOutUpdateQuantityEvent event) async {
@@ -63,6 +63,29 @@ class CheckOutBloc extends Bloc<CheckOutEvent, CheckOutState> {
       emit(CheckOutError(error: response.message.toString()));
     }
   }
+
+  void cartItemCount(CartItemCountEvent event) async {
+    // header
+    Map<String, String> header =  {
+      "Authorization": "Bearer ${await getStringPref(userTokenPrefecences)}",
+    };
+    User user = await getUserPref(userProfileDataPrefecences);
+
+    // form body data
+    Map<String, dynamic> body = <String, dynamic>{};
+    body['user_id'] = user.id.toString();
+    body['user_type'] = user.roleId =='4' ? 'type_marketing_ex' : 'type_customer';
+
+    // request
+    CartCountModal response = await cartCountApi(header, body);
+    // handling response
+    if(response.status == true && response.cartItemCount != null){
+      emit(CheckOutSuccess(cartItemCount : response.cartItemCount!));
+    }else{
+      emit(CheckOutError(error: response.message.toString()));
+    }
+  }
+
 
 
 }

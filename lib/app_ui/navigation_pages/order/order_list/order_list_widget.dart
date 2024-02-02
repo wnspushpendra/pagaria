@@ -43,9 +43,20 @@ class OrderListWidget extends StatelessWidget {
                 )
               ]),
           Space(height: 8.h,),
-          Row(
+          const Row(
               children: [
-                const Expanded(
+                 Expanded(
+                   flex: 1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      BodyText(text: 'Item',),
+                      BodyText(text: '5',color: primaryColor,),
+                    ],
+                  ),
+                ),
+                 Expanded(
+                   flex: 1,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -54,12 +65,6 @@ class OrderListWidget extends StatelessWidget {
                     ],
                   ),
                 ),
-                CustomButton(
-                    buttonText: 'Detail',buttonTextSize: 12,
-                    buttonWidth : 75,
-                    buttonHeight: 36,
-                    margin: 0,
-                    onClick: ()=> Navigator.pushReplacementNamed(context, orderDetailRoute))
               ]),
         ],
       ),

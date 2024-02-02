@@ -70,7 +70,7 @@ Future<void> logoutDialog(BuildContext context) async {
           ),
         ),
         actions: <Widget>[
-          TextButton(
+    /*      TextButton(
             child: const Text(yes),
             onPressed: () async {
               clearPref();
@@ -78,9 +78,9 @@ Future<void> logoutDialog(BuildContext context) async {
               Navigator.pushReplacementNamed(context, loginRoute);
               snackBar(context,logoutMessage);
             },
-          ),
+          ),*/
 
-        /*  BlocConsumer<LogoutBloc,LogoutState>(
+          BlocConsumer<LogoutBloc,LogoutState>(
               listener: (context,states) async {
                 if(states is LogoutSuccess) {
                   clearPref();
@@ -98,7 +98,7 @@ Future<void> logoutDialog(BuildContext context) async {
                     context.read<LogoutBloc>().add(LogoutClickEvent());
                   },
                 );
-              }),*/
+              }),
           TextButton(
             child: const Text(no),
             onPressed: () {

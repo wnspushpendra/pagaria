@@ -17,15 +17,15 @@ import 'package:webnsoft_solution/utils/app_strings.dart';
 import 'package:webnsoft_solution/utils/asset_images.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
-class OrderDetailScreen extends StatefulWidget {
+class LedgerDetailScreen extends StatefulWidget {
   final OrderList order;
-  const OrderDetailScreen({required this.order,super.key});
+  const LedgerDetailScreen({required this.order,super.key});
 
   @override
-  State<OrderDetailScreen> createState() => _OrderDetailScreenState();
+  State<LedgerDetailScreen> createState() => _LedgerDetailScreenState();
 }
 
-class _OrderDetailScreenState extends State<OrderDetailScreen> {
+class _LedgerDetailScreenState extends State<LedgerDetailScreen> {
   List<OrderProduct> productList = [];
 
   @override
@@ -119,29 +119,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 ],
               ),
             ),
-            // reject, pending, delivered ,approved,completed
-            Container(
+            Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  BodyText(text:'Address : ${widget.order.userData!.address},${widget.order.userData!.city} ${widget.order.userData!.state} ${widget.order.userData!.zipCode}' ,align: TextAlign.start,fontSize : 14,),
-                  widget.order.orderStatus != null ? Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const BodyText(text: 'Order Status :  ',fontWeight: FontWeight.bold,fontSize: 18,),
-                      Flexible(child: BodyText(text: widget.order.orderStatus!,
-                        color : widget.order.orderStatus! == 'reject' ? Colors.red
-                        : widget.order.orderStatus! == 'approved' ? Colors.deepOrange :
-                        widget.order.orderStatus! == 'delivered' || widget.order.orderStatus! == 'completed' ? Colors.green
-                        : Colors.orange,
-                        align: TextAlign.start,fontSize: 18,))
-                    ],) : Container(),
-                ],
-              ),
+              child: BodyText(text:'Address : ${widget.order.userData!.address},${widget.order.userData!.city} ${widget.order.userData!.state} ${widget.order.userData!.zipCode}' ,align: TextAlign.start,fontSize : 14,),
             ),
-
-
 
 
             Container(
@@ -242,14 +223,62 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     height: 1,
                     color: bodyLightBlack,
                   ),
+                  const Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children:<Widget> [
+                    /*  Expanded(flex: 2, child:
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          BodyText(text: 'Total Item ', fontSize: 14,align: TextAlign.end,color: primaryColor,),
+                          BodyText(text: ' 10', fontSize: 14,align: TextAlign.start,),
+                        ],
+                      )),*/
+                    /*  Expanded(flex: 2, child: Column(
+                        children: [
+                          BodyText(text: 'Total Qty', fontSize: 14,align: TextAlign.center,color: primaryColor,),
+                          BodyText(text: ' 100', fontSize: 14,align: TextAlign.start,),
+                        ],
+                      )),*/
+                    /*  SizedBox(
+                        width: 200
+                      , child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          
+                         Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              BodyText(text: 'Order Subtotal', fontSize: 14, align: TextAlign.center,),
+                              BodyText(text: widget.order.totalAmount!, fontSize: 14, align: TextAlign.center,),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              BodyText(text: 'Tax', fontSize: 14, align: TextAlign.center,),
+                              BodyText(text: '5000', fontSize: 14, align: TextAlign.center,),
+                            ],
+                          ),
+                        ],
+                      )),*/
 
+                    ],
+                  ),
                   Container(
                     width: MediaQuery.of(context).size.width,
                     alignment: Alignment.topRight,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        SizedBox(
+                    /*    Container(
+                          margin: const EdgeInsets.symmetric(vertical: 4),
+                          width: 210,
+                          height: 1,
+                          color: primaryColor,
+                        ),*/
+                         SizedBox(
                           width: 200,
                           height: 30,
                           child: Row(
@@ -268,15 +297,6 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                       ],
                     ),
                   ),
-                  const Space(height: 8,),
-                 widget.order.remark != null ? Row(
-                   crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                    const BodyText(text: 'Remark : ',fontWeight: FontWeight.bold,),
-                      Flexible(child: BodyText(text: widget.order.remark!,
-                      align: TextAlign.start,))
-                  ],) : Container()
-
 
 
                 ],
