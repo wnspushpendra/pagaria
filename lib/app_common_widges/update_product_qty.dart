@@ -13,16 +13,15 @@ import 'package:webnsoft_solution/modal/cart/cart_list_modal.dart';
 import 'package:webnsoft_solution/utils/app_regex.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
-Future<String?> quantityDialog(
-  BuildContext context,
-  CartItem cartItem,
-) async {
+Future<String?> quantityDialog(BuildContext context, CartItem cartItem,
+    String productName, String prodMinQty) async {
   TextEditingController quantityController =
       TextEditingController(text: cartItem.quantity.toString());
 
   showDialog(
     context: context,
     builder: (context) {
+      bool loading = false;
       return AlertDialog(
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(12))),
@@ -42,7 +41,7 @@ Future<String?> quantityDialog(
               decoration: defaultDecoration,
               child: Column(
                 children: [
-                  BodyText(text: cartItem.productDetails!.prodName!),
+                  BodyText(text: productName),
                   CustomTextField(
                     controller: quantityController,
                     maxLength: 4,
@@ -72,7 +71,7 @@ Future<String?> quantityDialog(
                         const Space(width: 10),
                         Expanded(
                             flex: 1,
-                            child: CustomButton(
+                            child:  CustomButton(
                               buttonText: 'Ok',
                               buttonHeight: 40,
                               buttonTextSize: 14,
@@ -80,10 +79,10 @@ Future<String?> quantityDialog(
                               margin: 0,
                               onClick: () {
                                 String quantity = quantityController.text;
-                                if(int.parse(cartItem.productDetails!.prodMinDistrubutorQty!) <=  int.parse(quantity) ){
+                                if (int.parse(prodMinQty) <= int.parse(quantity)) {
                                   context.read<CheckOutBloc>().add(CheckOutUpdateQuantityEvent(productQty: quantityController.text, cartItemId: cartItem.id.toString()));
-                                }else{
-                                  snackBar(context,'you can create min ${cartItem.productDetails!.prodMinDistrubutorQty!} quantity' ) ;
+                                } else {
+                                  snackBar(context, 'you can create min $prodMinQty quantity');
                                 }
                               },
                             )),
@@ -102,7 +101,13 @@ Future<String?> quantityDialog(
   return Future.value(null);
 }
 
-Future<String?> updateQuantityDialog(BuildContext context,cartId, String productName,String cartQty,String cartMinimumQty,) async {
+Future<String?> updateQuantityDialog(
+  BuildContext context,
+  cartId,
+  String productName,
+  String cartQty,
+  String cartMinimumQty,
+) async {
   TextEditingController quantityController = TextEditingController(text: cartQty);
 
   showDialog(
@@ -165,10 +170,15 @@ Future<String?> updateQuantityDialog(BuildContext context,cartId, String product
                               margin: 0,
                               onClick: () {
                                 String quantity = quantityController.text;
-                                if(int.parse(cartMinimumQty) <=  int.parse(quantity) ){
-                                  context.read<CheckOutBloc>().add(CheckOutUpdateQuantityEvent(productQty: quantityController.text, cartItemId: cartId.toString()));
-                                }else{
-                                  snackBar(context,'you need to add for create order min ${cartMinimumQty} quantity' ) ;
+                                if (int.parse(cartMinimumQty) <=
+                                    int.parse(quantity)) {
+                                  context.read<CheckOutBloc>().add(
+                                      CheckOutUpdateQuantityEvent(
+                                          productQty: quantityController.text,
+                                          cartItemId: cartId.toString()));
+                                } else {
+                                  snackBar(context,
+                                      'you need to add for create order min ${cartMinimumQty} quantity');
                                 }
                               },
                             )),
@@ -186,4 +196,3 @@ Future<String?> updateQuantityDialog(BuildContext context,cartId, String product
 
   return Future.value(null);
 }
-

@@ -29,14 +29,14 @@ class DistributorPaymentWidget extends StatelessWidget {
       margin: EdgeInsets.all(4.h),
       alignment: Alignment.center,
       decoration: defaultDecoration,
-      child:  Column(
+      child:   Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Row(
+          const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Expanded(
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -53,42 +53,50 @@ class DistributorPaymentWidget extends StatelessWidget {
               Expanded(
                   flex: 1,
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      BodyText(text: paymentStatus,fontSize: 16,color: primaryColor,),
-                      NormalText(text: '$rupeesSymbol 5000'/*ustomerDetails.email.toString()*/, color: bodyBlack,),
-                    ],
-                  )),
-            ],
-          ),
-           Space(height: 6,),
-           Row(
-            children: [
-              Expanded(
-                flex: 1,
-                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                       BodyText(text: mobileNumber,fontSize: 16,color: primaryColor,align: TextAlign.start,),
+                      BodyText(text: mobileNumber,fontSize: 16,color: primaryColor,align: TextAlign.start,),
                       BodyText(
                         text:'123344545' /*customerDetails.contactNo.toString()*/,
                         color: bodyBlack,
                       ),
                     ],
                   )),
+
+            ],
+          ),
+           Space(height: 6,),
+           Row(
+            children: [
+              const Expanded(
+                  flex: 1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      BodyText(text: 'Order Id',fontSize: 16,color: primaryColor,),
+                      NormalText(text: '$rupeesSymbol ord21kjjl'/*ustomerDetails.email.toString()*/, color: bodyBlack,),
+                    ],
+                  )),
               Expanded(
-                flex: 1,
+                  flex: 1,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                       BodyText(text: email,fontSize: 16,color: primaryColor,),
-                      NormalText(text: 'me customre@gmail.com'/*ustomerDetails.email.toString()*/, color: bodyBlack,),
+                      BodyText(text: paymentStatus,fontSize: 16,color: primaryColor,),
+                      const NormalText(text: '$rupeesSymbol 5000'/*ustomerDetails.email.toString()*/, color: bodyBlack,),
                     ],
                   )),
             ],
           ),
-           Space(height:6 ,),
-          Row(
+           const Column(
+             crossAxisAlignment: CrossAxisAlignment.start,
+             children: [
+                BodyText(text: email,fontSize: 16,color: primaryColor,),
+               NormalText(text: 'me customre@gmail.com'/*customerDetails.email.toString()*/, color: bodyBlack,),
+             ],
+           ),
+           const Space(height:6 ,),
+          const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Flexible(

@@ -5,8 +5,9 @@ class AssetButton extends StatelessWidget {
   final String image;
   final Function onPressed;
   final double? padding;
+  final Color? color;
 
-  const AssetButton({required this.image,required this.onPressed,this.padding,super.key});
+  const AssetButton({required this.image,required this.onPressed,this.padding,this.color,super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +15,7 @@ class AssetButton extends StatelessWidget {
       onTap: ()=> onPressed(),
       child: Padding(
         padding:  EdgeInsets.all(padding??4),
-          child: Image.asset(image,width: 24,height: 24,color: primaryColor,)),
+          child: Image.asset(image,width: 24,height: 24,color:color?? primaryColor,)),
     );
   }
 }

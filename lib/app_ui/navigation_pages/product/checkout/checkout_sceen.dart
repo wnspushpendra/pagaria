@@ -13,6 +13,7 @@ import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/bloc/
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/bloc/check_out_event.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/bloc/check_out_state.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/update_qty_widget.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/widget/bottom_sheet_delete_item.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/widget/bottom_widget_checkout.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/widget/checkout_list.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_bloc/product_bloc.dart';
@@ -36,6 +37,7 @@ class CheckOutScreen extends StatefulWidget {
 
 class _CheckOutScreenState extends State<CheckOutScreen> {
   bool checkOutLoading = true;
+  bool checkOutDeleteLoading = false;
   List<CartItem> cartList = [];
   CartItem? cartItem;
   String productAmount = '';
@@ -45,6 +47,8 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
   bool? productAddRemove;
   bool showDelete = true;
   int? cartId;
+  String prodMinQty = '';
+  String userRole = '';
 
   @override
   void initState() {
@@ -69,19 +73,15 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
             if(state.cartList != null && state.productAmount != null){
               cartList = state.cartList!;
               productAmount = state.productAmount!;
+              userRole = state.userRole!;
             }
             if(state.cartItem != null){
               for (var element in cartList) {
                 if(element.productId ==  state.cartItem!.productId){
+                  productAmount = state.cartTotal!;
                   element.quantity = state.cartItem!.quantity;
                   element.amount = state.cartItem!.amount;
-                  if(productAddRemove== true){
-                    var newTotal  = int.parse(productAmount) + int.parse(state.cartItem!.unitPrice!);
-                    productAmount = newTotal.toString();
-                  }else{
-                    var newTotal  = int.parse(productAmount) - int.parse(state.cartItem!.unitPrice!);
-                    productAmount = newTotal.toString();
-                  }
+
                 }
               }
             }
@@ -120,6 +120,9 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                 selectedIndex = index;
                                 CartItem cartItem = cartList[index];
                                 quantity = cartItem.quantity;
+
+                                prodMinQty = (userRole == '4' ?  cartItem.productDetails!.prodMinDistrubutorQty! : cartItem.productDetails!.prodMinCustomerQty)!;
+
                                 return Container(
                                   margin: const EdgeInsets.symmetric(vertical: 4),
                                   decoration: defaultDecoration,
@@ -151,23 +154,40 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                                 ),
                                                 BlocConsumer<ProductBloc, ProductState>(
                                                   listener: (context, state) {
+                                                    if(state is CartProductRemoveLoading){
+                                                      setState(() => checkOutDeleteLoading = true);
+                                                    }
                                                     if (state is CartProductRemoveSuccess) {
+                                                      checkOutDeleteLoading = false;
                                                       if(cartItem.id.toString() == state.message){
+                                                        productAmount = (int.parse(productAmount) - cartItem.amount!).toString();
                                                         cartList.removeAt(index);
                                                         setState(() {});
                                                       }
                                                     }
                                                     if (state is ProductError) {
                                                       showDelete = true;
+                                                      checkOutDeleteLoading = false;
                                                       setState(() {});
                                                       snackBar(context, state.error);
                                                     }
 
                                                   },
                                                   builder: (context, state) {
-                                                    return cartItem.id != cartId  ? IconButton(
+                                                    return cartItem.id == cartId && checkOutDeleteLoading ?
+                                                        const Padding(
+                                                          padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
+                                                            child: CustomProgressBar(widthV: 15,heightV: 15,)) :
+                                                    cartItem.id != cartId  ? IconButton(
                                                         onPressed: () {
+                                                       /*   showModalBottomSheet(
+                                                            context: context,
+                                                            builder: (BuildContext context) {
+                                                              return DeleteProductBottomSheet(cartItem : cartItem);
+                                                            },
+                                                          );*/
                                                           selectedIndex = index;
+                                                          checkOutDeleteLoading = true;
                                                           setState(() => cartId = cartItem.id!);
                                                           context.read<ProductBloc>().add(RemoveProductCartEvent(cartItemId: cartItem.id.toString()));
                                                         },
@@ -189,52 +209,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                                 BodyText(
                                                   text: rupeesSymbol + cartItem.amount.toString(),
                                                   fontWeight: FontWeight.bold, color: primaryColor,),
-                                               UpdateQuantityWidget(cartItem: cartItem, quantity: quantity!, productAddRemove: productAddRemove)
-                                               /* SizedBox(
-                                                  height: 36,
-                                                  child: Row(
-                                                    children: [
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                        children: <Widget>[
-                                                          IconButton(
-                                                              padding: const EdgeInsets.all(0),
-                                                              onPressed: () => updateQty('remove',cartItem),
-                                                              icon: const Icon(
-                                                                Icons.remove_circle,
-                                                                color: primaryColor,
-                                                                size: 28,
-                                                              )),
-                                                          BodyText(
-                                                            text: quantity!,
-                                                            fontSize: 20,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                          IconButton(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(0),
-                                                              onPressed: () => updateQty('add',cartItem),
-                                                              icon: const Icon(
-                                                                Icons.add_circle_outlined,
-                                                                color: primaryColor,
-                                                                size: 28,
-                                                              )),
-                                                        ],
-                                                      ),
-                                                 *//*     SizedBox(
-                                                        width: 30,height: 30,
-                                                        child: AssetButton(image: edit,
-                                                          onPressed: () {
-                                                          Future<String?> futureQty = quantityDialog(context, cartItem);
-                                                          },),
-                                                      )*//*
-                                                    ],
-
-                                                  ),
-                                                ),*/
-                                               // UpdateQuantityWidget(cartItem: cartItem, quantity: quantity!, productAddRemove: productAddRemove)
+                                               UpdateQuantityWidget(cartItem: cartItem, productName : cartItem.productDetails!.prodName!,quantity: quantity!,distributorMinQty: prodMinQty, productAddRemove: productAddRemove)
                                               ],
                                             ),
                                           ),

@@ -51,11 +51,13 @@ class _ProductScreenState extends State<ProductScreen> {
   List<Categories> categoryList = [];
   List<Categories> filterCategoryList = [];
   List<Product> productList = [];
+  String userRole = '';
   List<Product> filterProductList = [];
   int selectedIndex = -1;
   bool activeButton = true;
    String itemCount = '';
   bool showCategory = true;
+  String errorMessage = '';
 
   @override
   void initState() {
@@ -134,7 +136,9 @@ class _ProductScreenState extends State<ProductScreen> {
                       );
                     },
                   )
-                : Container()
+                : Container(),
+            widget.distributorId == null ?
+                 AssetButton(image: downloadLedger,color: bodyWhite, onPressed: () => snackBar(context, 'downloading catalog')) : Container()
           ],
         ),
         body: ListView(
@@ -155,18 +159,20 @@ class _ProductScreenState extends State<ProductScreen> {
                         productLoading = false;
                         setState(() {
                           productList = productState.productList;
+                          userRole = productState.userRole!;
                           filterProductList = productList;
                         });
                       }
                     },
                     builder: (context, state) {
-                      return productLoading
+                      return  productLoading
                           ? const CustomProgressBar(
                               heightV: 300,
                             )
                           : SizedBox(
                               height: height * 0.75,
                               child: ProductList(
+                                userRole : userRole,
                                   productList: filterProductList,
                                   distributorId: widget.distributorId,
                               ),
@@ -189,10 +195,19 @@ class _ProductScreenState extends State<ProductScreen> {
                       }
                     });
                   }
+                  if (categoryState is CategoryError) {
+                    errorMessage = categoryState.error;
+                    loadCategory = false;
+                    setState(() {});
+                  }
                 }, builder: (context, categoryState) {
                   return loadCategory
                       ? const CustomProgressBar()
-                      : SizedBox(
+                      : errorMessage.isNotEmpty ?  Container(
+                    height: MediaQuery.of(context).size.height,
+                      alignment: Alignment.center,
+                      child: BodyText(text: errorMessage,color: primaryColor,))  :
+                  SizedBox(
                           height: height * 0.20,
                           child: Category(
                             categoryList: categoryList,

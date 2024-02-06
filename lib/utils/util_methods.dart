@@ -18,13 +18,13 @@ import 'package:intl/intl.dart';
 
 
 // back user home screen
-
 Future<void> backUserHome(BuildContext context) async{
   User user =  await getUser();
   WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-    Navigator.pushReplacementNamed(context, user.roleId == '4' ?homeRoute :homeDistributorRoute, arguments: user);
+    Navigator.pushReplacementNamed(context, user.roleId == '4' ? homeRoute :homeDistributorRoute, arguments: user);
   });
 }
+
 
 /// * check internet connection
 Future<bool> checkConnection() async {
@@ -41,7 +41,6 @@ Future<Placemark?> getAddressFromLatLng(LocationData locationData) async{
       locationData.latitude!,
       locationData.longitude!,
     );
-
     if (placemarks.isNotEmpty) {
       return placemarks[0];
       //var _address = '${placemark.street}, ${placemark.locality}, ${placemark.administrativeArea}, ${placemark.country},, ${placemark.postalCode}';
@@ -49,6 +48,7 @@ Future<Placemark?> getAddressFromLatLng(LocationData locationData) async{
   } catch (e) {
     print('Error: $e');
   }
+  return null;
 }
 
 

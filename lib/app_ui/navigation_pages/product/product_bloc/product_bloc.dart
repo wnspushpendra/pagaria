@@ -32,13 +32,14 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     Map<String, dynamic> body = <String, dynamic>{};
     body['category_id'] = event.categoryId;
     body['user_id'] = user.id.toString();
+    body['user_type'] = user.roleId == '4' ? 'type_marketing_ex' : 'type_customer';
 
     emit(ProductLoading());
 
     ProductListResponse response = await productApi(header, body);
 
     if(response.status == true && response.productList != null){
-      emit(ProductSuccess(productList: response.productList!));
+      emit(ProductSuccess(productList: response.productList!,userRole: user.roleId));
     }else{
       emit(ProductError(error: response.message.toString()));
     }
@@ -59,6 +60,8 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     body['cart_user_id'] = user.id.toString();
     body['product_id'] = event.productId;
     body['user_type'] = user.roleId == '4' ? 'type_marketing_ex' : 'type_customer';
+
+    emit(CartProductRemoveLoading());
 
 
     AddProductCartResponse response = await addCartApi(header, body);

@@ -12,6 +12,7 @@ import 'package:webnsoft_solution/modal/cart/update_cart_qty.dart';
 import 'package:webnsoft_solution/modal/login/login_response.dart';
 import 'package:webnsoft_solution/utils/app_preferences.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
+import 'package:webnsoft_solution/utils/util_methods.dart';
 
 class CheckOutBloc extends Bloc<CheckOutEvent, CheckOutState> {
   CheckOutBloc() : super(CheckOutInitial()) {
@@ -36,13 +37,16 @@ class CheckOutBloc extends Bloc<CheckOutEvent, CheckOutState> {
     CartProductResponseModal response = await cartListDataApi(header, body);
 
     if(response.status == true && response.cartItem != null){
-      emit(CheckOutSuccess(cartList : response.cartItem!,productAmount: response.productAmount.toString()));
+      emit(CheckOutSuccess(cartList : response.cartItem!,productAmount: response.productAmount.toString(),userRole: user.roleId));
     }else{
       emit(CheckOutError(error: response.message.toString()));
     }
   }
 
   void checkOutUpdateQuantity(CheckOutUpdateQuantityEvent event) async {
+    /***************** getting user from preference  method  ****************/
+    User user = await getUser();
+
     // header
     Map<String, String> header =  {
       "Authorization": "Bearer ${await getStringPref(userTokenPrefecences)}",
@@ -52,13 +56,15 @@ class CheckOutBloc extends Bloc<CheckOutEvent, CheckOutState> {
     Map<String, dynamic> body = <String, dynamic>{};
     body['cart_item_id'] = event.cartItemId;
     body['productQty'] = event.productQty;
-    body['user_type'] = 'type_marketing_ex';
+    body['user_type'] = user.roleId == '4' ? 'type_marketing_ex' : 'type_customer';
+
+    emit(CheckOutUpdateQtyLoading());
 
     // request
     UpdateCartQuantityResponseModal response = await updateCartQtyApi(header, body);
     // handling response
     if(response.status == true && response.updateCartItem != null){
-      emit(CheckOutSuccess(cartItem : response.updateCartItem!));
+      emit(CheckOutSuccess(cartItem : response.updateCartItem!,cartTotal : response.cartTotal));
     }else{
       emit(CheckOutError(error: response.message.toString()));
     }

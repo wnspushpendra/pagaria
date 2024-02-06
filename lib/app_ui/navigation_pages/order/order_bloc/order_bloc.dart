@@ -32,12 +32,11 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     body['user_id'] = user.id.toString();
     body['user_type'] = user.roleId == '4' ? 'type_marketing_ex' : 'type_customer';
 
-
     // request
     OrderListResponseModal response = await userOrderListApi(header, body);
     // handling response
     if(response.status == true && response.orderList != null){
-    emit(OrderSuccess( orderList: response.orderList!));
+    emit(OrderSuccess( orderList: response.orderList!,userRole: user.roleId));
     }else{
     emit(OrderError(error: response.message.toString()));
     }

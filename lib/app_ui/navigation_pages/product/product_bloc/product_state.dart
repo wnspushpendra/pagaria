@@ -8,12 +8,16 @@ class ProductInitial extends ProductState {}
 class ProductLoading extends ProductState {}
 class ProductSuccess extends ProductState {
   List<Product> productList;
-  ProductSuccess({required this.productList });
+  String? userRole;
+  ProductSuccess({required this.productList,this.userRole });
 }
+class CartProductRemoveLoading extends ProductState {}
 class CartProductAddSuccess extends ProductState {
   CartProduct cartProduct;
   CartProductAddSuccess({required this.cartProduct });
 }
+
+class CartProductLoading extends ProductState {}
 class CartProductRemoveSuccess extends ProductState {
   String message;
   CartProductRemoveSuccess({required this.message });

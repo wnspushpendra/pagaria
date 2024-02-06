@@ -11,17 +11,17 @@ class ProductListResponse {
     if (json['record'] != null) {
       productList = <Product>[];
       json['record'].forEach((v) {
-        productList!.add(new Product.fromJson(v));
+        productList!.add(Product.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['status'] = this.status;
     data['message'] = this.message;
-    if (this.productList != null) {
-      data['record'] = this.productList!.map((v) => v.toJson()).toList();
+    if (productList != null) {
+      data['record'] = productList!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -96,52 +96,51 @@ class Product {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     categoryDetails = json['category_details'] != null
-        ? new CategoryDetails.fromJson(json['category_details'])
+        ? CategoryDetails.fromJson(json['category_details'])
         : null;
     if (json['gallery_images'] != null) {
       galleryImages = <GalleryImages>[];
       json['gallery_images'].forEach((v) {
-        galleryImages!.add(new GalleryImages.fromJson(v));
+        galleryImages!.add(GalleryImages.fromJson(v));
       });
     }
     if (json['is_cart'] != null) {
       isCart = <IsCart>[];
       json['is_cart'].forEach((v) {
-        isCart!.add(new IsCart.fromJson(v));
+        isCart!.add(IsCart.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['prod_name'] = this.prodName;
-    data['prod_image'] = this.prodImage;
-    data['prod_image_url'] = this.prodImageUrl;
-    data['prod_short_description'] = this.prodShortDescription;
-    data['prod_description'] = this.prodDescription;
-    data['prod_distributor_price'] = this.prodDistributorPrice;
-    data['prod_customer_price'] = this.prodCustomerPrice;
-    data['prod_inventory'] = this.prodInventory;
-    data['prod_latestAdd_inventory'] = this.prodLatestAddInventory;
-    data['prod_min_distrubutor_qty'] = this.prodMinDistrubutorQty;
-    data['prod_min_customer_qty'] = this.prodMinCustomerQty;
-    data['prod_available'] = this.prodAvailable;
-    data['prod_categorie_id'] = this.prodCategorieId;
-    data['prod_status'] = this.prodStatus;
-    data['created_by_id'] = this.createdById;
-    data['admin_id'] = this.adminId;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    if (this.categoryDetails != null) {
-      data['category_details'] = this.categoryDetails!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['prod_name'] = prodName;
+    data['prod_image'] = prodImage;
+    data['prod_image_url'] = prodImageUrl;
+    data['prod_short_description'] = prodShortDescription;
+    data['prod_description'] = prodDescription;
+    data['prod_distributor_price'] = prodDistributorPrice;
+    data['prod_customer_price'] = prodCustomerPrice;
+    data['prod_inventory'] = prodInventory;
+    data['prod_latestAdd_inventory'] = prodLatestAddInventory;
+    data['prod_min_distrubutor_qty'] = prodMinDistrubutorQty;
+    data['prod_min_customer_qty'] = prodMinCustomerQty;
+    data['prod_available'] = prodAvailable;
+    data['prod_categorie_id'] = prodCategorieId;
+    data['prod_status'] = prodStatus;
+    data['created_by_id'] = createdById;
+    data['admin_id'] = adminId;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    if (categoryDetails != null) {
+      data['category_details'] = categoryDetails!.toJson();
     }
-    if (this.galleryImages != null) {
-      data['gallery_images'] =
-          this.galleryImages!.map((v) => v.toJson()).toList();
+    if (galleryImages != null) {
+      data['gallery_images'] = galleryImages!.map((v) => v.toJson()).toList();
     }
-    if (this.isCart != null) {
-      data['is_cart'] = this.isCart!.map((v) => v.toJson()).toList();
+    if (isCart != null) {
+      data['is_cart'] = isCart!.map((v) => v.toJson()).toList();
     }
     return data;
   }

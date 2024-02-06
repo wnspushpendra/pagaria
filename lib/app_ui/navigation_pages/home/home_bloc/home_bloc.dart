@@ -41,7 +41,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     if(response.status == true && response.checkInData != null){
       emit(HomeSuccess(checkInData : response.checkInData!));
     }else{
-      emit(HomeError(error : response.message.toString()));
+      emit(HomeCheckInOurError(error : response.message.toString()));
     }
   }
 
@@ -59,9 +59,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     String address = '${event.placeMark?.street}, ${event.placeMark?.locality}, ${event.placeMark?.administrativeArea}, ${event.placeMark?.country}';
     String zipCode = '${event.placeMark?.postalCode}';
 
+    String status = event.checkInOutStatus == 'check_in' ? 'check_out' : 'check_in';
+
     Map<String, dynamic> body = <String, dynamic>{};
     body['marketing_executive_id'] =  user.id.toString();
-    body['status_type'] = event.checkInOutStatus;
+    body['status_type'] = status;
     body['latitude'] = event.locationData.latitude.toString();
     body['longitude'] = event.locationData.longitude.toString();
     body['address'] = address;

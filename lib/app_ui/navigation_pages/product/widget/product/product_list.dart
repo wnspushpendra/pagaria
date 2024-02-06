@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:webnsoft_solution/app_common_widges/app_body_text.dart';
 import 'package:webnsoft_solution/app_common_widges/asset_button.dart';
 import 'package:webnsoft_solution/app_common_widges/custom_button.dart';
+import 'package:webnsoft_solution/app_common_widges/custom_progressbar.dart';
 import 'package:webnsoft_solution/app_common_widges/custom_textfield.dart';
 import 'package:webnsoft_solution/app_common_widges/home_appbar.dart';
 import 'package:webnsoft_solution/app_common_widges/normal_text.dart';
@@ -11,6 +12,7 @@ import 'package:webnsoft_solution/app_common_widges/space.dart';
 import 'package:webnsoft_solution/app_common_widges/update_product_qty.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/order/create_order/product_count.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/bloc/check_out_bloc.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/bloc/check_out_event.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/bloc/check_out_state.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/update_qty_widget.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_bloc/product_bloc.dart';
@@ -28,11 +30,12 @@ import 'package:webnsoft_solution/utils/asset_images.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
 class ProductList extends StatefulWidget {
+  final String userRole;
   final List<Product> productList;
   final String? distributorId;
   // final String from;
 
-  const ProductList({required this.productList, super.key, required this.distributorId,});
+  const ProductList({required this.userRole,required this.productList, super.key, required this.distributorId,});
 
   @override
   State<ProductList> createState() => _ProductListState();
@@ -49,6 +52,9 @@ class _ProductListState extends State<ProductList> {
   String? productPrice;
   bool? productAddRemove;
   int? productId;
+  bool cartLoading = false;
+  String prodMinQty = '';
+
 
 
 
@@ -92,7 +98,8 @@ class _ProductListState extends State<ProductList> {
               crossAxisCount: 2, mainAxisExtent: 230),
           itemBuilder: (context, index) {
             Product product = widget.productList[index];
-            productPrice = product.prodDistributorPrice;
+            prodMinQty = (widget.userRole == '4' ?  product.prodMinDistrubutorQty : product.prodMinCustomerQty)!;
+            productPrice = widget.userRole == '4' ?  product.prodCustomerPrice : product.prodDistributorPrice;
             CartItem cartItem = CartItem();
             if(product.isCart!.isNotEmpty){
               cartItem.id = product.isCart?[0].id;
@@ -153,34 +160,44 @@ class _ProductListState extends State<ProductList> {
                                 ? product.isCart!.isEmpty
                                     ? BlocConsumer<ProductBloc, ProductState>(
                                         listener: (context, state) {
+                                          if(state is CartProductLoading){
+                                            cartLoading = true;
+                                            setState(() {});
+                                          }
                                           if(state is CartProductAddSuccess){
+                                            cartLoading = false;
                                             cartProduct = state.cartProduct;
                                             if(selectedIndex == index){
                                               IsCart cartItem = IsCart();
                                               cartItem.id = cartProduct.id;
                                               cartItem.quantity = cartProduct.quantity;
-                                             // cartItem.amount = cartProduct.amount;
+                                              cartItem.amount = cartProduct.amount;
                                               product.isCart!.add(cartItem);
                                               productAddRemove = true;
+                                              context.read<CheckOutBloc>().add(CartItemCountEvent());
                                               setState(() {});
                                             }
                                           }
                                           },
 
                                    builder: (context, state) {
-                                          return product.id != productId ?
+                                          return product.id == productId && cartLoading ?
+                                              const CustomProgressBar(widthV: 15,heightV: 15,) :
+                                          product.id != productId ?
                                             AssetButton(
                                             image: cartIcon,
                                             padding: 0,
                                             onPressed: () {
-                                              selectedIndex = index;
-                                              setState(() => productId = product.id!);
-                                              context.read<ProductBloc>().add(AddProductCartEvent(productId: product.id.toString()));
-                                              }) : Container();
+                                              if(cartLoading == false){
+                                                selectedIndex = index;
+                                                setState(() => productId = product.id!);
+                                                cartLoading = true;
+                                                context.read<ProductBloc>().add(AddProductCartEvent(productId: product.id.toString()));
+                                              }
+                                            }) : Container();
                                             },
                                           )
-
-                                : UpdateQuantityWidget(cartItem: cartItem, quantity: cartItem.quantity!,distributorMinQty: product.prodMinDistrubutorQty, productAddRemove: productAddRemove,iconSize:24,textSize: 16,)
+                                : UpdateQuantityWidget(cartItem: cartItem,productName: product.prodName, quantity: cartItem.quantity!,distributorMinQty: prodMinQty, productAddRemove: productAddRemove,iconSize:24,textSize: 16,)
                                 : Container()
                           ],
                         )
@@ -195,5 +212,7 @@ class _ProductListState extends State<ProductList> {
   },
 );
   }
+
+
 
 }

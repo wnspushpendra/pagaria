@@ -4,15 +4,16 @@ class UpdateCartQuantityResponseModal {
   bool? status;
   String? message;
   CartItem? updateCartItem;
+  String? cartTotal;
   //UpdateCartItem? updateCartItem;
 
-  UpdateCartQuantityResponseModal({this.status, this.message, this.updateCartItem});
+  UpdateCartQuantityResponseModal({this.status, this.message, this.updateCartItem,this.cartTotal});
 
   UpdateCartQuantityResponseModal.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    updateCartItem =
-    json['record'] != null ? CartItem.fromJson(json['record']) : null;
+    updateCartItem = json['record'] != null ? CartItem.fromJson(json['record']) : null;
+    cartTotal = json['productAmount'];
   }
 
   Map<String, dynamic> toJson() {
@@ -22,6 +23,8 @@ class UpdateCartQuantityResponseModal {
     if (updateCartItem != null) {
       data['record'] = updateCartItem!.toJson();
     }
+    data['productAmount'] = cartTotal ;
+
     return data;
   }
 }

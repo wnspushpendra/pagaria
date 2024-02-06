@@ -8,7 +8,7 @@ import 'package:webnsoft_solution/app_ui/navigation_pages/customer/add_customer/
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/home_bloc/home_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/logout_bloc/logout_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/order/order_bloc/order_bloc.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/payment/payment_bloc.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/payment/bloc/payment_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/category_bloc/category_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/bloc/check_out_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_bloc/product_bloc.dart';

@@ -58,8 +58,7 @@ class _CheckoutBottomWidgetState extends State<CheckoutBottomWidget> {
                 margin: 0,
                 showLoading: orderPlaceLoading,
                 onClick: () =>
-                    context.read<OrderBloc>().add(
-                        OrderSubmitEvent(distributorId : widget.distributorId,totalAmount: widget.totalCartAmount)),
+                    context.read<OrderBloc>().add(OrderSubmitEvent(distributorId : widget.distributorId,totalAmount: widget.totalCartAmount)),
               ),
             ],
           ),

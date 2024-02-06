@@ -6,6 +6,7 @@ import 'package:webnsoft_solution/app_common_widges/update_product_qty.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/bloc/check_out_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/bloc/check_out_event.dart';
 import 'package:webnsoft_solution/modal/cart/cart_list_modal.dart';
+import 'package:webnsoft_solution/modal/login/login_response.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
 import 'package:webnsoft_solution/utils/asset_images.dart';
@@ -13,6 +14,7 @@ import 'package:webnsoft_solution/utils/util_methods.dart';
 
 class UpdateQuantityWidget extends StatefulWidget {
   final CartItem cartItem;
+  final String? productName;
   final String quantity;
   final String? distributorMinQty;
   bool? productAddRemove;
@@ -20,7 +22,7 @@ class UpdateQuantityWidget extends StatefulWidget {
   double? textSize;
 
 
-  UpdateQuantityWidget({required this.cartItem,required this.quantity,this.distributorMinQty, required this.productAddRemove,this.iconSize,this.textSize,super.key});
+  UpdateQuantityWidget({required this.cartItem,this.productName,required this.quantity,this.distributorMinQty, required this.productAddRemove,this.iconSize,this.textSize,super.key});
 
   @override
   State<UpdateQuantityWidget> createState() => _UpdateQuantityWidgetState();
@@ -45,11 +47,14 @@ class _UpdateQuantityWidgetState extends State<UpdateQuantityWidget> {
                     color: primaryColor,
                     size: widget.iconSize ?? 28,
                   )),
-              BodyText(
-                text: widget.quantity,
-                fontSize: widget.iconSize ?? 20,
-                fontWeight:
-                FontWeight.bold,
+              GestureDetector(
+                onTap: () => quantityDialog(context, widget.cartItem,widget.productName!,widget.distributorMinQty!),
+                child: BodyText(
+                  text: widget.quantity,
+                  fontSize: widget.iconSize ?? 20,
+                  fontWeight:
+                  FontWeight.bold,
+                ),
               ),
               IconButton(
                   padding: const EdgeInsets.all(0),
@@ -72,20 +77,32 @@ class _UpdateQuantityWidgetState extends State<UpdateQuantityWidget> {
       ),
     );
   }
-  updateQty(String from,CartItem item) {
+  updateQty(String from,CartItem item) async {
     var qty;
     if(from == 'add'){
       qty = '${int.parse(item.quantity!)+1}';
       context.read<CheckOutBloc>().add(CheckOutUpdateQuantityEvent(productQty:qty.toString() , cartItemId: item.id.toString(), ));
 
     }else{
+      User user = await getUser();
+      String minimumQty;
       qty = '${int.parse(item.quantity!)-1}';
-
-      String minimumQty =  widget.distributorMinQty == null ? item.productDetails!.prodMinDistrubutorQty! : widget.distributorMinQty!;
-      if(int.parse(minimumQty)  <=  int.parse(qty)){
-        context.read<CheckOutBloc>().add(CheckOutUpdateQuantityEvent(productQty:qty.toString() , cartItemId: item.id.toString(), ));
+      if(user.roleId == '4') {
+        minimumQty = widget.distributorMinQty!;
+        //  minimumQty = widget.distributorMinQty == null ? item.productDetails!.prodMinDistrubutorQty! : widget.distributorMinQty!;
       }else{
-        snackBar(context, 'You can order minimum $minimumQty for this item');
+        minimumQty = widget.distributorMinQty!;
+
+      }
+
+      if(int.parse(minimumQty)  <=  int.parse(qty)){
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          context.read<CheckOutBloc>().add(CheckOutUpdateQuantityEvent(productQty:qty.toString() , cartItemId: item.id.toString(), ));
+        });
+      }else{
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          snackBar(context, 'You can order minimum $minimumQty for this item');
+        });
       }
     }
 

@@ -63,7 +63,7 @@ class CustomRouter{
       case orderDetailRoute:
         return MaterialPageRoute(builder: (_) =>  OrderDetailScreen(order: arguments as OrderList,));
       case paymentRoute:
-        return MaterialPageRoute(builder: (_) => const PaymentScreen());
+        return MaterialPageRoute(builder: (_) =>  PaymentScreen(order: arguments as  OrderList?,));
       case customerPaymentRoute:
         return MaterialPageRoute(builder: (_) => const CustomerPaymentScreen());
       case ledgerRoute:

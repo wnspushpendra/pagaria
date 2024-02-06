@@ -27,3 +27,7 @@ class HomeError extends HomeState {
   String error;
   HomeError({required this.error});
 }
+class HomeCheckInOurError extends HomeState {
+  String error;
+  HomeCheckInOurError({required this.error});
+}

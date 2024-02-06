@@ -142,11 +142,9 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
         Navigator.pushReplacementNamed(context, loginRoute);
       }
     });
-
     // Returning a dummy widget as the Future<Widget> completion
     return Container(); // You can replace Container() with any widget you desire.
   }
-
 }
 
 

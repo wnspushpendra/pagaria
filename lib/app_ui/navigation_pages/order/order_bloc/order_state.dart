@@ -14,7 +14,8 @@ class OrderListFetchSuccess extends OrderState {}
 class OrderSuccess extends OrderState {
   final  List<OrderList>? orderList;
   final OrderDetail? orderDetail;
-  OrderSuccess({this.orderList, this.orderDetail});
+  final String? userRole;
+  OrderSuccess({this.orderList, this.orderDetail,this.userRole});
 }
 class OrderError extends OrderState {
   final String error;

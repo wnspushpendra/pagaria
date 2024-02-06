@@ -17,6 +17,7 @@ import 'package:webnsoft_solution/utils/app_colors.dart';
 import 'package:webnsoft_solution/utils/app_message.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
 import 'package:webnsoft_solution/utils/asset_images.dart';
+import 'package:webnsoft_solution/utils/util_methods.dart';
 
 
 class ResetPassword extends StatefulWidget {
@@ -50,6 +51,7 @@ class _ChangePassword extends State<ResetPassword> {
               setState(() => resetPasswordLoading = true);
             }/// * reset password error state
             if(changePasswordState is ResetPasswordSuccess){
+              snackBar(context, changePasswordState.message);
             }/// * reset password error state
             if(changePasswordState is ResetPasswordError){
               resetPasswordLoading = false;

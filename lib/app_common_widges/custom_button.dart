@@ -11,6 +11,7 @@ class CustomButton extends StatelessWidget {
   final Function onClick;
   final Color? buttonColor;
   final Color? buttonTextColor;
+  final Color? borderColor;
   final double? buttonWidth;
   final double? buttonHeight;
   final double? buttonTextSize;
@@ -24,6 +25,7 @@ class CustomButton extends StatelessWidget {
       required this.onClick,
       this.buttonColor,
         this.buttonTextColor,
+        this.borderColor,
       this.buttonHeight,
       this.buttonWidth,
       this.buttonTextSize,
@@ -44,6 +46,7 @@ class CustomButton extends StatelessWidget {
       decoration: BoxDecoration(
         color: buttonColor ?? primaryColor,
         borderRadius: BorderRadius.circular(radius ?? 20),
+     //   border: Border.all(width: 1,color: borderColor ?? primaryColor)
       ),
       child: TextButton(
         onPressed: ()   => onClick(),

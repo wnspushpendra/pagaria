@@ -37,6 +37,8 @@ dependencies:
   connectivity: # checking internet status
   http:   # for server request using http
   intl:  # for getting util requirements
+  firebase_core:
+  firebase_messaging:
   flutter_statusbarcolor_ns:  # change app status bar color
   image_picker:  # pick image file from gallery and capture image
   file_picker:   # pick file from file manager

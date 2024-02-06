@@ -38,7 +38,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
   String checkInOUt = 'Check-In';
-  String checkInStatus = 'check_in';
+  String checkInStatus = 'check_out';
   String checkInOutTime = '';
   CheckInOutRecord? checkInOutRecord;
   CheckInData checkInData = CheckInData();
@@ -139,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 checkInOutTime = "${checkInData.date!} ${checkInData.checkInTime!}";
                 checkInStatus = 'check_in';
               }else{
-                checkInOutTime = "${checkInData.date!} ${checkInData.checkOutTime!}";
+                checkInOutTime = "${checkInData.date??''} ${checkInData.checkOutTime??''}";
                 checkInStatus = 'check_out';
               }
               setState(() {});
@@ -148,10 +148,10 @@ class _HomeScreenState extends State<HomeScreen> {
               checkInOutLoading = false;
               checkInOutRecord = homeState.checkInOutRecord!;
               if(checkInOutRecord!.status == 'check_in'){
-                checkInOutTime = "${checkInData.date!} ${checkInData.checkInTime!}";
+                checkInOutTime = "${checkInData.date!} ${checkInData.checkInTime}";
                 checkInStatus = 'check_in';
               }else{
-                checkInOutTime = "${checkInData.date!} ${checkInData.checkOutTime!}";
+                checkInOutTime = "${checkInData.date??''} ${checkInData.checkOutTime??''}";
                 checkInStatus = 'check_out';
               }
               setState(() {});
@@ -162,6 +162,9 @@ class _HomeScreenState extends State<HomeScreen> {
             }
             setState(() {});
           }
+          if(homeState is HomeCheckInOurError){
+            setState(() => checkInOutLoading = false);
+          }
         },
         builder: (context, homeState) {
           return homeLoading
@@ -171,12 +174,12 @@ class _HomeScreenState extends State<HomeScreen> {
               : SingleChildScrollView(
                   child: Column(
                     children: <Widget>[
-                      Container(
+                       Container(
                         padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 12.h),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Column(
+                            checkInOutLoading ? Container() :    Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 BodyText(
@@ -197,17 +200,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                 buttonWidth: 110,
                                 buttonHeight: 40,
                                 margin: 0,
-                                buttonColor: checkInStatus == 'check_in'
-                                    ? Colors.green
-                                    : Colors.red,
+                                buttonColor: checkInStatus == 'check_in' ? Colors.red : Colors.green,
                                 buttonTextSize: 12,
                                 showLoading: checkInOutLoading,
                                 onClick: ()  {
                                   if(locationData != null){
-                                    context.read<HomeBloc>().add(HomeCheckInOutUpdateEvent(checkInOutStatus : checkInStatus == 'check_in' ? 'check_out' : 'check_in',locationData : locationData!,placeMark : placeMark));
+                                    context.read<HomeBloc>().add(HomeCheckInOutUpdateEvent(checkInOutStatus : checkInStatus,locationData : locationData!,placeMark : placeMark));
                                   }else{
                                     checkLocationPermission();
-                                    snackBar(context, 'No location permission please on your location');
+                                    //snackBar(context, 'No location permission please on your location');
                                   }
                                 })
                           ],

@@ -1,4 +1,5 @@
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -108,5 +109,39 @@ Future<void> logoutDialog(BuildContext context) async {
         ],
       );
     },
+  );
+}
+
+Widget imageDialog( path, context) {
+  return Dialog(
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+      /*  Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                icon: const Icon(Icons.close_rounded),
+                color: Colors.redAccent,
+              ),
+            ],
+          ),
+        ),*/
+        SizedBox(
+          width: MediaQuery.of(context).size.width * 0.98,
+          height: MediaQuery.of(context).size.height * 0.50,
+          child: CachedNetworkImage(
+            imageUrl: path,
+            fit: BoxFit.cover,
+          ),
+        ),
+      ],
+    ),
   );
 }

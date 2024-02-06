@@ -23,6 +23,7 @@ import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_detail
 import 'package:webnsoft_solution/modal/argument_modal/ProductArgument.dart';
 import 'package:webnsoft_solution/modal/cart/add_cart_product.dart';
 import 'package:webnsoft_solution/modal/cart/cart_list_modal.dart';
+import 'package:webnsoft_solution/modal/login/login_response.dart';
 import 'package:webnsoft_solution/modal/product_detail.dart';
 import 'package:webnsoft_solution/modal/product_list.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
@@ -30,6 +31,7 @@ import 'package:webnsoft_solution/utils/app_colors.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
 import 'package:webnsoft_solution/utils/asset_images.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:webnsoft_solution/utils/dialogs.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
 class ProductDetailScreen extends StatefulWidget {
@@ -51,26 +53,37 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   CartProduct cartProduct = CartProduct();
   CartItem cartItem = CartItem();
   int selectedIndex = -1;
-  String? quantity;
-  String? productAmount;
+  String quantity = '';
+  String productAmount = '';
   String itemPrice = '';
   bool? productAddRemove;
+  String prodMinQty  = '';
 
 
   @override
   void initState() {
-    quantity = widget.productArgument.product!.prodMinDistrubutorQty!;
-    productAmount = widget.productArgument.product!.prodDistributorPrice!;
+   initData();
 
-    // context.read<ProductDetailsBloc>().add(ProductDetailsLoadEvent(productId: widget.productArgument.productId));
+   // context.read<ProductDetailsBloc>().add(ProductDetailsLoadEvent(productId: widget.productArgument.productId));
     super.initState();
+  }
+  initData() async{
+    User user = await getUser();
+    var item = widget.productArgument.product;
+    prodMinQty = (user.roleId == '4'  ? item!.prodMinDistrubutorQty! : item!.prodMinCustomerQty)!;
+    quantity = (user.roleId == '4'  ? item.prodMinDistrubutorQty! : item.prodMinCustomerQty)!;
+    productAmount = (user.roleId == '4'  ? item.prodDistributorPrice! : item.prodCustomerPrice)!;
+    if(item.isCart!.isNotEmpty){
+      quantity = item.isCart![0].quantity!;
+      productAmount = item.isCart![0].amount.toString();
+    }
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     var product = widget.productArgument.product;
-    //productAmount = product!.prodDistributorPrice!;
     if (product!.isCart != null && product.isCart!.isNotEmpty) {
       productAddRemove = true;
       cartItem.id = product.isCart![0].id;
@@ -88,7 +101,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         listener: (context, state) {
           if (state is CheckOutSuccess) {
             if (state.cartItem != null) {
-              quantity = state.cartItem!.quantity;
+              quantity = state.cartItem!.quantity!;
               productAmount = state.cartItem!.amount.toString();
               widget.productArgument.product!.prodDistributorPrice = state.cartItem!.amount.toString();
               widget.productArgument.product!.isCart![0].quantity = state.cartItem!.quantity;
@@ -130,8 +143,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Flexible(
                                       child: BodyText(
@@ -141,46 +153,59 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                       ),
                                     ),
                                     BodyText(
-                                      text:
-                                          '$rupeesSymbol$productAmount',
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                      text: '$rupeesSymbol$productAmount',
+                                      fontWeight: FontWeight.bold,),
                                   ],
                                 ),
                                 BodyText(
-                                  text:
-                                      "Total Products Qty :  ${product.prodInventory}",
+                                  text: "Total Products Qty :  ${product.prodInventory}",
                                   fontSize: 16,
                                 ),
-                                const Space(
-                                  height: 12,
-                                ),
+                                const Space(height: 12,),
                                 BodyText(
                                   text: product.prodShortDescription ?? '',
                                   fontSize: 16,
                                 ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 12),
-                                  child: GridView.builder(
-                                      shrinkWrap: true,
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      gridDelegate:
-                                          const SliverGridDelegateWithMaxCrossAxisExtent(
-                                              maxCrossAxisExtent: 160,
-                                              mainAxisExtent: 120),
-                                      itemCount: productGallery.length,
-                                      itemBuilder: (context, index) {
-                                        return CachedNetworkImage(
-                                            imageUrl: productGallery[index]
-                                                .galleryImageUrl
-                                                .toString());
-                                      }),
+                                Stack(
+                                  children: [
+                                    Container(
+                                      height: 140,
+                                      padding: const EdgeInsets.symmetric(vertical: 12),
+                                      child: ListView.builder(
+                                          shrinkWrap: true,
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount: product.galleryImages!.length  ,
+                                          itemBuilder: (context, index) {
+                                            var image = product.galleryImages![index];
+                                            return GestureDetector(
+                                              onTap: () => imageDialog( image.galleryImageUrl.toString(), context),
+                                              child: SizedBox(
+                                                height: 120,
+                                                width: 120,
+                                                child: CachedNetworkImage(
+                                                    imageUrl: image.galleryImageUrl!),
+                                              ),
+                                            );
+                                          }),
+                                    ),
+                                   /* Positioned(
+                                      right: 0,
+                                      bottom: 0,
+                                      child: CustomButton(
+                                        buttonText: 'View All',
+                                        buttonWidth: 80,
+                                        buttonHeight: 30,
+                                        radius: 15,
+                                        margin: 0,
+                                        buttonTextSize: 10,
+                                        onClick: (){},),
+                                    )*/
+                                  ],
                                 ),
                                 Html(
                                   data: product.prodDescription ?? '',
-                                )
+                                ),
+
                               ],
                             ),
                           ],
@@ -215,9 +240,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                         alignment: Alignment.center,
                                         child: UpdateQuantityWidget(
                                             cartItem: cartItem,
-                                            quantity: quantity!,
+                                            quantity: quantity,
                                             distributorMinQty:
-                                                product.prodMinDistrubutorQty,
+                                                prodMinQty,
                                             productAddRemove: productAddRemove),
                                       )),
                                   Expanded(
@@ -235,7 +260,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 listener: (context, state) {
                                   if (state is CartProductAddSuccess) {
                                     cartProduct = state.cartProduct;
-                                    quantity = cartProduct.quantity;
+                                    quantity = cartProduct.quantity!;
                                     productAmount = cartProduct.amount.toString();
 
                                     IsCart cart = IsCart();
@@ -270,6 +295,33 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           );
         },
       ),
+    );
+  }
+  void imageDialog(String imageUrl, BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+       //   insetPadding: EdgeInsets.zero,
+          backgroundColor: bodyWhite,
+          child: Stack(
+            children: [
+              SizedBox(
+                height: MediaQuery.of(context).size.height*0.5,
+                width:MediaQuery.of(context).size.height*0.8 ,
+                child: CachedNetworkImage(
+                    imageUrl: imageUrl,
+                  fit: BoxFit.contain,
+                ),
+              ),
+              Positioned(
+                right: 8,
+                  top: 8,
+                  child: IconButton(onPressed: () => Navigator.of(context).pop(), icon: const Icon(Icons.close,size: 32,)))
+            ],
+          ),
+        );
+      },
     );
   }
 }
