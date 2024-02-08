@@ -24,6 +24,5 @@ const String customerListApi = 'user-list-get';
 const String checkInOutApi = 'marketing-ex-time';
 const String checkInStatusApi = 'marketing-ex-latest-status';
 const String addDistributorApi = 'add-distributor';
-
-const String firmListApi = 'order-list';
+const String firmCustomerListApi = 'firm-name';
 

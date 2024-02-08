@@ -25,6 +25,7 @@ get getProvider => [
   BlocProvider(create: (context) => ProductBloc()),
   BlocProvider(create: (context) => ProductDetailsBloc()),
   BlocProvider(create: (context) => OrderBloc()),
+  BlocProvider(create: (context) => PaymentBloc()),
   BlocProvider(create: (context) => AddCustomerBloc()),
   BlocProvider(create: (context) => ProfileBloc()),
   BlocProvider(create: (context) => ResetPasswordBloc()),

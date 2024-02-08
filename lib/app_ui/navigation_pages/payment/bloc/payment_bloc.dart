@@ -2,19 +2,21 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/payment/bloc/payment_event.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/payment/bloc/payment_state.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/payment/payment_apis.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/cart_api.dart';
 import 'package:webnsoft_solution/modal/cart/cart_list_modal.dart';
+import 'package:webnsoft_solution/modal/firm_customer_modal.dart';
 import 'package:webnsoft_solution/modal/login/login_response.dart';
 import 'package:webnsoft_solution/utils/app_preferences.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
 
 class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
   PaymentBloc() : super(PaymentInitial()) {
-    on<FetchFirmEvent>((event, emit) => fetchFirm(event));
+    on<FetchFirmCustomerEvent>((event, emit) => fetchFirm(event));
     on<PaymentClickEvent>((event, emit) => makePayment(event));
   }
 
-  fetchFirm(FetchFirmEvent event) async {
+  fetchFirm(FetchFirmCustomerEvent event) async {
     Map<String, String> header =  {
       "Authorization": "Bearer ${await getStringPref(userTokenPrefecences)}",
     };
@@ -22,12 +24,12 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     User user = await getUserPref(userProfileDataPrefecences);
     // form body data
     Map<String, dynamic> body = <String, dynamic>{};
-    body['user_id'] = user.id.toString();
+    body['marketing_executive_id'] = user.id.toString();
 
 
-    CartProductResponseModal response = await cartListDataApi(header, body);
-    if(response.status == true ){
-
+    FirmCustomerResponseModal response = await firmCustomerListData(header, body);
+    if(response.status == true  && response.firm != null && response.firm!.isNotEmpty){
+      emit(PaymentSuccess(firmList :  response.firm));
     }else{
       emit(PaymentError(error : response.message.toString()));
     }

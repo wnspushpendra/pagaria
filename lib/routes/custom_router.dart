@@ -18,6 +18,7 @@ import 'package:webnsoft_solution/app_ui/navigation_pages/product/product.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_detail/product_detail.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/profile/profile.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/payment/payment.dart';
+import 'package:webnsoft_solution/modal/argument_modal/LedgetArgument.dart';
 import 'package:webnsoft_solution/modal/argument_modal/ProductArgument.dart';
 import 'package:webnsoft_solution/modal/customer_detail.dart';
 import 'package:webnsoft_solution/modal/distributor_list.dart';
@@ -65,9 +66,9 @@ class CustomRouter{
       case paymentRoute:
         return MaterialPageRoute(builder: (_) =>  PaymentScreen(order: arguments as  OrderList?,));
       case customerPaymentRoute:
-        return MaterialPageRoute(builder: (_) => const CustomerPaymentScreen());
+        return MaterialPageRoute(builder: (_) =>  CustomerPaymentScreen(customer: arguments as Customer,));
       case ledgerRoute:
-        return MaterialPageRoute(builder: (_) =>  LedgerScreen(distributorId: arguments as String));
+        return MaterialPageRoute(builder: (_) =>  LedgerScreen(argument: arguments as LedgerArgument));
 
       case ledgerDetailRoute:
         return MaterialPageRoute(builder: (_) =>  LedgerDetailScreen(order: arguments as OrderList,));

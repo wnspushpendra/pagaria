@@ -4,7 +4,10 @@ import 'package:webnsoft_solution/app_common_widges/normal_text.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/customer/customer_detail/customer_basic_detail.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/customer/customer_detail/ledget_book.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/customer/customer_payment/customer_payment.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/customer/ledger/ledger.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/customer/ledger/ledger_detail.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/order/order_list/order.dart';
+import 'package:webnsoft_solution/modal/argument_modal/LedgetArgument.dart';
 import 'package:webnsoft_solution/modal/customer_detail.dart';
 import 'package:webnsoft_solution/modal/distributor_list.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
@@ -51,8 +54,8 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
             children:[
               CustomerBasicDetails(customer : widget.customerDetailModal.customerDetails!),
                OrderScreen(distributorId: widget.customerDetailModal.customerDetails!.id.toString()),
-              const CustomerPaymentScreen(),
-              const LedgetBookScreen(),
+               CustomerPaymentScreen(customer : widget.customerDetailModal.customerDetails!),
+              LedgerScreen(argument:LedgerArgument(distributorId: widget.customerDetailModal.customerDetails!.id.toString())),
             ] ),
       ),
     );

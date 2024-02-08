@@ -75,11 +75,7 @@ class _CustomerListState extends State<CustomerList> {
           children: [
             widget.fromHome== true ? Container() :
             CustomTextField(hint: 'Search Customer', label: 'Search customer', controller: searchController, onTextChange: (value) => filterList(searchController.text)),
-            GridView.builder(
-                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 500,
-                    mainAxisExtent: 210//MediaQuery.of(context).size.height/3.2
-                ),
+            ListView.builder(
                 physics: widget.fromHome== true ? const NeverScrollableScrollPhysics() : null,
                 shrinkWrap: true,
                 itemCount: widget.fromHome== true && filteredList.length>5 ? 5  :  filteredList.length,

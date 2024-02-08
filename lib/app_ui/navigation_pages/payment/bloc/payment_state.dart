@@ -1,9 +1,14 @@
 
+import 'package:webnsoft_solution/modal/firm_customer_modal.dart';
+
 abstract class PaymentState {}
 
 class PaymentInitial extends PaymentState {}
 class PaymentLoading extends PaymentState {}
-class PaymentSuccess extends PaymentState {}
+class PaymentSuccess extends PaymentState {
+  List<Firm>? firmList;
+  PaymentSuccess({required this.firmList});
+}
 class PaymentError extends PaymentState {
   final String? error;
   final bool? firmName;

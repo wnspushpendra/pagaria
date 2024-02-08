@@ -6,6 +6,7 @@ import 'package:webnsoft_solution/app_common_widges/custom_button.dart';
 import 'package:webnsoft_solution/app_common_widges/home_appbar.dart';
 import 'package:webnsoft_solution/app_common_widges/normal_text.dart';
 import 'package:webnsoft_solution/app_common_widges/space.dart';
+import 'package:webnsoft_solution/modal/argument_modal/LedgetArgument.dart';
 import 'package:webnsoft_solution/modal/customer_detail.dart';
 import 'package:webnsoft_solution/modal/distributor_list.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
@@ -32,7 +33,7 @@ class CustomerListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding:  const EdgeInsets.all(8),
+      padding:   EdgeInsets.all(8.h),
       margin: EdgeInsets.all(4.h),
       alignment: Alignment.center,
       decoration: defaultDecoration,
@@ -120,7 +121,7 @@ class CustomerListItem extends StatelessWidget {
                     buttonWidth: 110,
                     buttonHeight: 36,
                     image: downloadLedger,
-                    onClick: () => Navigator.pushReplacementNamed(context, ledgerRoute,arguments: customerDetails.id.toString())),
+                    onClick: () => Navigator.pushReplacementNamed(context, ledgerRoute,arguments: LedgerArgument(distributorId:  customerDetails.id.toString(),showAppbar: true))),
               )
             ],
           ),

@@ -120,7 +120,6 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                 selectedIndex = index;
                                 CartItem cartItem = cartList[index];
                                 quantity = cartItem.quantity;
-
                                 prodMinQty = (userRole == '4' ?  cartItem.productDetails!.prodMinDistrubutorQty! : cartItem.productDetails!.prodMinCustomerQty)!;
 
                                 return Container(
@@ -180,19 +179,24 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                                             child: CustomProgressBar(widthV: 15,heightV: 15,)) :
                                                     cartItem.id != cartId  ? IconButton(
                                                         onPressed: () {
-                                                       /*   showModalBottomSheet(
+                                                          showModalBottomSheet(
                                                             context: context,
                                                             builder: (BuildContext context) {
-                                                              return DeleteProductBottomSheet(cartItem : cartItem);
+                                                              return DeleteProductBottomSheet(cartItem : cartItem,
+                                                                cartItemId: (int value) {
+                                                                  selectedIndex = index;
+                                                                  checkOutDeleteLoading = true;
+                                                                  setState(() => cartId = cartItem.id!);
+                                                                },);
                                                             },
-                                                          );*/
-                                                          selectedIndex = index;
+                                                          );
+                                   /*                       selectedIndex = index;
                                                           checkOutDeleteLoading = true;
                                                           setState(() => cartId = cartItem.id!);
-                                                          context.read<ProductBloc>().add(RemoveProductCartEvent(cartItemId: cartItem.id.toString()));
+                                                          context.read<ProductBloc>().add(RemoveProductCartEvent(cartItemId: cartItem.id.toString()));*/
                                                         },
                                                         icon: const Icon(
-                                                          Icons.delete_forever_outlined,
+                                                          Icons.close_sharp,
                                                           size: 28,
                                                           color: bodyLightBlack,
                                                         )) : Container();

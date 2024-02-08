@@ -64,7 +64,12 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
           }
           /***************** add distributor/customer error state ****************/
           if (addCustomerState is AddCustomerError)  {
-            setState(() => updateErrorUi(addCustomerState));
+            showLoading = false;
+            if(addCustomerState.message != null){
+              snackBar(context, addCustomerState.message.toString());
+            }
+            updateErrorUi(addCustomerState);
+            setState(() {});
           }
           /***************** add distributor/customer success state ****************/
           if (addCustomerState is AddCustomerSuccess) {

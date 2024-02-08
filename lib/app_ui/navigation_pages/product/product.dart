@@ -190,8 +190,7 @@ class _ProductScreenState extends State<ProductScreen> {
                       loadCategory = false;
                       categoryList = categoryState.categoryList;
                       if (categoryList.isNotEmpty) {
-                        context.read<ProductBloc>().add(ProductLoadEvent(
-                            categoryId: categoryList[0].id.toString()));
+                        context.read<ProductBloc>().add(ProductLoadEvent(categoryId: categoryList[0].id.toString()));
                       }
                     });
                   }

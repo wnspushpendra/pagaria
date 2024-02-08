@@ -12,7 +12,7 @@ class _LedgetBookScreenState extends State<LedgetBookScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      /*SfPdfViewer.network(
+      /* SfPdfViewer.network(
         "https://cdn.syncfusion.com/content/PDFViewer/flutter-succinctly.pdf",
         canShowScrollHead: false,
         canShowPaginationDialog: false,

@@ -10,7 +10,10 @@ import 'package:webnsoft_solution/app_common_widges/custom_dropdow.dart';
 import 'package:webnsoft_solution/app_common_widges/custom_textfield.dart';
 import 'package:webnsoft_solution/app_common_widges/space.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/payment/bloc/payment_bloc.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/payment/bloc/payment_event.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/payment/bloc/payment_state.dart';
+import 'package:webnsoft_solution/modal/distributor_list.dart';
+import 'package:webnsoft_solution/modal/firm_customer_modal.dart';
 import 'package:webnsoft_solution/modal/order/order_list_modal.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
@@ -27,12 +30,26 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
-  List<String> customerList = ['yuvi', 'rohit', 'dhoni', 'kl rahul', 'pant'];
   List<String> paymentOption = ['QR Payment', 'UPI Transfer', 'Bank Transfer', 'Cash', 'Card Payment'];
   TextEditingController amountToPayController = TextEditingController(text: '5000');
   TextEditingController referenceIdController = TextEditingController();
-  String? firmName,customerName,paymentType;
+  String? customerName,paymentType;
   File? file;
+  bool firmCustomerLoading = true;
+  List<Firm> firmList = [];
+  Firm? firmValue;
+  List<AllCustomer>? customerList;
+  AllCustomer? customerValue;
+
+
+
+  @override
+  void initState() {
+    // call api for getting firm and their customer
+    context.read<PaymentBloc>().add(FetchFirmCustomerEvent());
+    super.initState();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +58,17 @@ class _PaymentScreenState extends State<PaymentScreen> {
         Navigator.pushReplacementNamed(context, homeRoute, arguments: await getUser());
       }),
       body: BlocConsumer<PaymentBloc, PaymentState>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if(state is PaymentSuccess){
+            firmCustomerLoading = false;
+            firmList  = state.firmList!;
+
+            setState(() {});
+          }
+          if(state is PaymentError){
+            snackBar(context, state.error!);
+          }
+        },
         builder: (context, state) {
           return SingleChildScrollView(
             child: Container(
@@ -49,19 +76,27 @@ class _PaymentScreenState extends State<PaymentScreen> {
               child: Column(
                 children: <Widget>[
                   CustomDropDown(
-                      hint: 'Select Firm ',
-                      itemList: customerList,
-                      selectedValue: firmName,
-                      onChange: (value) => setState(() => firmName = value)),
-                  CustomDropDown(
+                      type: 'firm',
+                      hint: firmList.isEmpty ? 'No Firm' : 'Select Firm ',
+                      firmList: firmList,
+                      selectedValue: firmValue,
+                      onChangeFirm: (value) => setState(() {
+                        firmValue = value;
+                        customerList = value.allCustomer ?? [];
+                      }), ),
+                  customerList != null ?  CustomDropDown(
+                      type: 'customer',
                       hint: 'Select Customer ',
-                      itemList: customerList,
-                      selectedValue: customerName,
-                      onChange: (value) => setState(() => customerName = value)),
+                      customerList: customerList,
+                      selectedCustomerValue: customerValue,
+                      onChangeCustomer: (value) => setState((){
+                        customerValue = value;
+                        customerName = value.fullName;
+                      })) : Container(),
                   Row(
                     children: [
                       BodyText(
-                        text: 'Amount To Pay : ',
+                        text: 'Due Payment : ',
                         fontSize: 14.h,
                       ),
                       const BodyText(
@@ -80,7 +115,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   Row(
                     children: [
                       BodyText(
-                        text: 'Remaining Amount : ',
+                        text: 'Remaining Payment : ',
                         fontSize: 12.h,
                         color: Colors.red,
                       ),
@@ -92,18 +127,17 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     ],
                   ),
 
-                  CustomDropDown(
+         /*         CustomDropDown(
                       hint: 'Select Payment Option ',
                       itemList: paymentOption,
                       selectedValue: paymentType,
-                      onChange: (value) => setState(() => paymentType = value)),
+                      onChange: (value) => setState(() => paymentType = value)),*/
                   CustomTextField(
                       hint: 'Reference ID',
                       label: 'Reference ID',
                       controller: referenceIdController,
                       onTextChange: (value) {}),
                   const Space(height: 8,),
-
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

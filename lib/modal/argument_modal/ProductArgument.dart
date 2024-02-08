@@ -11,5 +11,4 @@ class ProductArgument{
   ProductArgument({required this.productId, this.distributorId,this.product,this.totalAmount});
 
 
-
 }

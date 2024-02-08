@@ -133,6 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
            });
           }
           if (homeState is HomeSuccess) {
+            checkInOutLoading = false;
             if(homeState.checkInData != null){
               checkInData = homeState.checkInData!;
               if(checkInData.status == 'check_in'){
@@ -145,7 +146,6 @@ class _HomeScreenState extends State<HomeScreen> {
               setState(() {});
             }
             if(homeState.checkInOutRecord != null){
-              checkInOutLoading = false;
               checkInOutRecord = homeState.checkInOutRecord!;
               if(checkInOutRecord!.status == 'check_in'){
                 checkInOutTime = "${checkInData.date!} ${checkInData.checkInTime}";
@@ -156,14 +156,14 @@ class _HomeScreenState extends State<HomeScreen> {
               }
               setState(() {});
             }
-
             if(homeState.distributorList != null){
               customerList = homeState.distributorList!;
             }
             setState(() {});
           }
           if(homeState is HomeCheckInOurError){
-            setState(() => checkInOutLoading = false);
+            checkInOutLoading = false;
+            setState(() {});
           }
         },
         builder: (context, homeState) {
