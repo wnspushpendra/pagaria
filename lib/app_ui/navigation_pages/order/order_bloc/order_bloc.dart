@@ -8,6 +8,7 @@ import 'package:webnsoft_solution/modal/order/order.dart';
 import 'package:webnsoft_solution/modal/order/order_list_modal.dart';
 import 'package:webnsoft_solution/utils/app_preferences.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
+import 'package:webnsoft_solution/utils/util_methods.dart';
 
 class OrderBloc extends Bloc<OrderEvent, OrderState> {
   OrderBloc() : super(OrderInitial()) {
@@ -30,7 +31,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     // form body data
     Map<String, dynamic> body = <String, dynamic>{};
     body['user_id'] = user.id.toString();
-    body['user_type'] = user.roleId == '4' ? 'type_marketing_ex' : 'type_customer';
+    body['user_type'] = 'type_marketing_ex';
 
     // request
     OrderListResponseModal response = await userOrderListApi(header, body);
@@ -49,12 +50,19 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     };
     User user = await getUserPref(userProfileDataPrefecences);
 
+    String address = '${event.placeMark?.street}, ${event.placeMark?.locality}, ${event.placeMark?.administrativeArea}, ${event.placeMark?.country}';
+    String zipCode = '${event.placeMark?.postalCode}';
+
+
     // form body data
     Map<String, dynamic> body = <String, dynamic>{};
     body['booked_by_id'] = user.id.toString();
-    body['user_type'] = user.roleId == '4' ? 'type_marketing_ex' : 'type_customer';
-    body['user_id'] =  event.distributorId.toString() ;
+    body['user_type'] =  'type_marketing_ex' ;
+    body['user_id'] =  event.distributorId.toString();
     body['total_amount'] = event.totalAmount;
+    body['latitude'] = event.locationData.latitude.toString();
+    body['longitude'] = event.locationData.longitude.toString();
+    body['current_location'] = address;
 
     emit(OrderLoading());
 

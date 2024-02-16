@@ -23,3 +23,4 @@ const String panCardMessage = 'Pan Card is required !';
 const String aadharCardMessage = 'Aadhar Card Number is required !';
 const String gstNumberMessage = 'GST Number is required !';
 const String firmNameMessage = 'Firm Name is required !';
+const String remainingAmountGreaterMessage = 'Remaining amount is more than due amount!';

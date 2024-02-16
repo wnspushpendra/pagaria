@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,11 +9,11 @@ import 'package:webnsoft_solution/app_common_widges/custom_appbar.dart';
 import 'package:webnsoft_solution/app_common_widges/custom_button.dart';
 import 'package:webnsoft_solution/app_common_widges/custom_progressbar.dart';
 import 'package:webnsoft_solution/app_common_widges/home_appbar.dart';
+import 'package:webnsoft_solution/app_common_widges/normal_text.dart';
 import 'package:webnsoft_solution/app_common_widges/space.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/order/order_bloc/order_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/order/order_bloc/order_event.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/order/order_bloc/order_state.dart';
-import 'package:webnsoft_solution/modal/login/login_response.dart';
 import 'package:webnsoft_solution/modal/order/order_list_modal.dart';
 import 'package:webnsoft_solution/modal/order/order_product.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
@@ -62,6 +61,9 @@ class _OrderScreenState extends State<OrderScreen> {
           }
           if(state is OrderError){
             loadOrder = false;
+            if(state.error == 'unauthorization'){
+              backToLogin(context);
+            }
             setState(() => snackBar(context, state.error ) );
           }
         },
@@ -113,18 +115,18 @@ class _OrderScreenState extends State<OrderScreen> {
                                   text: email,
                                   fontSize: 16.h,
                                 ),
-                                 BodyText(
+                                 NormalText(
                                   text: order.userData!.email!,
-                                  align: TextAlign.start,
+                                //  align: TextAlign.start,
                                   color: primaryColor,
                                 ),
                               ],
                             ),
                           )
                         ]),
-                        Space(
+                      /*  Space(
                           height: 8.h,
-                        ),
+                        ),*/
                         Row(children: [
                            Expanded(
                             flex: 1,
@@ -161,7 +163,7 @@ class _OrderScreenState extends State<OrderScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                          userRole == '4' ?  CustomButton(
+                          userRole == '5' ?  CustomButton(
                                 buttonText: 'Pay Now',
                                 buttonTextSize: 14,
                                 buttonWidth: 96,
@@ -169,7 +171,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                 margin: 0,
                                 buttonColor: Colors.green,
                                 radius: 20,
-                                onClick: () => Navigator.pushReplacementNamed(context, paymentRoute,arguments: order)) : Container(),
+                                onClick: () => Navigator.pushReplacementNamed(context, distributorPaymentRoute,arguments: order.userId.toString())) : Container(),
                             Expanded(
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,

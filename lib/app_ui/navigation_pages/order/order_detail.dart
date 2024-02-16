@@ -53,9 +53,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               size: 24,
             ),
             onPressed: () async {
-              WidgetsBinding.instance.addPostFrameCallback((timeStamp) async{
-                Navigator.pushReplacementNamed(context, homeRoute,arguments: await getUser());
-              });
+              backUserHome(context);
             },
           ),
           titleSpacing: 0,

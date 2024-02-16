@@ -7,6 +7,8 @@ import 'package:webnsoft_solution/app_ui/auth/reset_password/bloc/reset_password
 import 'package:webnsoft_solution/app_ui/navigation_pages/customer/add_customer/bloc/add_customer_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/home_bloc/home_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/logout_bloc/logout_bloc.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/home/target_bloc/target_bloc.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/ledger/bloc/ledger_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/order/order_bloc/order_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/payment/bloc/payment_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/category_bloc/category_bloc.dart';
@@ -21,6 +23,7 @@ get getProvider => [
   BlocProvider(create: (context) => LoginBloc()),
   BlocProvider(create: (context) => LogoutBloc()),
   BlocProvider(create: (context) => HomeBloc()),
+  BlocProvider(create: (context) => TargetBloc()),
   BlocProvider(create: (context) => CategoryBloc()),
   BlocProvider(create: (context) => ProductBloc()),
   BlocProvider(create: (context) => ProductDetailsBloc()),
@@ -32,5 +35,6 @@ get getProvider => [
   BlocProvider(create: (context) => ForgotPasswordBloc()),
   BlocProvider(create: (context) => PaymentBloc()),
   BlocProvider(create: (context) => CheckOutBloc()),
+  BlocProvider(create: (context) => LedgerBloc()),
 
 ];

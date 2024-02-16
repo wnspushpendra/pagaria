@@ -7,13 +7,18 @@ import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/cart_
 import 'package:webnsoft_solution/modal/cart/cart_list_modal.dart';
 import 'package:webnsoft_solution/modal/firm_customer_modal.dart';
 import 'package:webnsoft_solution/modal/login/login_response.dart';
+import 'package:webnsoft_solution/modal/payment/due_payment_modal.dart';
+import 'package:webnsoft_solution/modal/payment/payment_list_modal.dart';
+import 'package:webnsoft_solution/modal/payment/payment_modal.dart';
 import 'package:webnsoft_solution/utils/app_preferences.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
 
 class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
   PaymentBloc() : super(PaymentInitial()) {
     on<FetchFirmCustomerEvent>((event, emit) => fetchFirm(event));
+    on<FetchCustomerDueAmountEvent>((event, emit) => duePayment(event));
     on<PaymentClickEvent>((event, emit) => makePayment(event));
+    on<FetchPaymentListDataEvent>((event, emit) => paymentListData(event));
   }
 
   fetchFirm(FetchFirmCustomerEvent event) async {
@@ -35,40 +40,88 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     }
 
   }
+  duePayment(FetchCustomerDueAmountEvent event) async{
+    Map<String, String> header =  {
+      "Authorization": "Bearer ${await getStringPref(userTokenPrefecences)}",
+    };
 
+    User user = await getUserPref(userProfileDataPrefecences);
+    // form body data
+    Map<String, dynamic> body = <String, dynamic>{};
+    body['executive_id'] = user.id.toString();
+    body['user_type'] = user.roleId == '4' ? 'type_marketing_ex' : 'type_customer';
+    body['user_id'] = event.customerId.toString();
+
+    CustomerDueAmountModal response = await dueAmountData(header, body);
+
+    if(response.status == true){
+    emit(PaymentSuccess(totalAmount: response.totalAmount.toString(),dueAmount:  response.dueAmount.toString()));
+    }else{
+    emit(PaymentError(error: response.message.toString()));
+    }
+  }
   makePayment(PaymentClickEvent event) async{
 
     bool validatePayment = paymentValidate(event);
     if(validatePayment){
-      makePaymentRequest();
+      makePaymentRequest(event);
     }
-
   }
   bool paymentValidate(PaymentClickEvent event) {
-    bool firmName = false,  customerName = false, payAmount = false,  paymentOption = false,
+    bool  payAmount = false,  paymentOption = false,
         referenceId = false,  attachment = false;
-
-    firmName = event.firmName!.isEmpty;
-    customerName = event.customerName!.isEmpty;
     payAmount =  event.payableAmount!.isEmpty;
-    paymentOption = event.paymentOption!.isEmpty;
+    paymentOption = event.paymentOption == null;
     referenceId = event.paymentReferenceNumber!.isEmpty;
-    attachment = event.file != null;
-    if(!firmName && !customerName && !payAmount && !paymentOption ){
+    attachment = event.path.isEmpty;
+    if(!payAmount && !paymentOption){
       return true;
     }else{
       return false;
     }
+  }
+  void makePaymentRequest(PaymentClickEvent event) async {
+    Map<String, String> header =  {
+    "Authorization": "Bearer ${await getStringPref(userTokenPrefecences)}",
+    };
 
+    User user = await getUserPref(userProfileDataPrefecences);
+    // form body data
+    Map<String, dynamic> body = <String, dynamic>{};
+    body['executive_id'] = user.id.toString();
+    body['user_type'] = 'type_marketing_ex' ;
+    body['user_id'] = event.customerId.toString();
+    body['amount'] = event.payableAmount;
+    body['payment_type'] = event.paymentOption;
+    body['payment_reference_id'] = event.paymentReferenceNumber;
 
-
-
+    CustomerPaymentModal response = await customerPaymentData(event.path.toString(),header, body);
+    emit(PaymentError(error: response.message.toString()));
+    if(response.status == true){
+    emit(PaymentSuccess(paymentSuccessAmount: int.parse(response.record!.amount!)));
+    }
   }
 
 
-  void makePaymentRequest() {
+  paymentListData(FetchPaymentListDataEvent event) async{
+    Map<String, String> header =  {
+      "Authorization": "Bearer ${await getStringPref(userTokenPrefecences)}",
+    };
 
+    User user = await getUserPref(userProfileDataPrefecences);
+    // form body data
+    Map<String, dynamic> body = <String, dynamic>{};
+    body['executive_id'] = user.id.toString();
+
+    PaymentListModal response = await customerPaymentListData(header, body);
+
+    if(response.status == true && response.paymentDetail != null && response.paymentDetail!.isNotEmpty){
+      emit(PaymentSuccess(paymentDetailList: response.paymentDetail));
+    }else{
+      emit(PaymentError(error: response.message.toString()));
+    }
   }
+
 
 }
 

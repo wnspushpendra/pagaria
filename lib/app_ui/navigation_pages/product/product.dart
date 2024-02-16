@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shimmer_loading/shimmer_loading.dart';
 import 'package:webnsoft_solution/app_common_widges/app_body_text.dart';
 import 'package:webnsoft_solution/app_common_widges/asset_button.dart';
@@ -13,6 +17,10 @@ import 'package:webnsoft_solution/app_common_widges/home_appbar.dart';
 import 'package:webnsoft_solution/app_common_widges/normal_text.dart';
 import 'package:webnsoft_solution/app_common_widges/space.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/order/create_order/product_count.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/pdf/pdf_api.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/pdf/pdf_generator.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/pdf/pdf_products.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/pdf/product_list_pdf.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/category_bloc/category_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/category_bloc/category_event.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/category_bloc/category_state.dart';
@@ -33,6 +41,10 @@ import 'package:webnsoft_solution/utils/app_regex.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
 import 'package:webnsoft_solution/utils/asset_images.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
+import 'package:pdf/pdf.dart' as pdf;
+
+
+
 
 class ProductScreen extends StatefulWidget {
   final String? distributorId;
@@ -45,6 +57,7 @@ class ProductScreen extends StatefulWidget {
 }
 
 class _ProductScreenState extends State<ProductScreen> {
+  TextEditingController searchProductController = TextEditingController();
   bool loadCategory = false;
   bool productLoading = false;
 
@@ -55,7 +68,7 @@ class _ProductScreenState extends State<ProductScreen> {
   List<Product> filterProductList = [];
   int selectedIndex = -1;
   bool activeButton = true;
-   String itemCount = '';
+  String itemCount = '';
   bool showCategory = true;
   String errorMessage = '';
 
@@ -73,6 +86,7 @@ class _ProductScreenState extends State<ProductScreen> {
       }).toList();
     });
   }
+
   void filteredProductList(String query) {
     setState(() {
       filterProductList = productList.where((contact) {
@@ -107,14 +121,14 @@ class _ProductScreenState extends State<ProductScreen> {
           actions: [
             widget.distributorId != null
                 ? BlocConsumer<CheckOutBloc, CheckOutState>(
-              listener: (context,state){
-                if(state is CheckOutSuccess){
-                  if(state.cartItemCount != null){
-                    itemCount = state.cartItemCount.toString();
-                    setState(() {});
-                  }
-                }
-              },
+                    listener: (context, state) {
+                      if (state is CheckOutSuccess) {
+                        if (state.cartItemCount != null) {
+                          itemCount = state.cartItemCount.toString();
+                          setState(() {});
+                        }
+                      }
+                    },
                     builder: (context, state) {
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -122,8 +136,12 @@ class _ProductScreenState extends State<ProductScreen> {
                           children: [
                             IconButton(
                                 onPressed: () => Navigator.pushReplacementNamed(context, checkOutRoute, arguments: widget.distributorId),
-                                icon: Image.asset(cartIcon, height: 30, color: bodyWhite,)),
-                             Positioned(
+                                icon: Image.asset(
+                                  cartIcon,
+                                  height: 30,
+                                  color: bodyWhite,
+                                )),
+                            Positioned(
                                 right: 0,
                                 child: BodyText(
                                   text: itemCount,
@@ -137,14 +155,27 @@ class _ProductScreenState extends State<ProductScreen> {
                     },
                   )
                 : Container(),
-            widget.distributorId == null ?
-                 AssetButton(image: downloadLedger,color: bodyWhite, onPressed: () => snackBar(context, 'downloading catalog')) : Container()
+            widget.distributorId == null
+                ? productList.isNotEmpty ? AssetButton(
+                    image: downloadLedger,
+                    color: bodyWhite,
+                    onPressed: () async{
+                      File pdfFile = await ProductsPdf().generateProductPdf(productList);
+                      saveAndOpenPdf(pdfFile);
+
+                    })
+                : Container() : Container()
           ],
         ),
         body: ListView(
           children: [
-            const Space(
-              height: 10,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: CustomTextField(
+                  hint: search,
+                  label: search,
+                  controller: searchProductController,
+                  onTextChange: (value) => filteredProductList(searchProductController.text)),
             ),
             Stack(
               children: [
@@ -165,16 +196,16 @@ class _ProductScreenState extends State<ProductScreen> {
                       }
                     },
                     builder: (context, state) {
-                      return  productLoading
+                      return productLoading
                           ? const CustomProgressBar(
                               heightV: 300,
                             )
                           : SizedBox(
-                              height: height * 0.75,
+                              height: height * 0.65,
                               child: ProductList(
-                                userRole : userRole,
-                                  productList: filterProductList,
-                                  distributorId: widget.distributorId,
+                                userRole: userRole,
+                                productList: filterProductList,
+                                distributorId: widget.distributorId,
                               ),
                             );
                     },
@@ -189,8 +220,9 @@ class _ProductScreenState extends State<ProductScreen> {
                     setState(() {
                       loadCategory = false;
                       categoryList = categoryState.categoryList;
+                      categoryList.insert(0, Categories(id: 0, catName: 'Pagaria Products',));
                       if (categoryList.isNotEmpty) {
-                        context.read<ProductBloc>().add(ProductLoadEvent(categoryId: categoryList[0].id.toString()));
+                        context.read<ProductBloc>().add(ProductLoadEvent(categoryId: '0'));
                       }
                     });
                   }
@@ -202,27 +234,22 @@ class _ProductScreenState extends State<ProductScreen> {
                 }, builder: (context, categoryState) {
                   return loadCategory
                       ? const CustomProgressBar()
-                      : errorMessage.isNotEmpty ?  Container(
-                    height: MediaQuery.of(context).size.height,
-                      alignment: Alignment.center,
-                      child: BodyText(text: errorMessage,color: primaryColor,))  :
-                  SizedBox(
-                          height: height * 0.20,
-                          child: Category(
-                            categoryList: categoryList,
-                            onClick: (String catId) => context
-                                .read<ProductBloc>()
-                                .add(ProductLoadEvent(categoryId: catId)),
-                          ),
-                        );
+                      : errorMessage.isNotEmpty
+                          ? Container(
+                              height: MediaQuery.of(context).size.height,
+                              alignment: Alignment.center,
+                              child: BodyText(
+                                text: errorMessage,
+                                color: primaryColor,
+                              ))
+                          : SizedBox(
+                              height: height * 0.20,
+                              child: Category(categoryList: categoryList,
+                                onClick: (String catId) => context.read<ProductBloc>().add(ProductLoadEvent(categoryId: catId)),
+                              ),
+                            );
                 }),
               ],
-            ),
-            const Space(
-              height: 10,
-            ),
-            const Space(
-              height: 40,
             ),
           ],
         ));

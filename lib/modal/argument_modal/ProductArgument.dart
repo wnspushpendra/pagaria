@@ -6,8 +6,6 @@ class ProductArgument{
   String? distributorId;
   Product? product;
   Product? totalAmount;
-
-
   ProductArgument({required this.productId, this.distributorId,this.product,this.totalAmount});
 
 

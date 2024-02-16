@@ -59,6 +59,9 @@ class _CustomerListState extends State<CustomerList> {
           }
         }
         if(homeState is HomeError){
+          if(homeState.error == 'unauthorization'){
+            backToLogin(context);
+          }
           setState(() => loading = false);
           snackBar(context,homeState.error );
         }
@@ -76,7 +79,7 @@ class _CustomerListState extends State<CustomerList> {
             widget.fromHome== true ? Container() :
             CustomTextField(hint: 'Search Customer', label: 'Search customer', controller: searchController, onTextChange: (value) => filterList(searchController.text)),
             ListView.builder(
-                physics: widget.fromHome== true ? const NeverScrollableScrollPhysics() : null,
+                physics: /*widget.fromHome== true ?*/ const NeverScrollableScrollPhysics() /*: null*/,
                 shrinkWrap: true,
                 itemCount: widget.fromHome== true && filteredList.length>5 ? 5  :  filteredList.length,
                 itemBuilder: (context, index) {Customer customer = filteredList[index];

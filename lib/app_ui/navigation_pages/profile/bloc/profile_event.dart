@@ -8,7 +8,8 @@ class ProfileUpdateClickEvent extends ProfileEvent {
   final String email;
   final String gender;
   final String dob;
-  final String? aadharNumber;
+  final String? firmName;
+  final String? aadhaarNumber;
   final String? panNumber;
   final String? gstNumber;
   final String address;
@@ -24,7 +25,8 @@ class ProfileUpdateClickEvent extends ProfileEvent {
     required this.email,
     required this.gender,
     required this.dob,
-    this.aadharNumber,
+    this.firmName,
+    this.aadhaarNumber,
     this.panNumber,
     this.gstNumber,
     required this.address,

@@ -68,7 +68,7 @@ class MyDrawer extends StatelessWidget {
                             icon: customerIcon,
                             onPressed: () {
                               Scaffold.of(context).closeDrawer();
-                              Navigator.pushReplacementNamed(context, customerRoute);
+                              Navigator.pushReplacementNamed(context, customerListRoute);
                             }) : Container(),
                         const Space(height: 10,),
                         /**** moving to order list page *********/

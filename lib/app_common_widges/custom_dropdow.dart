@@ -9,10 +9,13 @@ import 'package:webnsoft_solution/utils/app_colors.dart';
 class CustomDropDown extends StatefulWidget {
   final String type;
   final String hint;
+  final List<String>? itemList;
   final List<Firm>? firmList;
   final List<AllCustomer>? customerList;
-  final Firm? selectedValue;
+  final String? selectedValue;
+  final Firm? selectedFirmValue;
   final AllCustomer? selectedCustomerValue;
+  final ValueChanged<String>? onChangeValue;
   final ValueChanged<Firm>? onChangeFirm;
   final ValueChanged<AllCustomer>? onChangeCustomer;
   final bool? fromLanguage;
@@ -23,10 +26,13 @@ class CustomDropDown extends StatefulWidget {
       {
         required this.type,
         required this.hint,
+        this.itemList,
       this.firmList,
       this.customerList,
-      this.selectedValue,
+        this.selectedValue,
+      this.selectedFirmValue,
       this.selectedCustomerValue,
+        this.onChangeValue,
        this.onChangeFirm,
         this.onChangeCustomer,
         this.fromLanguage = false,
@@ -59,7 +65,7 @@ class _CustomDropDownState extends State<CustomDropDown> {
             dropdownColor: bodyWhite,
             borderRadius: BorderRadius.circular(8),
             isExpanded: true,
-            value: widget.selectedValue,
+            value: widget.selectedFirmValue,
             hint: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 0),
               child: BodyText(text: widget.hint, color: bodyLightBlack,),
@@ -80,7 +86,8 @@ class _CustomDropDownState extends State<CustomDropDown> {
               );
             }).toList(),
           )
-          :   DropdownButton<AllCustomer>(
+          :  widget.type == 'customer' ?
+          DropdownButton<AllCustomer>(
             dropdownColor: bodyWhite,
             borderRadius: BorderRadius.circular(8),
             isExpanded: true,
@@ -104,7 +111,33 @@ class _CustomDropDownState extends State<CustomDropDown> {
                 ),
               );
             }).toList(),
-          ),
+          ) 
+          :  DropdownButton<String>(
+            dropdownColor: bodyWhite,
+            borderRadius: BorderRadius.circular(8),
+            isExpanded: true,
+            value: widget.selectedValue,
+            hint: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 0),
+              child: BodyText(text: widget.hint, color: bodyLightBlack,),
+            ),
+            onChanged: (String? newValue) {
+              setState(() {
+                widget.onChangeValue!(newValue!);
+              });
+            },
+            items: widget.itemList!.map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                alignment: AlignmentDirectional.centerStart,
+                value: value,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 0.0),
+                  child: BodyText(text: value,),
+                ),
+              );
+            }).toList(),
+          )
+          ,
 
         ),
       ),

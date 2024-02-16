@@ -70,9 +70,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   initData() async{
     User user = await getUser();
     var item = widget.productArgument.product;
-    prodMinQty = (user.roleId == '4'  ? item!.prodMinDistrubutorQty! : item!.prodMinCustomerQty)!;
-    quantity = (user.roleId == '4'  ? item.prodMinDistrubutorQty! : item.prodMinCustomerQty)!;
-    productAmount = (user.roleId == '4'  ? item.prodDistributorPrice! : item.prodCustomerPrice)!;
+    prodMinQty = item!.prodMinDistrubutorQty??'';
+    quantity = item.prodMinDistrubutorQty??'';
+    productAmount =  item.prodDistributorPrice ??'';
     if(item.isCart!.isNotEmpty){
       quantity = item.isCart![0].quantity!;
       productAmount = item.isCart![0].amount.toString();
@@ -188,18 +188,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                             );
                                           }),
                                     ),
-                                   /* Positioned(
-                                      right: 0,
-                                      bottom: 0,
-                                      child: CustomButton(
-                                        buttonText: 'View All',
-                                        buttonWidth: 80,
-                                        buttonHeight: 30,
-                                        radius: 15,
-                                        margin: 0,
-                                        buttonTextSize: 10,
-                                        onClick: (){},),
-                                    )*/
+
                                   ],
                                 ),
                                 Html(

@@ -18,8 +18,8 @@ class ProductListResponse {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['status'] = this.status;
-    data['message'] = this.message;
+    data['status'] = status;
+    data['message'] = message;
     if (productList != null) {
       data['record'] = productList!.map((v) => v.toJson()).toList();
     }

@@ -3,6 +3,7 @@ import 'package:webnsoft_solution/app_common_widges/app_body_text.dart';
 import 'package:webnsoft_solution/app_common_widges/space.dart';
 import 'package:webnsoft_solution/modal/category_list.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
+import 'package:webnsoft_solution/utils/asset_images.dart';
 
 class CategoryItem extends StatelessWidget {
   Categories category;
@@ -12,6 +13,8 @@ class CategoryItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        category.catImageUrl == null ?
+            Image.asset(logo,height: 88,width: 120,) :
         Image.network(
           category.catImageUrl!,
           height: 88,

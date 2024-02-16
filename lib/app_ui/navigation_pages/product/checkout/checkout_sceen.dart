@@ -1,12 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:location/location.dart';
 import 'package:webnsoft_solution/app_common_widges/app_body_text.dart';
 import 'package:webnsoft_solution/app_common_widges/asset_button.dart';
 import 'package:webnsoft_solution/app_common_widges/custom_appbar.dart';
 import 'package:webnsoft_solution/app_common_widges/custom_button.dart';
 import 'package:webnsoft_solution/app_common_widges/custom_progressbar.dart';
 import 'package:webnsoft_solution/app_common_widges/home_appbar.dart';
+import 'package:webnsoft_solution/app_common_widges/location.dart';
 import 'package:webnsoft_solution/app_common_widges/space.dart';
 import 'package:webnsoft_solution/app_common_widges/update_product_qty.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/bloc/check_out_bloc.dart';
@@ -49,12 +52,23 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
   int? cartId;
   String prodMinQty = '';
   String userRole = '';
+  LocationData? locationData;
+  Placemark? placeMark;
 
   @override
   void initState() {
     super.initState();
+    checkLocation();
     context.read<CheckOutBloc>().add(CheckOutListEvent());
   }
+
+  checkLocation() async {
+    locationData = await checkLocationPermission();
+    placeMark = await getAddressFromLatLng(locationData!);
+    setState(() {});
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -224,12 +238,13 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                 );
                               }),
                         ),
+                        locationData != null ?
                         Positioned(
                             bottom: 0,
                             right: 0,
                             left: 0,
-                            child: CheckoutBottomWidget(totalCartAmount: productAmount,distributorId : widget.distributorId)
-                          )
+                            child: CheckoutBottomWidget(totalCartAmount: productAmount,distributorId : widget.distributorId,locationData: locationData!,placeMark: placeMark,)
+                          ) : Container()
                       ],
                     );
         },

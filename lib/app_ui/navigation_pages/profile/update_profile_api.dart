@@ -1,5 +1,3 @@
-
-
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
@@ -10,20 +8,24 @@ import 'package:webnsoft_solution/utils/util_methods.dart';
 
 /// ************** api for edit profile  *************
 ///
-Future<UserResponse> editMarketExecutiveStatus(bool isNewImage,String imagePath, Map<String, String> header, body,) async {
+Future<UserResponse> editMarketExecutiveStatus(bool isNewImage,
+    String imagePath, Map<String, String> header, body, String roleId) async {
+  var endPoints =
+      roleId == '4' ? updateExecutiveProfileApi : updateDistributorProfileApi;
+  print(endPoints);
 
-  var request = http.MultipartRequest('POST', Uri.parse(baseUrl+updateProfileApi));
+  var request = http.MultipartRequest('POST', Uri.parse(baseUrl + endPoints));
   request.headers.addAll(header);
   var image;
-  if(isNewImage){
+  if (isNewImage) {
     /*** if new image selected */
-     image = await http.MultipartFile.fromPath('profile_image', imagePath);
-  }else {
+    image = await http.MultipartFile.fromPath('profile_image', imagePath);
+  } else {
     /*** if old image passed */
     File file = await downloadImageAndUpload(imagePath);
-   image = await http.MultipartFile.fromPath('profile_image', file.path );
+    image = await http.MultipartFile.fromPath('profile_image', file.path);
   }
- request.files.add(image);
+  request.files.add(image);
   body.forEach((key, value) {
     request.fields[key] = value.toString();
   });
@@ -34,8 +36,3 @@ Future<UserResponse> editMarketExecutiveStatus(bool isNewImage,String imagePath,
   UserResponse userData = UserResponse.fromJson(json.decode(responseData));
   return userData;
 }
-
-
-
-
-

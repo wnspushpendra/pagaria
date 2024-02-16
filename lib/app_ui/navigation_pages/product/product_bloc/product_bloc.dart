@@ -32,7 +32,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     Map<String, dynamic> body = <String, dynamic>{};
     body['category_id'] = event.categoryId;
     body['user_id'] = user.id.toString();
-    body['user_type'] = user.roleId == '4' ? 'type_marketing_ex' : 'type_customer';
+    body['user_type'] =  'type_marketing_ex' ;
 
     emit(ProductLoading());
 
@@ -59,7 +59,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     Map<String, dynamic> body = <String, dynamic>{};
     body['cart_user_id'] = user.id.toString();
     body['product_id'] = event.productId;
-    body['user_type'] = user.roleId == '4' ? 'type_marketing_ex' : 'type_customer';
+    body['user_type'] =  'type_marketing_ex';
 
     emit(CartProductRemoveLoading());
 

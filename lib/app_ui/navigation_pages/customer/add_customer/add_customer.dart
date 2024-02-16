@@ -64,6 +64,9 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
           }
           /***************** add distributor/customer error state ****************/
           if (addCustomerState is AddCustomerError)  {
+            if(addCustomerState.message == 'unauthorization'){
+              backToLogin(context);
+            }
             showLoading = false;
             if(addCustomerState.message != null){
               snackBar(context, addCustomerState.message.toString());

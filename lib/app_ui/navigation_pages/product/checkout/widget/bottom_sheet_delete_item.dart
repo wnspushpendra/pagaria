@@ -61,7 +61,7 @@ class _DeleteProductBottomSheetState extends State<DeleteProductBottomSheet> {
           ),
           BodyText(
             text:
-                'Are Sure you want to delete ${widget.cartItem.productDetails!.prodName!} contain with  ${widget.cartItem.quantity} quantity and amount $rupeesSymbol${widget.cartItem.amount}?',
+                'Are you sure want to delete ${widget.cartItem.productDetails!.prodName!} contain with  ${widget.cartItem.quantity} quantity and amount $rupeesSymbol${widget.cartItem.amount}?',
             fontSize: 16,
             align: TextAlign.start,
           ),

@@ -83,14 +83,14 @@ class _HomeDistributorScreenState extends State<HomeDistributorScreen> {
               ),
             ],
           ),
-          actions: [
+       /*   actions: [
             IconButton(
                 onPressed: () => logoutDialog(context),
                 icon: const Icon(
                   Icons.logout_rounded,
                   color: bodyWhite,
                 ))
-          ],
+          ],*/
         ),
         body: Column(
           children:  [

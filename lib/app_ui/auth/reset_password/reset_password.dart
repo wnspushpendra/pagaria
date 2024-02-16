@@ -54,6 +54,9 @@ class _ChangePassword extends State<ResetPassword> {
               snackBar(context, changePasswordState.message);
             }/// * reset password error state
             if(changePasswordState is ResetPasswordError){
+              if(changePasswordState.error == 'unauthorization'){
+                backToLogin(context);
+              }
               resetPasswordLoading = false;
               setState(() => resetPassErrorState(changePasswordState));
             }

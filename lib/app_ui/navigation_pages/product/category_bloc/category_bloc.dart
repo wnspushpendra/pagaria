@@ -28,7 +28,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
 
     Map<String, dynamic> body = <String, dynamic>{};
     body['user_id'] = user.id.toString();
-    body['user_type'] = user.roleId == '4' ? 'type_marketing_ex' : 'type_customer';
+    body['user_type'] =  'type_marketing_ex' ;
     body['admin_id'] = '16';
 
     emit(CategoryLoading());

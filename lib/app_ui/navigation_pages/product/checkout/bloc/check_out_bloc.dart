@@ -32,7 +32,7 @@ class CheckOutBloc extends Bloc<CheckOutEvent, CheckOutState> {
     };
     Map<String, dynamic> body = <String, dynamic>{};
     body['user_id'] = user.id.toString();
-    body['user_type'] = user.roleId == '4' ? 'type_marketing_ex' : 'type_customer';
+    body['user_type'] =  'type_marketing_ex' ;
 
     CartProductResponseModal response = await cartListDataApi(header, body);
 
@@ -56,7 +56,7 @@ class CheckOutBloc extends Bloc<CheckOutEvent, CheckOutState> {
     Map<String, dynamic> body = <String, dynamic>{};
     body['cart_item_id'] = event.cartItemId;
     body['productQty'] = event.productQty;
-    body['user_type'] = user.roleId == '4' ? 'type_marketing_ex' : 'type_customer';
+    body['user_type'] = 'type_marketing_ex' ;
 
     emit(CheckOutUpdateQtyLoading());
 
@@ -80,7 +80,7 @@ class CheckOutBloc extends Bloc<CheckOutEvent, CheckOutState> {
     // form body data
     Map<String, dynamic> body = <String, dynamic>{};
     body['user_id'] = user.id.toString();
-    body['user_type'] = user.roleId =='4' ? 'type_marketing_ex' : 'type_customer';
+    body['user_type'] =  'type_marketing_ex' ;
 
     // request
     CartCountModal response = await cartCountApi(header, body);

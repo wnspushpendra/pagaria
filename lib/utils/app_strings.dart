@@ -12,14 +12,27 @@ const String userImagePrefecences = 'user-image';
 const String userProfileDataPrefecences = 'user-profile';
 const String languageCodePreferences = 'language-code';
 
-/// ********************** Network Image Url **********************
 
+/// ********************** Payment Types  **********************
+
+const String selectPaymentOption = 'Select Payment Option';
+const String qrCodePayment = 'QR Code Payment';
+const String upiPayment = 'UPI Transfer';
+const String bankPayment = 'Bank Transfer';
+const String cardPayment = 'Card Payment';
+const String cashPayment = 'Cash';
+const String duePayment = 'Due Payment : ';
+const String enterPayment = 'Enter Payment';
+const String remainingPayment = 'Remaining Payment : ';
+const String referenceNumberMessage = 'Reference Number/Message';
+const String attachment = 'Attachment';
+
+/// ********************** Network Image Url **********************
 
 const String networkImage = 'https://pbs.twimg.com/profile_images/1075240418936160256/BYPSMMdz_400x400.jpg';
 const String productImage = 'https://img.freepik.com/premium-psd/cosmetic-product_986960-1496.jpg';
 const String productImage1 = 'https://vn.canon/media/migration/shared/live/products/EN/powershotg1markiii-large1.png';
 const String pdfUrls = 'https://example.com/path_to_your_pdf.pdf';
-
 
 /// ********************** User Info **********************
 
@@ -104,4 +117,4 @@ const String yes = 'Yes';
 const String confirm = 'Confirm';
 const String no = 'NO';
 const String logout = 'Logout';
-const String search = 'Search By ID';
+const String search = 'Search Product';

@@ -25,6 +25,7 @@ class RowDetailWidget extends StatelessWidget {
                 text: '$titleLeft : ',fontSize: 16,
               ),
                BodyText(
+                 align: TextAlign.start,
                 text: valueLeft,
                 color: primaryColor,
               ),
@@ -38,6 +39,7 @@ class RowDetailWidget extends StatelessWidget {
             children: [
               BodyText(text:'$titleRight :',fontSize: 16),
                BodyText(
+                 align: TextAlign.start,
                 text: valueRight,
                 color: primaryColor,
               ),

@@ -19,26 +19,28 @@ import 'package:webnsoft_solution/utils/permisson_handler.dart';
 import 'package:flutter_statusbarcolor_ns/flutter_statusbarcolor_ns.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
-
-class MyHttpOverrides extends HttpOverrides{
+class MyHttpOverrides extends HttpOverrides {
   @override
-  HttpClient createHttpClient(SecurityContext? context){
+  HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(context)
-      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }
+
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // Handle background message
   print("Handling a background message: ${message.messageId}");
 }
 
-
-initializeDependencies() async{
+initializeDependencies() async {
   HttpOverrides.global = MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
   handleStoragePermission().then((value) {});
   checkLocationPermission();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   FirebaseInstance.notificationPermission();
   await FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
   // Initialize Firebase Messaging
@@ -57,11 +59,9 @@ initializeDependencies() async{
   }
 }
 
-
-
 void main() async {
- initializeDependencies();
- runApp(MyApp( await checkConnection()));
+  initializeDependencies();
+  runApp(MyApp(await checkConnection()));
 }
 
 class MyApp extends StatefulWidget {
@@ -84,14 +84,17 @@ class _MyAppState extends State<MyApp> {
             providers: getProvider,
             child: BlocBuilder<InternetCubit, InternetState>(
               builder: (context, state) {
-                  return MaterialApp(
-                    title: 'Flutter Demo',
-                    debugShowCheckedModeBanner: false,
-                    theme: appTheme,
-                    home: state == InternetState.initial || state == InternetState.connected ? const SplashScreen() :  const NetworkErrorDialog()  ,
-                    onGenerateRoute: CustomRouter.generateRoute,
-                  );
-                  },
+                return MaterialApp(
+                  title: 'Flutter Demo',
+                  debugShowCheckedModeBanner: false,
+                  theme: appTheme,
+                  home: state == InternetState.initial ||
+                          state == InternetState.connected
+                      ? const SplashScreen()
+                      : const NetworkErrorDialog(),
+                  onGenerateRoute: CustomRouter.generateRoute,
+                );
+              },
             ),
           ),
         );
@@ -99,4 +102,3 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
-

@@ -14,6 +14,7 @@ import 'package:webnsoft_solution/app_ui/navigation_pages/home/home_bloc/home_bl
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/home_bloc/home_event.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/home_bloc/home_state.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/ui/target_screen.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/payment/payment_list/payment_list.dart';
 import 'package:webnsoft_solution/modal/checkin_checkout/check_in_status.dart';
 import 'package:webnsoft_solution/modal/checkin_checkout/checkin_checkout.dart';
 import 'package:webnsoft_solution/modal/distributor_list.dart';
@@ -23,12 +24,10 @@ import 'package:webnsoft_solution/routes/route_constatns.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
 import 'package:webnsoft_solution/utils/asset_images.dart';
-import 'package:webnsoft_solution/utils/dialogs.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
 class HomeScreen extends StatefulWidget {
   final User user;
-
   const HomeScreen({required this.user, super.key});
 
   @override
@@ -137,7 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
             if(homeState.checkInData != null){
               checkInData = homeState.checkInData!;
               if(checkInData.status == 'check_in'){
-                checkInOutTime = "${checkInData.date!} ${checkInData.checkInTime!}";
+                checkInOutTime = "${checkInData.date??''} ${checkInData.checkInTime??''}";
                 checkInStatus = 'check_in';
               }else{
                 checkInOutTime = "${checkInData.date??''} ${checkInData.checkOutTime??''}";
@@ -148,10 +147,10 @@ class _HomeScreenState extends State<HomeScreen> {
             if(homeState.checkInOutRecord != null){
               checkInOutRecord = homeState.checkInOutRecord!;
               if(checkInOutRecord!.status == 'check_in'){
-                checkInOutTime = "${checkInData.date!} ${checkInData.checkInTime}";
+                checkInOutTime = checkInOutRecord!.checkInDatetime??'';//"${checkInData.date??''} ${checkInData.checkInTime ??''}";
                 checkInStatus = 'check_in';
               }else{
-                checkInOutTime = "${checkInData.date??''} ${checkInData.checkOutTime??''}";
+                checkInOutTime = checkInOutRecord!.checkOutDatetime??'';//"${checkInData.date??''} ${checkInData.checkOutTime??''}";
                 checkInStatus = 'check_out';
               }
               setState(() {});
@@ -162,6 +161,9 @@ class _HomeScreenState extends State<HomeScreen> {
             setState(() {});
           }
           if(homeState is HomeCheckInOurError){
+            if(homeState.error == 'unauthorization'){
+              backToLogin(context);
+            }
             checkInOutLoading = false;
             setState(() {});
           }
@@ -196,7 +198,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ],
                             ),
                             CustomButton(
-                                buttonText: checkInStatus == 'check_in' ? 'Check-In' : 'Check-Out',
+                                buttonText: checkInStatus == 'check_in' ? 'Check-Out' : 'Check-In',
                                 buttonWidth: 110,
                                 buttonHeight: 40,
                                 margin: 0,
@@ -218,6 +220,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           decoration: defaultDecoration,
                           margin: EdgeInsets.all(8.h),
                           padding: EdgeInsets.all(10.h),
+                          alignment: AlignmentDirectional.topStart,
                           child: const TargetScreen()),
                       showCustomerPayment()
                     ],
@@ -234,22 +237,27 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-              padding: EdgeInsets.all(8),
-              child: BodyText(
-                text: 'Recent Payment',
-                color: bodyBlack,
-                fontWeight: FontWeight.bold,
+
+          Padding(
+              padding: const EdgeInsets.all(8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const BodyText(
+                    text: 'Recent Payment',
+                    color: bodyBlack,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  GestureDetector(
+                      onTap: () =>  Navigator.pushReplacementNamed(context, paymentListRoute,),
+                      child: const BodyText(
+                        text: 'View All',
+                        fontSize: 12,
+                      )),
+                ],
               )),
-         /* GridView.builder(
-              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 500, mainAxisExtent: 140.h),
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: 5,
-              itemBuilder: (context, index) {
-                return const OrderListWidget();
-              }),*/
+
+          const PaymentList(fromHome: true),
           Padding(
               padding: const EdgeInsets.all(8),
               child: Row(
@@ -262,10 +270,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   Row(
                     children: [
-                      IconButton(onPressed: () => Navigator.pushReplacementNamed(context, customerRoute,),
+                      IconButton(onPressed: () => Navigator.pushReplacementNamed(context, customerListRoute,),
                           icon: const Icon(Icons.search)),
                       GestureDetector(
-                          onTap: () =>  Navigator.pushReplacementNamed(context, customerRoute,),
+                          onTap: () =>  Navigator.pushReplacementNamed(context, customerListRoute,),
                           child: const BodyText(
                             text: 'View All',
                             fontSize: 12,

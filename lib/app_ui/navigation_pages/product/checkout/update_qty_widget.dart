@@ -84,16 +84,9 @@ class _UpdateQuantityWidgetState extends State<UpdateQuantityWidget> {
       context.read<CheckOutBloc>().add(CheckOutUpdateQuantityEvent(productQty:qty.toString() , cartItemId: item.id.toString(), ));
 
     }else{
-      User user = await getUser();
       String minimumQty;
       qty = '${int.parse(item.quantity!)-1}';
-      if(user.roleId == '4') {
-        minimumQty = widget.distributorMinQty!;
-        //  minimumQty = widget.distributorMinQty == null ? item.productDetails!.prodMinDistrubutorQty! : widget.distributorMinQty!;
-      }else{
-        minimumQty = widget.distributorMinQty!;
-
-      }
+      minimumQty = widget.distributorMinQty!;
 
       if(int.parse(minimumQty)  <=  int.parse(qty)){
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {

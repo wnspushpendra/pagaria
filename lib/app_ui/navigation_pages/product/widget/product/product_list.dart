@@ -98,8 +98,8 @@ class _ProductListState extends State<ProductList> {
               crossAxisCount: 2, mainAxisExtent: 230),
           itemBuilder: (context, index) {
             Product product = widget.productList[index];
-            prodMinQty = (widget.userRole == '4' ?  product.prodMinDistrubutorQty : product.prodMinCustomerQty)!;
-            productPrice = widget.userRole == '4' ?  product.prodCustomerPrice : product.prodDistributorPrice;
+            prodMinQty =  product.prodMinDistrubutorQty ?? '';
+            productPrice =  product.prodDistributorPrice??'';
             CartItem cartItem = CartItem();
             if(product.isCart!.isNotEmpty){
               cartItem.id = product.isCart?[0].id;
@@ -144,7 +144,7 @@ class _ProductListState extends State<ProductList> {
                           fontWeight: FontWeight.bold,
                         ),
                         NormalText(
-                          text: product.prodShortDescription.toString(),
+                          text: product.prodShortDescription ?? '',
                           textSize: 12,
                           color: bodyLightBlack,
                         ),

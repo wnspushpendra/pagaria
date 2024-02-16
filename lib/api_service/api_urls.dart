@@ -5,7 +5,6 @@ const String baseUrl = 'https://pagaria.wecoderelationship.com/api/';
 const String loginApi = 'user-login';
 const String logoutApi = 'auth-control';
 const String profileDetailApi = 'profile-details';
-const String updateProfileApi = 'update-profile';
 const String resetPasswordApi = 'reset-password';
 const String forgotPasswordApi = 'forgot-password';
 const String categoryListApi = 'category-list';
@@ -20,9 +19,18 @@ const String submitOrderApi = 'book-order';
 const String orderListApi = 'order-list';
 
 // marketing executive api
+const String updateExecutiveProfileApi = 'update-profile';
 const String customerListApi = 'user-list-get';
 const String checkInOutApi = 'marketing-ex-time';
+const String targetApi = 'marketing-ex-target-achieved';
 const String checkInStatusApi = 'marketing-ex-latest-status';
 const String addDistributorApi = 'add-distributor';
 const String firmCustomerListApi = 'firm-name';
+const String dueAmountApi = 'payment-due-amount';
+const String paymentApi = 'payment-executive';
+const String paymentList = 'payment-list';
+const String ledgerApi = 'payment-ledger';
+
+// distributor api
+const String updateDistributorProfileApi = 'edit-distributor';
 

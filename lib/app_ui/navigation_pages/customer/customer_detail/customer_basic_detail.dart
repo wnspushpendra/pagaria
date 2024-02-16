@@ -1,11 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:webnsoft_solution/app_common_widges/app_body_text.dart';
 import 'package:webnsoft_solution/app_common_widges/custom_button.dart';
 import 'package:webnsoft_solution/app_common_widges/home_appbar.dart';
 import 'package:webnsoft_solution/app_common_widges/space.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/customer/customer_detail/row_detail_widget.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/profile/bloc/profile_bloc.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/profile/bloc/profile_event.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/profile/profile_image_widget.dart';
 import 'package:webnsoft_solution/modal/distributor_list.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
@@ -13,9 +16,21 @@ import 'package:webnsoft_solution/utils/app_strings.dart';
 import 'package:webnsoft_solution/utils/asset_images.dart';
 
 
-class CustomerBasicDetails extends StatelessWidget {
+class CustomerBasicDetails extends StatefulWidget {
   final Customer customer;
   const CustomerBasicDetails( {required this.customer,super.key});
+
+  @override
+  State<CustomerBasicDetails> createState() => _CustomerBasicDetailsState();
+}
+
+class _CustomerBasicDetailsState extends State<CustomerBasicDetails> {
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -35,15 +50,15 @@ class CustomerBasicDetails extends StatelessWidget {
                       alignment: Alignment.center,
                       child: ProfileImageWidget(
                         showIcon: false,
-                          networkUrl: customer.profileImageUrl.toString(), onFileChange: (file){})),
+                          networkUrl: widget.customer.profileImageUrl.toString(), onFileChange: (file){})),
                   const Space(height: 10,),
-                   RowDetailWidget(titleLeft: firmName, valueLeft: customer.firmName.toString(), titleRight: customerName, valueRight: customer.fullName.toString(),),
-                   RowDetailWidget(titleLeft: mobileNumber, valueLeft: customer.contactNo.toString(), titleRight: panCardNumber, valueRight: customer.panCardNo.toString(),),
-                   RowDetailWidget(titleLeft: gstNumber, valueLeft: customer.gstNo.toString() , titleRight: aadharNumber, valueRight: customer.aadharNo.toString(),),
-                   RowDetailWidget(titleLeft: email, valueLeft:  customer.email.toString(), titleRight: address, valueRight: '',showSingleDetail: true,),
+                   RowDetailWidget(titleLeft: firmName, valueLeft: widget.customer.firmName.toString(), titleRight: customerName, valueRight: widget.customer.fullName.toString(),),
+                   RowDetailWidget(titleLeft: mobileNumber, valueLeft: widget.customer.contactNo.toString(), titleRight: panCardNumber, valueRight: widget.customer.panCardNo.toString(),),
+                   RowDetailWidget(titleLeft: gstNumber, valueLeft: widget.customer.gstNo.toString() , titleRight: aadharNumber, valueRight: widget.customer.aadharNo.toString(),),
+                   RowDetailWidget(titleLeft: email, valueLeft:  widget.customer.email.toString(), titleRight: address, valueRight: '',showSingleDetail: true,),
                   const BodyText(text:'$address :',fontSize: 16),
                   BodyText(
-                    text: "${customer.address},${customer.city},${customer.state},${customer.zipCode}",
+                    text: "${widget.customer.address},${widget.customer.city},${widget.customer.state},${widget.customer.zipCode}",
                     align: TextAlign.start,
                     color: primaryColor,
                   ),

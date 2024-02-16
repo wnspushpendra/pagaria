@@ -25,6 +25,12 @@ Future<void> backUserHome(BuildContext context) async{
   });
 }
 
+// back user home screen
+Future<void> backToLogin(BuildContext context) async{
+  clearPref();
+  Navigator.pushReplacementNamed(context,  homeRoute );
+}
+
 
 /// * check internet connection
 Future<bool> checkConnection() async {
@@ -85,6 +91,12 @@ String getDDMMYYYYDateString(DateTime dateFormat) {
 String getDDMMYYYYDateStringDate(String date ) {
   DateTime originalDate = DateTime.parse(date);
   String formattedDate = DateFormat('dd-MM-yyyy').format(originalDate);
+  return formattedDate;
+}
+/// * get formated date to string server date
+String getDDMMYYYYHHMMDateStringDate(String date ) {
+  DateTime originalDate = DateTime.parse(date);
+  String formattedDate = DateFormat('dd-MM-yyyy HH : mm').format(originalDate);
   return formattedDate;
 }
 

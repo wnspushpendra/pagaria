@@ -12,15 +12,15 @@ import 'package:webnsoft_solution/utils/app_preferences.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
-class CustomerScreen extends StatefulWidget {
+class CustomerListScreen extends StatefulWidget {
 
-  const CustomerScreen({super.key});
+  const CustomerListScreen({super.key});
 
   @override
-  State<CustomerScreen> createState() => _CustomerScreenState();
+  State<CustomerListScreen> createState() => _CustomerListScreenState();
 }
 
-class _CustomerScreenState extends State<CustomerScreen> {
+class _CustomerListScreenState extends State<CustomerListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,24 +35,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
       body: Container(
         padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
         child: const CustomerList(),
-        /*GridView.builder(
-            gridDelegate:  SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 500,
-                mainAxisExtent: 190.h
-            ),
-            itemCount: 10,
-            shrinkWrap: true,
-            itemBuilder: (context,index){
-              return  CustomerListItem(name: 'Yuvraj Singh', contactNumber: '0123456789', emailAddress: 'yuvi@gmail.com', add: '54 vijay nagar', onPressed: (){},);
-            })*/
 
-
-    /*    ListView.builder(
-            shrinkWrap: true,
-            itemCount: 10,
-            itemBuilder: (context,state){
-              return  CustomerListItem(customerName: 'Yuvraj Singh', contactNumber: '0123456789', emailAddress: 'yuvi@gmail.com', address: '54 vijay nagar indore', onPressed: (){},);
-            }),*/
       ),
     );
   }
