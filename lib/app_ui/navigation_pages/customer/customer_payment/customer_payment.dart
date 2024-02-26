@@ -17,6 +17,7 @@ import 'package:webnsoft_solution/utils/app_colors.dart';
 import 'package:webnsoft_solution/utils/app_message.dart';
 import 'package:webnsoft_solution/utils/app_regex.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
+import 'package:webnsoft_solution/utils/change_routes.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
 class CustomerPaymentScreen extends StatefulWidget {
@@ -59,6 +60,9 @@ class _CustomerPaymentScreenState extends State<CustomerPaymentScreen> {
               dueAmount  = state.dueAmount ?? '';
               totalAmount  = int.parse(state.totalAmount!) ?? 0;
             }
+            if(state.paymentRecord!= null){
+              ChangeRoutes.openOrderScreen(context, true);
+            }
             if(state.paymentSuccessAmount != null){
               paymentLoading = false;
               int paidAmount = state.paymentSuccessAmount!;
@@ -69,7 +73,10 @@ class _CustomerPaymentScreenState extends State<CustomerPaymentScreen> {
             setState(() {});
           }
           if(state is PaymentError){
+            customerPaymentDetailLoading = false;
+            paymentLoading = false;
             snackBar(context, state.error!);
+            setState(() {});
           }
         },
         builder: (context, state) {

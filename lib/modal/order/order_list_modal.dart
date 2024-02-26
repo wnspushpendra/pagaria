@@ -38,8 +38,20 @@ class OrderList {
   String? orderStatus;
   String? trackingId;
   String? remark;
+  String? shippingAddress;
+  String? paymentStatus;
+  String? paymentAmount;
+  String? paymentDate;
+  int? totalQuantity;
+  String? pickUpDate;
+  String? pickUpTime;
+  String? pickUpType;
+  String? currentLocation;
+  String? longitude;
+  String? latitude;
   String? createdAt;
   String? updatedAt;
+  String? remainingAmount;
   BookedUser? bookedUser;
   UserData? userData;
 
@@ -54,8 +66,20 @@ class OrderList {
         this.orderStatus,
         this.trackingId,
         this.remark,
+        this.shippingAddress,
+        this.paymentStatus,
+        this.paymentAmount,
+        this.paymentDate,
+        this.totalQuantity,
+        this.pickUpDate,
+        this.pickUpTime,
+        this.pickUpType,
+        this.currentLocation,
+        this.longitude,
+        this.latitude,
         this.createdAt,
         this.updatedAt,
+        this.remainingAmount,
         this.bookedUser,
         this.userData});
 
@@ -70,13 +94,25 @@ class OrderList {
     orderStatus = json['order_status'];
     trackingId = json['tracking_id'];
     remark = json['remark'];
+    shippingAddress = json['shipping_address'];
+    paymentStatus = json['payment_status'];
+    paymentAmount = json['payment_amount'];
+    paymentDate = json['payment_date'];
+    totalQuantity = json['total_quantity'];
+    pickUpDate = json['pick_up_date'];
+    pickUpTime = json['pick_up_time'];
+    pickUpType = json['pick_up_type'];
+    currentLocation = json['current_location'];
+    longitude = json['longitude'];
+    latitude = json['latitude'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+    remainingAmount = json['remaining_amount'];
     bookedUser = json['booked_user'] != null
-        ? BookedUser.fromJson(json['booked_user'])
+        ? new BookedUser.fromJson(json['booked_user'])
         : null;
     userData = json['user_data'] != null
-        ? UserData.fromJson(json['user_data'])
+        ? new UserData.fromJson(json['user_data'])
         : null;
   }
 
@@ -92,8 +128,20 @@ class OrderList {
     data['order_status'] = orderStatus;
     data['tracking_id'] = trackingId;
     data['remark'] = remark;
+    data['shipping_address'] = shippingAddress;
+    data['payment_status'] = paymentStatus;
+    data['payment_amount'] = paymentAmount;
+    data['payment_date'] = paymentDate;
+    data['total_quantity'] = totalQuantity;
+    data['pick_up_date'] = pickUpDate;
+    data['pick_up_time'] = pickUpTime;
+    data['pick_up_type'] = pickUpType;
+    data['current_location'] = currentLocation;
+    data['longitude'] = longitude;
+    data['latitude'] = latitude;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
+    data['remaining_amount'] = remainingAmount;
     if (bookedUser != null) {
       data['booked_user'] = bookedUser!.toJson();
     }
@@ -174,3 +222,4 @@ class UserData {
     return data;
   }
 }
+

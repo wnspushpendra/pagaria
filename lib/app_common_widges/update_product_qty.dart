@@ -9,11 +9,12 @@ import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/bloc/
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/bloc/check_out_event.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/bloc/check_out_state.dart';
 import 'package:webnsoft_solution/modal/cart/cart_list_modal.dart';
+import 'package:webnsoft_solution/modal/product_list.dart';
 import 'package:webnsoft_solution/utils/app_regex.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
 Future<String?> quantityDialog(BuildContext context, CartItem cartItem,
-    String productName, String prodMinQty) async {
+    Product product, String prodMinQty) async {
   TextEditingController quantityController =
       TextEditingController(text: cartItem.quantity.toString());
 
@@ -40,7 +41,7 @@ Future<String?> quantityDialog(BuildContext context, CartItem cartItem,
               decoration: defaultDecoration,
               child: Column(
                 children: [
-                  BodyText(text: productName),
+                  BodyText(text: product.prodName!),
                   CustomTextField(
                     controller: quantityController,
                     maxLength: 4,
@@ -70,7 +71,7 @@ Future<String?> quantityDialog(BuildContext context, CartItem cartItem,
                         const Space(width: 10),
                         Expanded(
                             flex: 1,
-                            child:  CustomButton(
+                            child: CustomButton(
                               buttonText: 'Ok',
                               buttonHeight: 40,
                               buttonTextSize: 14,
@@ -78,10 +79,24 @@ Future<String?> quantityDialog(BuildContext context, CartItem cartItem,
                               margin: 0,
                               onClick: () {
                                 String quantity = quantityController.text;
-                                if (int.parse(prodMinQty) <= int.parse(quantity)) {
-                                  context.read<CheckOutBloc>().add(CheckOutUpdateQuantityEvent(productQty: quantityController.text, cartItemId: cartItem.id.toString()));
+                                if (product.prodInventoryType == 'yes') {
+                                  if (int.parse(product.prodInventory!) >= int.parse(quantity)) {
+                                    if (int.parse(prodMinQty) <= int.parse(quantity)) {
+                                      context.read<CheckOutBloc>().add(CheckOutUpdateQuantityEvent(productQty: quantityController.text, cartItemId: cartItem.id.toString()));
+                                    } else {
+                                      snackBar(context,
+                                          'you can create min $prodMinQty quantity');
+                                    }
+                                  } else {
+                                    snackBar(context, 'Enter quantity not available.');
+                                    //  snackBar(context, 'You can order minimum $minimumQty for this item');
+                                  }
                                 } else {
-                                  snackBar(context, 'you can create min $prodMinQty quantity');
+                                  if (int.parse(prodMinQty) <= int.parse(quantity)) {
+                                    context.read<CheckOutBloc>().add(CheckOutUpdateQuantityEvent(productQty: quantityController.text, cartItemId: cartItem.id.toString()));
+                                  } else {
+                                    snackBar(context, 'you can create min $prodMinQty quantity');
+                                  }
                                 }
                               },
                             )),
@@ -107,7 +122,8 @@ Future<String?> updateQuantityDialog(
   String cartQty,
   String cartMinimumQty,
 ) async {
-  TextEditingController quantityController = TextEditingController(text: cartQty);
+  TextEditingController quantityController =
+      TextEditingController(text: cartQty);
 
   showDialog(
     context: context,

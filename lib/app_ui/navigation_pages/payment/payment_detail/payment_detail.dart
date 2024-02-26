@@ -20,15 +20,15 @@ import 'package:webnsoft_solution/utils/asset_images.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
 
-class PaymentDetails extends StatefulWidget {
-  final PaymentDetail paymentDetail;
-  const PaymentDetails( {required this.paymentDetail,super.key});
+class PaymentDetailScreen extends StatefulWidget {
+  final PaymentDetailData paymentDetail;
+  const PaymentDetailScreen( {required this.paymentDetail,super.key});
 
   @override
-  State<PaymentDetails> createState() => _PaymentDetailsState();
+  State<PaymentDetailScreen> createState() => _PaymentDetailsState();
 }
 
-class _PaymentDetailsState extends State<PaymentDetails> {
+class _PaymentDetailsState extends State<PaymentDetailScreen> {
 
   @override
   void initState() {
@@ -59,8 +59,8 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                   // RowDetailWidget(titleLeft: firmName, valueLeft: widget.customer.firmName.toString(), titleRight: customerName, valueRight: widget.customer.fullName.toString(),),
                    RowDetailWidget(titleLeft: customerName, valueLeft: widget.paymentDetail.userData!.fullName??'' , titleRight: 'Reference Number', valueRight: widget.paymentDetail.paymentReferenceId??'NA',),
                   RowDetailWidget(titleLeft: email, valueLeft:  widget.paymentDetail.userData!.email??''.toString(), titleRight: address, valueRight: '',showSingleDetail: true,),
-                  RowDetailWidget(titleLeft: 'Payment Date', valueLeft: widget.paymentDetail.date ??'',  titleRight: 'Paid Amount', valueRight: widget.paymentDetail.amount??'',),
-                  RowDetailWidget(titleLeft: 'Payment Type', valueLeft: widget.paymentDetail.paymentType??'',  titleRight: panCardNumber, valueRight: widget.paymentDetail.amount??'',),
+                  RowDetailWidget(titleLeft: 'Payment Date', valueLeft: widget.paymentDetail.date ??'',  titleRight: 'Paid Amount', valueRight: widget.paymentDetail.amount.toString()??'',),
+                  RowDetailWidget(titleLeft: 'Payment Type', valueLeft: widget.paymentDetail.paymentType??'',  titleRight: panCardNumber, valueRight: widget.paymentDetail.amount.toString()??'',),
                  if(widget.paymentDetail.imageUrl != null && widget.paymentDetail.imageUrl!.isNotEmpty)
                   CachedNetworkImage(imageUrl: widget.paymentDetail.imageUrl!)
                  // const BodyText(text:'$address :',fontSize: 16),

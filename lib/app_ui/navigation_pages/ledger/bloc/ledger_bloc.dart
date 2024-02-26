@@ -1,5 +1,10 @@
 
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:webnsoft_solution/api_service/api_urls.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/ledger/bloc/ledger_api.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/ledger/bloc/ledger_event.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/ledger/bloc/ledger_state.dart';
@@ -8,10 +13,12 @@ import 'package:webnsoft_solution/modal/login/login_response.dart';
 import 'package:webnsoft_solution/utils/app_preferences.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
+import 'package:http/http.dart' as http;
 
 class LedgerBloc extends Bloc<LedgerEvent, LedgerState> {
   LedgerBloc() : super(LedgerLoading()) {
-    on<LedgerFetchEvent>((event, emit) => ledgerData(event));
+  //  on<LedgerFetchEvent>((event, emit) => ledgerData(event));
+    on<LedgerFetchEvent>((event, emit) => ledgerDownload(event));
   }
 
   ledgerData(LedgerFetchEvent event) async {
@@ -30,10 +37,32 @@ class LedgerBloc extends Bloc<LedgerEvent, LedgerState> {
     }else{
       emit(LedgerError(error : response.message.toString()));
     }
+  }
 
 
+   ledgerDownload(LedgerFetchEvent event) async {
+    Map<String, String> header =  {
+      "Authorization": "Bearer ${await getStringPref(userTokenPrefecences)}",
+    };
+    User user = await getUser();
 
+    Map<String, dynamic> body = <String, dynamic>{};
+    body['user_id'] ='115';
+    body['user_type'] = 'type_marketing_ex';
 
+    final response = await http.post(Uri.parse(baseUrl+ledgerDownloadApi),headers: header,body: body);
+    if (response.statusCode == 200) {
+      Directory tempDir = await getTemporaryDirectory();
+      String tempPath = tempDir.path;
+      File file = File('$tempPath/my.pdf');
+      await file.writeAsBytes(response.bodyBytes);
+
+      emit(LedgerDownloadSuccess(file: file));
+    } else {
+      throw Exception('Failed to load PDF');
+      return null;
+
+    }
 
   }
 }

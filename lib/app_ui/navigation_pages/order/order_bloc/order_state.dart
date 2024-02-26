@@ -1,6 +1,7 @@
 
 import 'package:webnsoft_solution/modal/order/order.dart';
 import 'package:webnsoft_solution/modal/order/order_list_modal.dart';
+import 'package:webnsoft_solution/modal/order/user_role_order_list_modal.dart';
 
 abstract class OrderState {}
 
@@ -12,7 +13,7 @@ class OrderListFetch extends OrderState {
 }
 class OrderListFetchSuccess extends OrderState {}
 class OrderSuccess extends OrderState {
-  final  List<OrderList>? orderList;
+  final  List<Order>? orderList;
   final OrderDetail? orderDetail;
   final String? userRole;
   OrderSuccess({this.orderList, this.orderDetail,this.userRole});

@@ -36,7 +36,7 @@ const String pdfUrls = 'https://example.com/path_to_your_pdf.pdf';
 
 /// ********************** User Info **********************
 
-const String name = 'Name*';
+const String name = 'Name';
 const String fullName = 'Full Name*';
 const String fistName = 'Fist Name*';
 const String lastName = 'Last Name*';

@@ -61,3 +61,29 @@ Future<CustomerPaymentModal> customerPaymentData(String imagePath,Map<String, St
   CustomerPaymentModal userData = CustomerPaymentModal.fromJson(json.decode(responseData));
   return userData;
 }
+
+
+
+/// * distributor order payment api
+///
+Future<CustomerPaymentModal> distributorOrderPayment(String imagePath,Map<String, String> header, Map<String, dynamic> body) async {
+
+  var request = http.MultipartRequest('POST', Uri.parse(baseUrl+paymentForOrderApi));
+  request.headers.addAll(header);
+
+  if(imagePath.isNotEmpty){
+    // multipart for getting image from path
+    var image = await http.MultipartFile.fromPath('image', imagePath);
+    request.files.add(image);
+  }
+  // sending value data
+  body.forEach((key, value) {
+    request.fields[key] = value.toString();
+  });
+
+  /*** send payment request  */
+  var response = await request.send();
+  var responseData = await response.stream.bytesToString();
+  CustomerPaymentModal userData = CustomerPaymentModal.fromJson(json.decode(responseData));
+  return userData;
+}

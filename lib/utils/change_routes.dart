@@ -1,0 +1,68 @@
+import 'package:flutter/material.dart';
+import 'package:webnsoft_solution/modal/argument_modal/DistributorPaymentArgument.dart';
+import 'package:webnsoft_solution/modal/login/login_response.dart';
+import 'package:webnsoft_solution/modal/order/user_role_order_list_modal.dart';
+import 'package:webnsoft_solution/modal/payment/payment_list_modal.dart';
+import 'package:webnsoft_solution/modal/payment/payment_modal.dart';
+import 'package:webnsoft_solution/routes/route_constatns.dart';
+import 'package:webnsoft_solution/utils/app_preferences.dart';
+import 'package:webnsoft_solution/utils/app_strings.dart';
+
+class ChangeRoutes{
+
+  /// * get user data shared preference
+  static Future<User> getUser() async{
+    return await getUserPref(userProfileDataPrefecences);
+  }
+  // back user home screen
+  static Future<void> openHomeScreen(BuildContext context,User user) async{
+    Navigator.pushReplacementNamed(context, user.roleId == '4' ? homeRoute :homeDistributorRoute, arguments: user);
+  }
+
+  static openProfileScreen(BuildContext context, User user) async{
+    Navigator.pushReplacementNamed(context, profileRoute,arguments: user);
+  }
+  static openMyActivityScreen(BuildContext context) async{
+    Navigator.pushReplacementNamed(context, myActivityRoute,);
+  }
+  static openResetPasswordScreen(BuildContext context) async{
+    Navigator.pushReplacementNamed(context, resetPasswordRoute,arguments: await getUser());
+  }
+  static openProductScreen(BuildContext context, User user,String? distributorId) async{
+    Navigator.pushReplacementNamed(context, productRoute,arguments:  user.roleId =='5' ? user.id.toString() : distributorId);
+  }
+
+  static openProductDetailScreen(BuildContext context,String? id){
+    Navigator.pushReplacementNamed(context, paymentRoute,arguments: id);
+  }
+  static openCustomerScreen(BuildContext context,String? id){
+    Navigator.pushReplacementNamed(context, customerListRoute);
+  }
+  static openCustomerDetailsScreen(BuildContext context,String? id){
+    Navigator.pushReplacementNamed(context, paymentRoute,arguments: id);
+  }
+  static openOrderScreen(BuildContext context,bool? value){
+    Navigator.pushReplacementNamed(context, orderRoute,arguments: value);
+  }
+  static openOrderDetailScreen(BuildContext context,Order order){
+    Navigator.pushReplacementNamed(context, orderDetailRoute,arguments: order);
+  }
+
+  static openExecutivePaymentScreen(BuildContext context,User user){
+    Navigator.pushReplacementNamed(context,user.roleId == '4' ?  paymentRoute : distributorPaymentRoute ,arguments:user.roleId == '4' ? null: user.id.toString() );
+  }
+  static openDistributorPaymentScreen(BuildContext context,DistributorPaymentArgument argument ){
+    Navigator.pushReplacementNamed(context, distributorOrderPaymentRoute,arguments: argument);
+  }
+
+  static openPaymentDetailScreen(BuildContext context, PaymentDetailData paymentDetail,){
+    Navigator.pushReplacementNamed(context, paymentDetailRoute,arguments: paymentDetail);
+  }
+  static openLedgerPaymentScreen(BuildContext context,String? id){
+    Navigator.pushReplacementNamed(context, paymentRoute,arguments: id);
+  }
+  static openCustomerForOrderScreen(BuildContext context){
+    Navigator.pushReplacementNamed(context, customerForOrderRoute);
+  }
+
+}

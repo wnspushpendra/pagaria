@@ -4,9 +4,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:webnsoft_solution/app_common_widges/intererror_dialog.dart';
 import 'package:webnsoft_solution/app_common_widges/location.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/pdf/pdf_products.dart';
 import 'package:webnsoft_solution/bloc_provider/bloc_providers.dart';
 import 'package:webnsoft_solution/firebase_options.dart';
 import 'package:webnsoft_solution/internet_cubit/internet_cubit.dart';
@@ -28,6 +30,15 @@ class MyHttpOverrides extends HttpOverrides {
   }
 }
 
+void downloadCallback(String id, int status, int progress) {
+  if (status == DownloadTaskStatus.complete.index) {
+    openDownloadedFile("", 'sample.pdf');
+
+    print('Download task ($id) is complete.');
+  }
+}
+
+
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // Handle background message
   print("Handling a background message: ${message.messageId}");
@@ -36,6 +47,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 initializeDependencies() async {
   HttpOverrides.global = MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
+  await FlutterDownloader.initialize();
   handleStoragePermission().then((value) {});
   checkLocationPermission();
   await Firebase.initializeApp(

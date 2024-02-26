@@ -1,11 +1,15 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:webnsoft_solution/app_common_widges/app_body_text.dart';
+import 'package:webnsoft_solution/app_common_widges/asset_button.dart';
 import 'package:webnsoft_solution/app_common_widges/custom_appbar.dart';
 import 'package:webnsoft_solution/app_common_widges/custom_progressbar.dart';
+import 'package:webnsoft_solution/app_common_widges/normal_text.dart';
 import 'package:webnsoft_solution/app_common_widges/space.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/ledger/bloc/ledger_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/ledger/bloc/ledger_event.dart';
@@ -13,6 +17,7 @@ import 'package:webnsoft_solution/app_ui/navigation_pages/ledger/bloc/ledger_sta
 import 'package:webnsoft_solution/app_ui/navigation_pages/order/order_bloc/order_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/order/order_bloc/order_event.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/order/order_bloc/order_state.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/pdf/pdf_products.dart';
 import 'package:webnsoft_solution/modal/argument_modal/LedgetArgument.dart';
 import 'package:webnsoft_solution/modal/ledger/ledger_modal.dart';
 import 'package:webnsoft_solution/modal/order/order_list_modal.dart';
@@ -21,6 +26,8 @@ import 'package:webnsoft_solution/modal/payment/payment_list_modal.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
+import 'package:webnsoft_solution/utils/asset_images.dart';
+import 'package:webnsoft_solution/utils/change_routes.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
 class LedgerScreen extends StatefulWidget {
@@ -38,11 +45,13 @@ class _LedgerScreenState extends State<LedgerScreen> {
   List<PaymentDetails> paymentDetailList = [];
   String ledgerTotal = '';
   String ledgerDue = '';
-
+  File? file;
 
   @override
   void initState() {
-    context.read<LedgerBloc>().add(LedgerFetchEvent(distributorId: widget.argument.distributorId!));
+    context
+        .read<LedgerBloc>()
+        .add(LedgerFetchEvent(distributorId: widget.argument.distributorId!));
     super.initState();
   }
 
@@ -51,8 +60,23 @@ class _LedgerScreenState extends State<LedgerScreen> {
     return Scaffold(
       appBar: widget.argument.showAppbar == null
           ? null
-          : appBarWidget(context, 'Ledger',
-              () => Navigator.pushReplacementNamed(context, customerListRoute)),
+          : AppBar(
+              leading: IconButton(
+                icon: const Icon(
+                  Icons.arrow_back_ios_new,
+                  color: bodyWhite,
+                ),
+                onPressed: () => ChangeRoutes.openCustomerScreen(
+                    context, widget.argument.distributorId),
+              ),
+              backgroundColor: primaryColor,
+              title: const NormalText(text: 'Ledger'),
+              actions: [
+                if(file != null)
+                IconButton(onPressed: () => downloadLedgerFile(file!,widget.argument.distributorId!),
+                    icon: Image.asset(downloadLedger,width: 28,color: bodyWhite,))
+              ],
+            ),
       body: BlocConsumer<LedgerBloc, LedgerState>(
         listener: (context, state) {
           if (state is LedgerSuccess) {
@@ -62,17 +86,26 @@ class _LedgerScreenState extends State<LedgerScreen> {
             ledgerDue = state.ledgerPendingTotal;
             setState(() {});
           }
+          if (state is LedgerDownloadSuccess) {
+            file = state.file;
+            print(file);
+            setState(() {});
+          }
           if (state is LedgerError) {
             loadOrder = false;
             setState(() => snackBar(context, state.error));
           }
         },
         builder: (context, state) {
-          return loadOrder
+          return file == null
               ? const Center(
                   child: CustomProgressBar(),
                 )
-              : Stack(
+              : SfPdfViewer.file(
+                  file!,
+                  pageSpacing: 0,
+                );
+          /* Stack(
                 children: [
                   Container(
                     height: MediaQuery.of(context).size.height,
@@ -152,7 +185,7 @@ class _LedgerScreenState extends State<LedgerScreen> {
                                                   ],
                                                 )),
 
-                                         /*   Container(
+                                         */ /*   Container(
                                               height: 46,
                                               width: 0.5,
                                               color: bodyBlack.withOpacity(0.4),
@@ -175,7 +208,7 @@ class _LedgerScreenState extends State<LedgerScreen> {
                                                       align: TextAlign.center,
                                                     ),
                                                   ],
-                                                )),*/
+                                                )),*/ /*
                                             Container(
                                               height: 60,
                                               width: 0.5,
@@ -331,7 +364,7 @@ class _LedgerScreenState extends State<LedgerScreen> {
                                            Expanded(
                                               flex: 2,
                                               child: BodyText(
-                                                  text: paymentDetail.amount??'',
+                                                  text: paymentDetail.amount.toString()??'',
                                                   fontSize: 14,
                                                   align: TextAlign.center)),
                                           Container(
@@ -354,7 +387,7 @@ class _LedgerScreenState extends State<LedgerScreen> {
                                            Expanded(
                                               flex: 2,
                                               child: BodyText(
-                                                  text: paymentDetail.dueAmount??'',
+                                                  text: paymentDetail.dueAmount.toString()??'',
                                                   fontSize: 14,
                                                   align: TextAlign.center)),
                                         ]),
@@ -432,9 +465,31 @@ class _LedgerScreenState extends State<LedgerScreen> {
                   )
 
                 ],
-              );
+              );*/
         },
       ),
     );
+  }
+
+  appBar() {
+    return AppBar(
+      leading: IconButton(
+        icon: const Icon(
+          Icons.arrow_back_ios_new,
+          color: bodyWhite,
+        ),
+        onPressed: () => ChangeRoutes.openCustomerScreen(
+            context, widget.argument.distributorId),
+      ),
+      backgroundColor: primaryColor,
+      title: const NormalText(text: 'Ledger'),
+      actions: [
+        AssetButton(image: downloadLedger, onPressed: () {}),
+      ],
+    );
+  }
+
+  downloadLedgerFile(File file, String myId) {
+    ProductsPdf.saveAndOpenPdf(file,context);
   }
 }

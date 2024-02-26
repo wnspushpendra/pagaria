@@ -6,6 +6,7 @@ import 'package:webnsoft_solution/app_ui/navigation_pages/order/order_bloc/order
 import 'package:webnsoft_solution/modal/login/login_response.dart';
 import 'package:webnsoft_solution/modal/order/order.dart';
 import 'package:webnsoft_solution/modal/order/order_list_modal.dart';
+import 'package:webnsoft_solution/modal/order/user_role_order_list_modal.dart';
 import 'package:webnsoft_solution/utils/app_preferences.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
@@ -30,14 +31,20 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
     // form body data
     Map<String, dynamic> body = <String, dynamic>{};
-    body['user_id'] = user.id.toString();
+
+    if(user.roleId == '4' && event.fromMenu != false){
+      body['booked_by_id'] = user.id.toString();
+    }else {
+
+      body['user_id'] = user.roleId == '5' ? user.id.toString() : event.distributorId.toString();
+    }
     body['user_type'] = 'type_marketing_ex';
 
     // request
-    OrderListResponseModal response = await userOrderListApi(header, body);
+    UserRoleOrderModal response = await userOrderListApi(header, body);
     // handling response
-    if(response.status == true && response.orderList != null){
-    emit(OrderSuccess( orderList: response.orderList!,userRole: user.roleId));
+    if(response.status == true && response.order != null && response.order!.isNotEmpty){
+    emit(OrderSuccess( orderList: response.order!,userRole: user.roleId));
     }else{
     emit(OrderError(error: response.message.toString()));
     }
@@ -63,9 +70,9 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     body['latitude'] = event.locationData.latitude.toString();
     body['longitude'] = event.locationData.longitude.toString();
     body['current_location'] = address;
+    body['zip_code'] = zipCode;
 
     emit(OrderLoading());
-
     // request
     OrderResponse response = await orderApi(header, body);
     // handling response

@@ -86,7 +86,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     firmNameController.text = user.firmName ?? 'NA';
     mobileNumberController.text = user.contactNo ?? 'NA';
     emailController.text = user.email ?? 'NA';
-    dobController.text =user.dateOfBirth ?? 'NA';
+    dobController.text = user.dateOfBirth ?? 'NA';
     aadharNumberController.text = aadharNumber;
     panCardController.text = user.panCardNo ?? 'NA';
     gstNumberController.text = user.gstNo ?? 'NA';
@@ -98,7 +98,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     pinCodeController.text = pinCode ?? 'NA';
     networkFile = user.profileImageUrl ?? 'NA';
     genderValue = user.gender ?? 'NA';
-
   }
 
   @override
@@ -141,8 +140,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
           /// * profile success state
           if (profileState is ProfileSuccess) {
-            cityController.text = selectedCity??'NA';
-            stateController.text = selectedState??'NA';
+            cityController.text = selectedCity ?? 'NA';
+            stateController.text = selectedState ?? 'NA';
             setState(() {
               isLoading = false;
               editProfile = false;
@@ -348,12 +347,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
               )
             : CityStateDropdown(
                 selectedState: selectedState,
-                selectedCity: selectedCity,
-                // cityStateList: cityStateList,
                 onChangeState: (value) {
                   selectedCity = null;
                   selectedState = value;
                 },
+                selectedCity: selectedCity,
                 onChangeCity: (value) {
                   selectedCity = value;
                 },
@@ -402,7 +400,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             address: addressController.text,
             gstNumber: gstNumberController.text,
             city: selectedCity ?? '',
-            state: selectedState??'',
+            state: selectedState ?? '',
             pinCode: pinCodeController.text,
             gender: genderValue,
             path: path,

@@ -6,7 +6,8 @@ abstract class OrderEvent {}
 
 class OrderListFetchEvent extends OrderEvent{
   final String? distributorId;
-  OrderListFetchEvent({this.distributorId});
+  final bool? fromMenu;
+  OrderListFetchEvent({this.distributorId,this.fromMenu});
 }
 class OrderSubmitEvent extends OrderEvent{
   final String totalAmount;

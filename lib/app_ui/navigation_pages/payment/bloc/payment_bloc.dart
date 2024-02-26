@@ -19,6 +19,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     on<FetchCustomerDueAmountEvent>((event, emit) => duePayment(event));
     on<PaymentClickEvent>((event, emit) => makePayment(event));
     on<FetchPaymentListDataEvent>((event, emit) => paymentListData(event));
+    on<DistributorOrderPaymentEvent>((event, emit) => makeOrderPaymentRequest(event));
   }
 
   fetchFirm(FetchFirmCustomerEvent event) async {
@@ -48,9 +49,13 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     User user = await getUserPref(userProfileDataPrefecences);
     // form body data
     Map<String, dynamic> body = <String, dynamic>{};
-    body['executive_id'] = user.id.toString();
-    body['user_type'] = user.roleId == '4' ? 'type_marketing_ex' : 'type_customer';
-    body['user_id'] = event.customerId.toString();
+    if(user.roleId == '4'){
+      body['executive_id'] = user.id.toString();
+      body['user_id'] = event.customerId.toString();
+    }else{
+      body['user_id'] = event.customerId.toString();
+    }
+    body['user_type'] = 'type_marketing_ex';
 
     CustomerDueAmountModal response = await dueAmountData(header, body);
 
@@ -96,11 +101,35 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     body['payment_reference_id'] = event.paymentReferenceNumber;
 
     CustomerPaymentModal response = await customerPaymentData(event.path.toString(),header, body);
-    emit(PaymentError(error: response.message.toString()));
-    if(response.status == true){
-    emit(PaymentSuccess(paymentSuccessAmount: int.parse(response.record!.amount!)));
+    if(response.status == true /*&& response.order != null*/ && response.record != null){
+    emit(PaymentSuccess(/*order: response.order,*/ paymentRecord: response.record));
+    }else{
+      emit(PaymentError(error: response.message.toString()));
     }
   }
+
+  void makeOrderPaymentRequest(DistributorOrderPaymentEvent event) async {
+    Map<String, String> header =  {
+      "Authorization": "Bearer ${await getStringPref(userTokenPrefecences)}",
+    };
+
+    User user = await getUserPref(userProfileDataPrefecences);
+    // form body data
+    Map<String, dynamic> body = <String, dynamic>{};
+    body['user_type'] = 'type_marketing_ex' ;
+    body['user_id'] = user.id.toString();
+    body['amount'] = event.paymentAmount;
+    body['payment_type'] = event.paymentOption;
+    body['payment_reference_id'] = event.paymentReferenceNumber;
+    body['order_id'] = event.orderId;
+
+    CustomerPaymentModal response = await distributorOrderPayment(event.path.toString(),header, body);
+    emit(PaymentError(error: response.message.toString()));
+    if(response.status == true){
+      emit(PaymentSuccess(paymentRecord: response.record));
+    }
+  }
+
 
 
   paymentListData(FetchPaymentListDataEvent event) async{

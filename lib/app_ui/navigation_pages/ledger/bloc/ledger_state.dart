@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:webnsoft_solution/modal/ledger/ledger_modal.dart';
 
 abstract class LedgerState {}
@@ -13,4 +15,9 @@ class LedgerSuccess extends LedgerState {
 class LedgerError extends LedgerState {
   String error;
   LedgerError({required this.error});
+}
+
+class LedgerDownloadSuccess extends LedgerState {
+  File file;
+  LedgerDownloadSuccess({required this.file});
 }

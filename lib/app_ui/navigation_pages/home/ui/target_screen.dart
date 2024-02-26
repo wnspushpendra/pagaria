@@ -69,7 +69,7 @@ class _TargetScreenState extends State<TargetScreen> {
           if (state.error == 'unauthorization') {
             backToLogin(context);
           }
-          snackBar(context, state.error);
+         // snackBar(context, state.error);
         }
       },
       builder: (context, state) {

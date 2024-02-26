@@ -11,7 +11,7 @@ import 'package:webnsoft_solution/utils/app_colors.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
 
 class PaymentWidget extends StatelessWidget {
-  final PaymentDetail paymentDetail;
+  final PaymentDetailData paymentDetail;
   const PaymentWidget({required this.paymentDetail,super.key});
 
   @override
@@ -64,7 +64,7 @@ class PaymentWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const BodyText(text: 'Paid Amount',),
-                      BodyText(text: paymentDetail.amount??'',color: primaryColor,),
+                      BodyText(text: paymentDetail.amount.toString()??'',color: primaryColor,),
                     ],
                   ),
                 ),

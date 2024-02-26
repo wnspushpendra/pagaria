@@ -48,7 +48,7 @@ class Ledger {
   String? paymentStatus;
   String? paymentAmount;
   String? paymentDate;
-  String? totalQuantity;
+  int? totalQuantity;
   String? pickUpDate;
   String? pickUpTime;
   String? pickUpType;
@@ -149,16 +149,16 @@ class Ledger {
 
 class PaymentDetails {
   int? id;
-  String? amount;
+  int? amount;
   String? paymentType;
   String? paymentReferenceId;
   String? imageUrl;
   String? image;
   String? userType;
   String? date;
-  String? dueAmount;
-  String? orderId;
-  String? userId;
+  int? dueAmount;
+  int? orderId;
+  int? userId;
   String? executiveId;
   String? createdAt;
   String? updatedAt;

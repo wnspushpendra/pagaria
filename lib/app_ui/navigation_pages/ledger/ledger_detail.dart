@@ -179,7 +179,7 @@ class _LedgerDetailScreenState extends State<LedgerDetailScreen> {
                       itemCount: productList.length,
                       itemBuilder: (context,index){
                         var product = productList[index];
-                        String unitPrice = '${product.amount! / int.parse(product.quantity!)}';
+                        String unitPrice = '${product.amount! / product.quantity!}';
                         return  Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children:<Widget> [
@@ -195,7 +195,7 @@ class _LedgerDetailScreenState extends State<LedgerDetailScreen> {
                               width: 0.5,
                               color: bodyBlack.withOpacity(0.4),
                             ),
-                             Expanded(flex: 2, child: BodyText(text: product.quantity!,align: TextAlign.center,fontSize: 14,)),
+                             Expanded(flex: 2, child: BodyText(text: product.quantity.toString()??'',align: TextAlign.center,fontSize: 14,)),
                             Container(
                               height: 30,
                               width: 1,

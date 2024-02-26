@@ -28,6 +28,7 @@ import 'package:webnsoft_solution/routes/route_constatns.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
 import 'package:webnsoft_solution/utils/asset_images.dart';
+import 'package:webnsoft_solution/utils/change_routes.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
 class CheckOutScreen extends StatefulWidget {
@@ -76,7 +77,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
       appBar: appBarWidget(
           context,
           'Checkout',
-          () => Navigator.pushReplacementNamed(context, productRoute, arguments: 'create')),
+          () async => ChangeRoutes.openProductScreen(context, await getUser(), widget.distributorId)),
       body: BlocConsumer<CheckOutBloc, CheckOutState>(
         listener: (BuildContext context, CheckOutState state) {
           if (state is CheckOutLoading) {
@@ -133,7 +134,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                               itemBuilder: (context, index) {
                                 selectedIndex = index;
                                 CartItem cartItem = cartList[index];
-                                quantity = cartItem.quantity;
+                                quantity = cartItem.quantity.toString();
                                 prodMinQty = (userRole == '4' ?  cartItem.productDetails!.prodMinDistrubutorQty! : cartItem.productDetails!.prodMinCustomerQty)!;
 
                                 return Container(
@@ -227,7 +228,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                                 BodyText(
                                                   text: rupeesSymbol + cartItem.amount.toString(),
                                                   fontWeight: FontWeight.bold, color: primaryColor,),
-                                               UpdateQuantityWidget(cartItem: cartItem, productName : cartItem.productDetails!.prodName!,quantity: quantity!,distributorMinQty: prodMinQty, productAddRemove: productAddRemove)
+                                               UpdateQuantityWidget(product :cartItem.productDetails! ,cartItem: cartItem, productName : cartItem.productDetails!.prodName!,quantity: quantity!,distributorMinQty: prodMinQty, productAddRemove: productAddRemove)
                                               ],
                                             ),
                                           ),
@@ -252,29 +253,4 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
     );
   }
 
-  updateQty(String from,CartItem item) {
-    var qty;
-    if(from == 'add'){
-      productAddRemove = true;
-      qty = '${int.parse(item.quantity!)+1}';
-      singleItemAmount = item.amount!;
-      context.read<CheckOutBloc>().add(CheckOutUpdateQuantityEvent(productQty:qty.toString() , cartItemId: item.id.toString(), ));
-    /*  if(int.parse(item.productDetails!.prodInventory!) < qty){
-      }*/
-    }else{
-      productAddRemove = false;
-      if(int.parse(item.quantity!) != 1 ){
-        qty = int.parse(item.quantity!)-1;
-        singleItemAmount = item.amount!;
-      }
-      if(int.parse(item.productDetails!.prodMinDistrubutorQty!)  <=  qty){
-         context.read<CheckOutBloc>().add(CheckOutUpdateQuantityEvent(productQty:qty.toString() , cartItemId: item.id.toString(), ));
-      }else{
-        snackBar(context, 'You can order minimum ${item.productDetails!.prodMinDistrubutorQty} for this item');
-      }
-    }
-
-  //  context.read<CheckOutBloc>().add(CheckOutUpdateQuantityEvent(productQty:qty.toString() , cartItemId: item.id.toString(), ));
-
-  }
 }

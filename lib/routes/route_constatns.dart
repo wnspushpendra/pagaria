@@ -3,6 +3,7 @@ const String navigationRoute = 'navigation';
 const String homeRoute = 'home';
 const String notificationRoute = 'notification';
 const String profileRoute = 'profile';
+const String myActivityRoute = 'my-activity';
 const String resetPasswordRoute = 'reset-password';
 const String productRoute = 'product';
 const String productDetailRoute = 'product-detail';
@@ -19,8 +20,10 @@ const String customerPaymentRoute = 'customer-payment';
 const String checkOutRoute = 'checkout';
 const String ledgerRoute = 'ledger';
 const String ledgerDetailRoute = 'ledger-detail';
+const String customerForOrderRoute = 'customer-for-order';
 
 // distributor routes
 
 const String homeDistributorRoute = 'distributor-home';
 const String distributorPaymentRoute = 'distributor-payment';
+const String distributorOrderPaymentRoute = 'distributor-order-payment';

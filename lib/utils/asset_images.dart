@@ -23,4 +23,5 @@ const networkErrorImage = 'assets/network_error.png';
 const changePasswordImage = 'assets/change_password.svg';
 const forgotPasswordImage = 'assets/forgot_password.svg';
 const defaultImage = 'assets/default_image.png';
+const myActivityIcon = 'assets/my_activity.png';
 

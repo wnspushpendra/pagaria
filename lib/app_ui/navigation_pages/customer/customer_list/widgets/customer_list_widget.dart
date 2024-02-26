@@ -13,6 +13,8 @@ import 'package:webnsoft_solution/routes/route_constatns.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
 import 'package:webnsoft_solution/utils/asset_images.dart';
+import 'package:webnsoft_solution/utils/change_routes.dart';
+import 'package:webnsoft_solution/utils/util_methods.dart';
 
 class CustomerListItem extends StatelessWidget {
   final Customer customerDetails;
@@ -60,11 +62,11 @@ class CustomerListItem extends StatelessWidget {
               ),
               Row(
                 children: [
-                  AssetButton(image: createOrder, onPressed: () => Navigator.pushReplacementNamed(context, productRoute,arguments: customerDetails.id.toString())),
+                  AssetButton(image: createOrder, onPressed: ()async =>ChangeRoutes.openProductScreen(context, await getUser(), customerDetails.id.toString()) /*Navigator.pushReplacementNamed(context, productRoute,arguments: customerDetails.id.toString())*/),
                   //AssetButton(image: createOrder, onPressed: () => Navigator.pushReplacementNamed(context, productRoute,arguments: 'create')),
                   AssetButton(image: visibility, onPressed: () => Navigator.pushReplacementNamed(context, customerDetailRoute,arguments: CustomerDetailModal(customerDetails: customerDetails),)),
                   AssetButton(image: paymentIcon, onPressed: () => Navigator.pushReplacementNamed(context, customerDetailRoute,arguments: CustomerDetailModal(index: 2,customerDetails: customerDetails))),
-                  AssetButton(image: history, onPressed: () => Navigator.pushReplacementNamed(context, customerDetailRoute,arguments: CustomerDetailModal(index: 1,customerDetails: customerDetails))),
+                  AssetButton(image: history, onPressed: () => Navigator.pushReplacementNamed(context, customerDetailRoute,arguments: CustomerDetailModal(index: 1,customerDetails: customerDetails,fromMenu: false))),
                 ],
               ),
             ],

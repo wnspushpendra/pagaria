@@ -60,7 +60,9 @@ dependencies:
   shimmer_loading:
   flutter_html:
   pdf:
+  advance_pdf_viewer:
   google_fonts:
+  dio:
 
 
 

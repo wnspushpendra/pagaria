@@ -17,6 +17,7 @@ import 'package:webnsoft_solution/utils/app_colors.dart';
 import 'package:webnsoft_solution/utils/app_message.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
 import 'package:webnsoft_solution/utils/asset_images.dart';
+import 'package:webnsoft_solution/utils/change_routes.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
 
@@ -39,86 +40,99 @@ class _ChangePassword extends State<ResetPassword> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: appBarWidget(context, resetPassword,  () {
-          /// * reset password back pressed
-          Navigator.pushReplacementNamed(context, homeRoute,arguments: widget.user);
-        }),
-        body: BlocConsumer<ResetPasswordBloc, ResetPasswordState>(
-          listener: (context, changePasswordState) {
-            /// * reset password loading state
-            if(changePasswordState is ResetPasswordLoading){
-              setState(() => resetPasswordLoading = true);
-            }/// * reset password error state
-            if(changePasswordState is ResetPasswordSuccess){
-              snackBar(context, changePasswordState.message);
-            }/// * reset password error state
-            if(changePasswordState is ResetPasswordError){
-              if(changePasswordState.error == 'unauthorization'){
-                backToLogin(context);
+    return WillPopScope(
+      onWillPop: () async{
+        ChangeRoutes.openHomeScreen(context, await getUser());
+        return true;
+      },
+      child: Scaffold(
+          appBar: appBarWidget(context, resetPassword,  () async{
+            /// * reset password back pressed
+            ChangeRoutes.openHomeScreen(context, await getUser());
+          }),
+          body: BlocConsumer<ResetPasswordBloc, ResetPasswordState>(
+            listener: (context, changePasswordState) {
+              /// * reset password loading state
+              if(changePasswordState is ResetPasswordLoading){
+                setState(() => resetPasswordLoading = true);
+              }/// * reset password error state
+              if(changePasswordState is ResetPasswordSuccess){
+                resetPasswordLoading = false;
+                WidgetsBinding.instance.addPostFrameCallback((timeStamp)async {
+                  ChangeRoutes.openHomeScreen(context, await getUser());
+                });
+                snackBar(context, changePasswordState.message);
+              }/// * reset password error state
+              if(changePasswordState is ResetPasswordError){
+                if(changePasswordState.error == 'unauthorization'){
+                  backToLogin(context);
+                }
+                resetPasswordLoading = false;
+                if(changePasswordState.error != null){
+                  snackBar(context, changePasswordState.error!);
+                }
+                setState(() => resetPassErrorState(changePasswordState));
               }
-              resetPasswordLoading = false;
-              setState(() => resetPassErrorState(changePasswordState));
-            }
-          },
-          builder: (context, resetPasswordState) {
-            /// * reset password ui
-            return SingleChildScrollView(
-              child: Container(
-                height: MediaQuery.of(context).size.height*0.80,
-                padding:  EdgeInsets.all(16.h),
-                alignment: Alignment.center,
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      //const CustomSvgImage(image: changePasswordImage),
-                      const HeadingText(text: 'Change Your Password 🔒',align: TextAlign.center,fontSize: 20,color: bodyBlack,),
-                      const Space(height: 8,),
-                      const BodyText(
-                        fontSize: 14,
-                          text: "Your Safety Matters! Keep Your Account Secure - Update Your Password Regularly. Craft a Robust, Unique Password with Letters, Numbers, and Special Characters."),
-                      const Space(height: 20,),
-                      CustomTextField(hint: oldPassword, label: oldPassword, controller: oldPasswordController,
-                          validate: oldPass,
-                          errorMessage: oldPasswordMessage,
-                          isPasswordField: isOldPasswordField,
-                          icon:  Icon(oldPasswordVisible ? Icons.visibility: Icons.visibility_off)
-                          ,onClick: ()=> setState(() => oldPasswordVisibility()),
-                          onTextChange: (value)=> setState(() => oldPass = value)),
-                      CustomTextField(hint: newPassword, label: newPassword, controller: newPasswordController,
-                          validate: newPass,
-                          //errorMessage: newPasswordMessage,
-                          isPasswordField: isNewPasswordField,
-                          icon:  Icon(newPasswordVisible ? Icons.visibility: Icons.visibility_off)
-                          ,onClick: ()=> setState(() => newPasswordVisibility()),
-                          onTextChange: (value)=> setState(() => newPass = value)),
-                      if(newPass != null && newPass!)
-                        CustomErrorWidget(validate: !newPass! , errorMessage: newPasswordMessage),
-                      CustomTextField(hint: confirmNewPassword, label: confirmNewPassword, controller: confirmNewPasswordController,
-                          validate: confirmNewPass,
-                          errorMessage: confirmNewPasswordMessage,
-                          isPasswordField: isNewPasswordField,
-                          icon:  Icon(isNewPasswordField ? Icons.visibility: Icons.visibility_off)
-                          ,onClick: ()=> setState(() => newPasswordVisibility()),
-                          onTextChange: (value)=> setState(() {
-                            isSamePass = true;
-                            if(newPasswordController.text != confirmNewPasswordController.text){
-                              isSamePass = false;
-                            }
-                          })),
-                      if(isSamePass != null && !isSamePass!)
-                      CustomErrorWidget(validate: isSamePass , errorMessage: unMatchPasswordMessage),
-                      const Space(height: 20,),
-                      CustomButton(buttonText: 'Submit',
-                          showLoading: resetPasswordLoading,
-                          /// * reset password click action
-                          onClick: () => resetButtonClick())
-                    ]),
-              ),
-            );
-          },
-        ));
+            },
+            builder: (context, resetPasswordState) {
+              /// * reset password ui
+              return SingleChildScrollView(
+                child: Container(
+                  height: MediaQuery.of(context).size.height*0.80,
+                  padding:  EdgeInsets.all(16.h),
+                  alignment: Alignment.center,
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        //const CustomSvgImage(image: changePasswordImage),
+                        const HeadingText(text: 'Change Your Password 🔒',align: TextAlign.center,fontSize: 20,color: bodyBlack,),
+                        const Space(height: 8,),
+                        const BodyText(
+                          fontSize: 14,
+                            text: "Your Safety Matters! Keep Your Account Secure - Update Your Password Regularly. Craft a Robust, Unique Password with Letters, Numbers, and Special Characters."),
+                        const Space(height: 20,),
+                        CustomTextField(hint: oldPassword, label: oldPassword, controller: oldPasswordController,
+                            validate: oldPass,
+                            errorMessage: oldPasswordMessage,
+                            isPasswordField: isOldPasswordField,
+                            icon:  Icon(oldPasswordVisible ? Icons.visibility: Icons.visibility_off)
+                            ,onClick: ()=> setState(() => oldPasswordVisibility()),
+                            onTextChange: (value)=> setState(() => oldPass = value)),
+                        CustomTextField(hint: newPassword, label: newPassword, controller: newPasswordController,
+                            validate: newPass,
+                            //errorMessage: newPasswordMessage,
+                            isPasswordField: isNewPasswordField,
+                            icon:  Icon(newPasswordVisible ? Icons.visibility: Icons.visibility_off)
+                            ,onClick: ()=> setState(() => newPasswordVisibility()),
+                            onTextChange: (value)=> setState(() => newPass = value)),
+                        if(newPass != null && newPass!)
+                          CustomErrorWidget(validate: !newPass! , errorMessage: newPasswordMessage),
+                        CustomTextField(hint: confirmNewPassword, label: confirmNewPassword, controller: confirmNewPasswordController,
+                            validate: confirmNewPass,
+                            errorMessage: confirmNewPasswordMessage,
+                            isPasswordField: isNewPasswordField,
+                            icon:  Icon(isNewPasswordField ? Icons.visibility: Icons.visibility_off)
+                            ,onClick: ()=> setState(() => newPasswordVisibility()),
+                            onTextChange: (value)=> setState(() {
+                              isSamePass = true;
+                              if(newPasswordController.text != confirmNewPasswordController.text){
+                                isSamePass = false;
+                              }
+                            })),
+                        if(isSamePass != null && !isSamePass!)
+                        CustomErrorWidget(validate: isSamePass , errorMessage: unMatchPasswordMessage),
+                        const Space(height: 20,),
+                        CustomButton(buttonText: 'Submit',
+                            showLoading: resetPasswordLoading,
+                            /// * reset password click action
+                            onClick: () => resetButtonClick())
+                      ]),
+                ),
+              );
+            },
+          )),
+    );
   }
 
   /// * reset password click action

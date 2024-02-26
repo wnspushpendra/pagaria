@@ -18,6 +18,7 @@ import 'package:webnsoft_solution/utils/app_colors.dart';
 import 'package:webnsoft_solution/utils/app_message.dart';
 import 'package:webnsoft_solution/utils/app_regex.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
+import 'package:webnsoft_solution/utils/change_routes.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
 class DistributorPaymentScreen extends StatefulWidget {
@@ -40,6 +41,7 @@ class _DistributorPaymentScreenState extends State<DistributorPaymentScreen> {
   int remainingAmount = 0;
   String customerId = '';
   bool? customerSelectError,paymentError, paymentTypeError,paymentLoading;
+  String? errorMessage;
 
 
   @override
@@ -57,10 +59,15 @@ class _DistributorPaymentScreenState extends State<DistributorPaymentScreen> {
           if(state is PaymentSuccess){
             customerPaymentDetailLoading = false;
             if(state.dueAmount != null){
+              customerPaymentDetailLoading = false;
               dueAmount  = state.dueAmount ?? '';
               totalAmount  = int.parse(state.totalAmount!) ?? 0;
             }
+            if(state.paymentRecord != null){
+              ChangeRoutes.openOrderScreen(context, true);
+            }
             if(state.paymentSuccessAmount != null){
+              customerPaymentDetailLoading = false;
               paymentLoading = false;
               int paidAmount = state.paymentSuccessAmount!;
               int changeDueAmount = int.parse(dueAmount) - paidAmount;
@@ -70,7 +77,11 @@ class _DistributorPaymentScreenState extends State<DistributorPaymentScreen> {
             setState(() {});
           }
           if(state is PaymentError){
+           paymentLoading = false;
+            errorMessage = state.error;
+            customerPaymentDetailLoading = false;
             snackBar(context, state.error!);
+            setState(() {});
           }
         },
         builder: (context, state) {
@@ -82,11 +93,15 @@ class _DistributorPaymentScreenState extends State<DistributorPaymentScreen> {
                 child:  customerPaymentDetailLoading ?
                 const Center(
                   child: CustomProgressBar(),
+                ) : errorMessage != null ? Container(
+                  height: MediaQuery.of(context).size.height,
+                  alignment: AlignmentDirectional.center,
+                  child: BodyText(text: errorMessage!,color: primaryColor,),
                 )
                     : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    dueAmount.isNotEmpty?   Row(
+                    dueAmount.isNotEmpty?  Row(
                       children: [
                         BodyText(
                           text: duePayment,
@@ -99,7 +114,7 @@ class _DistributorPaymentScreenState extends State<DistributorPaymentScreen> {
                       ],
                     ) : Container(),
                     const Space(height: 10,),
-                    CustomTextField(
+                    dueAmount.isNotEmpty && dueAmount != '0'?  CustomTextField(
                         hint: enterPayment,
                         label: enterPayment,
                         inputFormatter: InputFieldFormatter.numberFormat,
@@ -109,13 +124,12 @@ class _DistributorPaymentScreenState extends State<DistributorPaymentScreen> {
                         controller: amountToPayController,
                         onTextChange: (value) {
                           remainingAmount = int.parse(dueAmount)  - int.parse(amountToPayController.text);
-                          print(remainingAmount.toString());
                           remainingAmountError = false;
                           if(remainingAmount.isNegative){
                             remainingAmountError = true;
                           }
                           setState(() {});
-                        }) ,
+                        }) : Container() ,
                     remainingAmount != 0 ? Row(
                       children: [
                         BodyText(

@@ -72,7 +72,7 @@ class _ProductListState extends State<ProductList> {
           if(state.cartItem != null){
             for (var element in widget.productList) {
               if(element.id.toString() ==  state.cartItem!.productId){
-                quantity = state.cartItem!.quantity;
+                quantity = state.cartItem!.quantity.toString();
                 productPrice = state.cartItem!.amount.toString();
                 element.prodDistributorPrice = state.cartItem!.amount.toString();
                 element.isCart![0].quantity = state.cartItem!.quantity;
@@ -197,7 +197,7 @@ class _ProductListState extends State<ProductList> {
                                             }) : Container();
                                             },
                                           )
-                                : UpdateQuantityWidget(cartItem: cartItem,productName: product.prodName, quantity: cartItem.quantity!,distributorMinQty: prodMinQty, productAddRemove: productAddRemove,iconSize:24,textSize: 16,)
+                                : UpdateQuantityWidget(product : product,cartItem: cartItem,productName: product.prodName, quantity: cartItem.quantity!.toString(),distributorMinQty: prodMinQty, productAddRemove: productAddRemove,iconSize:24,textSize: 16,)
                                 : Container()
                           ],
                         )

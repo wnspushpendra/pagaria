@@ -7,20 +7,20 @@ import 'package:webnsoft_solution/app_common_widges/home_appbar.dart';
 import 'package:webnsoft_solution/app_common_widges/normal_text.dart';
 import 'package:webnsoft_solution/app_common_widges/space.dart';
 import 'package:webnsoft_solution/modal/customer_detail.dart';
+import 'package:webnsoft_solution/modal/distributor/distributo_payment_modal.dart';
+import 'package:webnsoft_solution/modal/distributor/distributor_order_modal.dart';
 import 'package:webnsoft_solution/modal/distributor_list.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
 import 'package:webnsoft_solution/utils/asset_images.dart';
+import 'package:webnsoft_solution/utils/util_methods.dart';
 
 class DistributorPaymentWidget extends StatelessWidget {
   final String paymentStatus;
-  final Customer? customerDetails;
+  final DistributorPayment order;
 
-  const DistributorPaymentWidget(
-      {required this.paymentStatus,
-        this.customerDetails,
-      super.key});
+  const DistributorPaymentWidget({required this.paymentStatus,required this.order,super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -33,18 +33,41 @@ class DistributorPaymentWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          const Row(
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                flex: 1,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const BodyText(text: 'Payment ID',fontSize: 16,color: primaryColor,),
+                    NormalText(text: '${order.id.toString()} ', color: bodyBlack,),
+                  ],
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const BodyText(text: 'Order ID',fontSize: 16,color: primaryColor,),
+                    BodyText(text: order.orderDetails!.id.toString(), ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                     BodyText(
-                      text: customerName,fontSize: 16,color: primaryColor,
-                    ),
+                     const BodyText(text: name,fontSize: 16,color: primaryColor,),
                     BodyText(
-                      text: 'me customer'/*customerDetails.fullName.toString()*/,
+                      text: order.executiveData != null ? order.executiveData!.fullName! : order.userData!.fullName.toString() ,
                       color: bodyBlack,
                     ),
                   ],
@@ -55,61 +78,78 @@ class DistributorPaymentWidget extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      BodyText(text: mobileNumber,fontSize: 16,color: primaryColor,align: TextAlign.start,),
-                      BodyText(
-                        text:'123344545' /*customerDetails.contactNo.toString()*/,
-                        color: bodyBlack,
-                      ),
+                      const BodyText(text: mobileNumber,fontSize: 16,color: primaryColor,align: TextAlign.start,),
+                      BodyText(text: order.executiveData != null ? order.executiveData!.contactNo.toString() : order.userData!.contactNo.toString() , color: bodyBlack,),
                     ],
                   )),
 
             ],
           ),
-           Space(height: 6,),
            Row(
             children: [
-              const Expanded(
+               Expanded(
                   flex: 1,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      BodyText(text: 'Order Id',fontSize: 16,color: primaryColor,),
-                      NormalText(text: '$rupeesSymbol ord21kjjl'/*ustomerDetails.email.toString()*/, color: bodyBlack,),
+                      const BodyText(text: 'Total Amount',fontSize: 16,color: primaryColor,),
+                      NormalText(text: '${order.orderDetails!.totalAmount.toString()} ', color: bodyBlack,),
                     ],
                   )),
+              paymentStatus == 'Pending Payment'?
               Expanded(
                   flex: 1,
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      BodyText(text: paymentStatus,fontSize: 16,color: primaryColor,),
-                      const NormalText(text: '$rupeesSymbol 5000'/*ustomerDetails.email.toString()*/, color: bodyBlack,),
+                      const BodyText(text: 'Remaining  Amount',fontSize: 16,color: primaryColor,),
+                       NormalText(text: '$rupeesSymbol ${order.dueAmount.toString()}', color: Colors.green,),
                     ],
-                  )),
+                  )) :
+              paymentStatus == 'Recent Payment'?
+              Expanded(
+                  flex: 1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const BodyText(text: 'Paid Amount',fontSize: 16,color: primaryColor,),
+                      NormalText(text: '$rupeesSymbol ${order.amount.toString()}', color: Colors.green,),
+                    ],
+                  ))  :
+              Expanded(
+                  flex: 1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const BodyText(text: 'Date',fontSize: 16,color: primaryColor,),
+                      NormalText(text: getDDMMYYYYDateStringDate(order.date!), color: bodyBlack,),
+                    ],
+                  ))
+
+
             ],
           ),
-           const Column(
+            Column(
              crossAxisAlignment: CrossAxisAlignment.start,
              children: [
-                BodyText(text: email,fontSize: 16,color: primaryColor,),
-               NormalText(text: 'me customre@gmail.com'/*customerDetails.email.toString()*/, color: bodyBlack,),
+                const BodyText(text: email,fontSize: 16,color: primaryColor,),
+               BodyText(text: order.executiveData != null ? order.executiveData!.email.toString() : order.userData!.email.toString() , color: bodyBlack,),
              ],
            ),
            const Space(height:6 ,),
-          const Row(
+          /* Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Flexible(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                      BodyText(text:address,fontSize: 16,color: primaryColor,),
-                     NormalText(text: '9/3 vijay nagar indore'/*"${customerDetails.address},${customerDetails.city},${customerDetails.state},${customerDetails.zipCode}"*/,color: bodyBlack,),
+                      const BodyText(text:address,fontSize: 16,color: primaryColor,),
+                     NormalText(text: order.shippingAddress??''*//*"${customerDetails.address},${customerDetails.city},${customerDetails.state},${customerDetails.zipCode}"*//*,color: bodyBlack,),
                   ],
                 ),
               ),
-              Space(width: 4,),
-              /*Container(
+              *//*Container(
                 width: 140,
                 padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: CustomButton(
@@ -122,9 +162,9 @@ class DistributorPaymentWidget extends StatelessWidget {
                     buttonHeight: 36,
                     image: downloadLedger,
                     onClick: () {}),
-              )*/
+              )*//*
             ],
-          ),
+          ),*/
         ],
       ),
     );

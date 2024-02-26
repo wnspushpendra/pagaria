@@ -9,6 +9,7 @@ import 'package:webnsoft_solution/modal/category_list.dart';
 import 'package:webnsoft_solution/modal/login/login_response.dart';
 import 'package:webnsoft_solution/modal/order/order.dart';
 import 'package:webnsoft_solution/modal/order/order_list_modal.dart';
+import 'package:webnsoft_solution/modal/order/user_role_order_list_modal.dart';
 import 'package:webnsoft_solution/modal/product_list.dart';
 
 /// * order api
@@ -21,12 +22,11 @@ Future<OrderResponse> orderApi(Map<String, String> header, Map<String, dynamic> 
 }
 
 /// * order list
-Future<OrderListResponseModal> userOrderListApi(Map<String, String> header, Map<String, dynamic> body) async {
+Future<UserRoleOrderModal> userOrderListApi(Map<String, String> header, Map<String, dynamic> body) async {
   var response = await http.post(Uri.parse(baseUrl + orderListApi),
       headers: header,
       body: body);
-  print(response.body);
-  OrderListResponseModal apiResponse = OrderListResponseModal.fromJson(jsonDecode(response.body));
+  UserRoleOrderModal apiResponse = UserRoleOrderModal.fromJson(jsonDecode(response.body));
   return apiResponse;
 }
 

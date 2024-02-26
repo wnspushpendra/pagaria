@@ -1,7 +1,7 @@
 class PaymentListModal {
   bool? status;
   String? message;
-  List<PaymentDetail>? paymentDetail;
+  List<PaymentDetailData>? paymentDetail;
 
   PaymentListModal({this.status, this.message, this.paymentDetail});
 
@@ -9,9 +9,9 @@ class PaymentListModal {
     status = json['status'];
     message = json['message'];
     if (json['record'] != null) {
-      paymentDetail = <PaymentDetail>[];
+      paymentDetail = <PaymentDetailData>[];
       json['record'].forEach((v) {
-        paymentDetail!.add(PaymentDetail.fromJson(v));
+        paymentDetail!.add(PaymentDetailData.fromJson(v));
       });
     }
   }
@@ -27,22 +27,22 @@ class PaymentListModal {
   }
 }
 
-class PaymentDetail {
+class PaymentDetailData {
   int? id;
-  String? amount;
+  int? amount;
   String? paymentType;
   String? paymentReferenceId;
   String? imageUrl;
   String? image;
   String? userType;
   String? date;
-  String? userId;
+  int? userId;
   String? executiveId;
   String? createdAt;
   String? updatedAt;
   UserData? userData;
 
-  PaymentDetail(
+  PaymentDetailData(
       {this.id,
         this.amount,
         this.paymentType,
@@ -57,7 +57,7 @@ class PaymentDetail {
         this.updatedAt,
         this.userData});
 
-  PaymentDetail.fromJson(Map<String, dynamic> json) {
+  PaymentDetailData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     amount = json['amount'];
     paymentType = json['payment_type'];

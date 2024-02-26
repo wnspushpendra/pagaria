@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:http/http.dart' as http;
 import 'package:location/location.dart';
+import 'package:open_file/open_file.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:webnsoft_solution/app_common_widges/app_body_text.dart';
 import 'package:webnsoft_solution/modal/login/login_response.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
@@ -100,6 +102,12 @@ String getDDMMYYYYHHMMDateStringDate(String date ) {
   return formattedDate;
 }
 
+String getHHMMFromHHMMSS(String timeString) {
+  DateTime dateTime = DateFormat("HH:mm:ss").parse(timeString);
+  String formattedTime = DateFormat("HH:mm").format(dateTime);
+  return formattedTime;
+}
+
 
 
 /// * showing a snackBar
@@ -115,6 +123,32 @@ snackBar(BuildContext context, String message) {
   );
   ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }
+
+
+/// * showing a snackBar
+snackBarButton(BuildContext context, String message,String path) {
+  final snackBar = SnackBar(
+    behavior: SnackBarBehavior.floating,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(Radius.circular(8)),
+    ),
+    margin: const EdgeInsets.all(4),
+    duration: const Duration(seconds: 10),
+    backgroundColor: primaryColor,
+    content: BodyText(
+      text: message,
+      color: Colors.white,
+      align: TextAlign.start,
+    ),
+    action: SnackBarAction(
+      backgroundColor: bodyLightBlack,
+      label: 'Open',
+      onPressed: () => OpenFile.open(path),
+    ),
+  );
+  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+}
+
 
 /// * get server image and convert it simple file format
 Future<File> downloadImageAndUpload(String imagePath) async {

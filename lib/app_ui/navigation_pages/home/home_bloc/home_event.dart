@@ -13,3 +13,7 @@ class HomeCheckInOutUpdateEvent extends HomeEvent{
   HomeCheckInOutUpdateEvent({required this.checkInOutStatus, required  this.locationData, required this.placeMark});
 }
 class HomeCustomerFetchEvent extends HomeEvent{}
+
+// distributor fetch payment history
+class HomeFetchDistributorPaymentEvent extends HomeEvent{}
+

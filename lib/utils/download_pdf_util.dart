@@ -4,11 +4,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:open_file/open_file.dart';
 import 'package:http/http.dart' as http;
 
-Future<void> downloadAndOpenFile() async {
+Future<void> downloadAndOpenFile(String fileName,String url) async {
   try {
-    String url = 'https://cdn.syncfusion.com/content/PDFViewer/flutter-succinctly.pdf';
-    String directoryName = 'OrderFiles';
-    String fileName = 'my_order.pdf';
+    String directoryName = 'pagaria_files';
     // Create directory and save network file
     String savePath = await _getSavePath(directoryName, fileName);
     await _saveNetworkFile(url, savePath);

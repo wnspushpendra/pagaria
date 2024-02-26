@@ -3,23 +3,23 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:webnsoft_solution/app_common_widges/app_body_text.dart';
-import 'package:webnsoft_solution/app_common_widges/home_appbar.dart';
 import 'package:webnsoft_solution/app_common_widges/normal_text.dart';
+import 'package:webnsoft_solution/app_common_widges/order_payment_status.dart';
 import 'package:webnsoft_solution/app_common_widges/space.dart';
-import 'package:webnsoft_solution/modal/login/login_response.dart';
-import 'package:webnsoft_solution/modal/order/order_list_modal.dart';
 import 'package:webnsoft_solution/modal/order/order_product.dart';
+import 'package:webnsoft_solution/modal/order/user_role_order_list_modal.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
-import 'package:webnsoft_solution/utils/app_preferences.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
-import 'package:webnsoft_solution/utils/asset_images.dart';
+import 'package:webnsoft_solution/utils/change_routes.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
 class OrderDetailScreen extends StatefulWidget {
-  final OrderList order;
-  const OrderDetailScreen({required this.order,super.key});
+  final Order order;
+
+  const OrderDetailScreen({required this.order, super.key});
 
   @override
   State<OrderDetailScreen> createState() => _OrderDetailScreenState();
@@ -34,16 +34,22 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     super.initState();
   }
 
-  orderProductList(){
-    productList = (json.decode(widget.order.allProduct!) as List).map((data) => OrderProduct.fromJson(data)).toList();
+  orderProductList() {
+    productList = (json.decode(widget.order.allProduct!) as List)
+        .map((data) => OrderProduct.fromJson(data))
+        .toList();
   }
-
 
   @override
   Widget build(BuildContext context) {
-
-    return Scaffold(
-      appBar:  AppBar(
+    print(widget.order.pdfUrl);
+    return WillPopScope(
+      onWillPop: () async {
+        ChangeRoutes.openOrderScreen(context, true);
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
           backgroundColor: primaryColor,
           elevation: 0,
           leading: IconButton(
@@ -53,234 +59,551 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               size: 24,
             ),
             onPressed: () async {
-              backUserHome(context);
+              Navigator.pushReplacementNamed(context, orderRoute,
+                  arguments: true);
             },
           ),
           titleSpacing: 0,
-          title: const NormalText(text:'Order Detail' ),
+          title: const NormalText(text: 'Order Detail'),
           actions: [
-            IconButton(onPressed: (){
-         // downloadAndOpenFile();
-            }, icon: const Icon(Icons.download_for_offline,color: bodyWhite,))
-        ],
-      ),
-
-
-      body:
-      SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: 8),
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                      width : 80,
-                      height: 100,
-                      child: CachedNetworkImage(imageUrl: widget.order.userData!.profileImageUrl!,width: 80,height: 80,)),
-                  const Space(width: 10,),
-                   Expanded(
-                      flex : 3,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            width : MediaQuery.of(context).size.width,
-                              alignment: Alignment.center,
-                              child: const BodyText(text: 'Order Info',align: TextAlign.start,fontSize : 18,fontWeight: FontWeight.bold,)),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              BodyText(text: widget.order.userData!.fullName!,align: TextAlign.start,fontSize : 14,fontWeight: FontWeight.bold,),
-                               BodyText(text: 'Order ID : ${widget.order.id}',align: TextAlign.start,fontSize : 14,fontWeight: FontWeight.bold,),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                               BodyText(text: widget.order.userData!.contactNo!,align: TextAlign.start,fontSize : 14,),
-                              BodyText(text: widget.order.userData!.email!,align: TextAlign.start,fontSize : 14,),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                               BodyText(text: 'Order On : ${getDDMMYYYYDateStringDate(widget.order.createdAt!)}',align: TextAlign.start,fontSize : 14,),
-                            ],
-                          ),
-                        ],
-                      )),
-                ],
-              ),
-            ),
-            // reject, pending, delivered ,approved,completed
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  BodyText(text:'Address : ${widget.order.userData!.address},${widget.order.userData!.city} ${widget.order.userData!.state} ${widget.order.userData!.zipCode}' ,align: TextAlign.start,fontSize : 14,),
-                  widget.order.orderStatus != null ? Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const BodyText(text: 'Order Status :  ',fontWeight: FontWeight.bold,fontSize: 18,),
-                      Flexible(child: BodyText(text: widget.order.orderStatus!,
-                        color : widget.order.orderStatus! == 'reject' ? Colors.red
-                        : widget.order.orderStatus! == 'approved' ? Colors.deepOrange :
-                        widget.order.orderStatus! == 'delivered' || widget.order.orderStatus! == 'completed' ? Colors.green
-                        : Colors.orange,
-                        align: TextAlign.start,fontSize: 18,))
-                    ],) : Container(),
-                ],
-              ),
-            ),
-
-
-
-
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: 8),
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Column(
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 1,
-                    color: bodyLightBlack,
-                  ),
-                   SizedBox(
-                     height: 36,
-                     child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children:<Widget> [
-                        const Expanded(flex: 3, child: BodyText(text: 'Product',
-                          fontSize: 14
-                          ,align: TextAlign.start,color: primaryColor,)),
-                        Container(
-                          height: 36,
-                          width: 0.5,
-                          color: bodyBlack.withOpacity(0.4),
-                        ),
-                        const Expanded(flex: 2, child: BodyText(text: 'Qty',
-                          fontSize: 14
-                          ,align: TextAlign.center,color: primaryColor,)),
-                        Container(
-                          height: 36,
-                          width: 0.5,
-                          color: bodyBlack.withOpacity(0.4),
-                        ),
-                        const Expanded(flex: 2, child: BodyText(text: 'Unit Price',
-                          fontSize: 14,
-                          align: TextAlign.center,color: primaryColor,)),
-                        Container(
-                          height: 36,
-                          width: 0.5,
-                          color: bodyBlack.withOpacity(0.4),
-                        ),
-                        const Expanded(flex: 2, child: BodyText(text: 'Total Price',
-                          fontSize: 14,
-                          align: TextAlign.center,color: primaryColor,)),
-
-                      ],
-                                       ),
-                   ),
-                  Container(
-                    margin: const EdgeInsets.fromLTRB(0,0,0,0),
-                    width: MediaQuery.of(context).size.width,
-                    height: 1,
-                    color: bodyLightBlack,
-                  ),
-                  ListView.builder(
-                      shrinkWrap: true,
-                      padding: EdgeInsets.zero,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: productList.length,
-                      itemBuilder: (context,index){
-                        var product = productList[index];
-                        String unitPrice = '${product.amount! / int.parse(product.quantity!)}';
-                        return  Row(
+            IconButton(
+                onPressed: () {
+                  // downloadAndOpenFile();
+                },
+                icon: const Icon(
+                  Icons.download_for_offline,
+                  color: bodyWhite,
+                ))
+          ],
+        ),
+        body: /*widget.order.pdfUrl != null ?SfPdfViewer.network(widget.order.pdfUrl!) :
+       */ SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                        width: 80,
+                        height: 100,
+                        child: CachedNetworkImage(
+                          imageUrl: widget.order.bookedUser!.profileImageUrl!,
+                          width: 80,
+                          height: 80,
+                        )),
+                    const Space(
+                      width: 10,
+                    ),
+                    Expanded(
+                        flex: 3,
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children:<Widget> [
-                             Expanded(flex: 3, child: Row(
-                               children: [
-                                 CachedNetworkImage(imageUrl: product.prodImageUrl!,width: 30,height: 30,),
-                                 const Space(width: 2,),
-                                 Flexible(child: BodyText(text: product.prodName!,align: TextAlign.start,fontSize: 14,)),
-                               ],
-                             )),
+                          children: [
+                            SizedBox(
+                                width: MediaQuery.of(context).size.width,
+                                child: const BodyText(
+                                  text: 'Order Info',
+                                  align: TextAlign.start,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                )),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                BodyText(
+                                  text: widget.order.bookedUser!.fullName!,
+                                  align: TextAlign.start,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                BodyText(
+                                  text: 'Order ID : ${widget.order.id}',
+                                  align: TextAlign.start,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                const BodyText(
+                                  text: "$mobileNumber : ",
+                                  align: TextAlign.start,
+                                  fontSize: 14,
+                                ),
+                                    BodyText(
+                                  text: widget.order.userData!.contactNo!,
+                                  align: TextAlign.start,
+                                  fontSize: 14,
+                                ),
+
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                    const BodyText(
+                                  text: "$email : ",
+                                  align: TextAlign.start,
+                                  fontSize: 14,
+                                ),
+                                BodyText(
+                                  text: widget.order.bookedUser!.email!,
+                                  align: TextAlign.start,
+                                  fontSize: 14,
+                                ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                BodyText(
+                                  text: 'Order Date : ${getDDMMYYYYDateStringDate(widget.order.createdAt!)}',
+                                  align: TextAlign.start,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ],
+                            ),
+                          ],
+                        )),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                         BodyText(
+                      text:
+                          'Address : ${widget.order.bookedUser!.address},${widget.order.bookedUser!.city} ${widget.order.bookedUser!.state} ${widget.order.bookedUser!.zipCode}',
+                      align: TextAlign.start,
+                      fontSize: 14,
+                    ),
+                    Space(
+                      height: 4.h,
+                    ),
+                    widget.order.orderStatus != null
+                        ? Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                flex: 1,
+                                child: Row(
+                                  children: [
+                                    const BodyText(
+                                      text: 'Order Status :  ',
+                                      fontSize: 16,
+                                    ),
+                                    OrderPaymentStatus(
+                                        status: widget.order.orderStatus!),
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    BodyText(
+                                      text: 'Order Amount: $rupeesSymbol ',
+                                      fontSize: 14.h,
+                                      align: TextAlign.center,
+                                    ),
+                                    BodyText(
+                                      text: widget.order.totalAmount!,
+                                      fontSize: 14.h,
+                                      align: TextAlign.center,
+                                    ),
+
+                                  ],
+                                ),
+                              ),
+                            ],
+                          )
+                        : Container(),
+                    Space(
+                      height: 4.h,
+                    )
+                  ],
+                ),
+              ),
+
+              Container(
+                alignment: Alignment.center,
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 1,
+                      color: bodyLightBlack,
+                    ),
+                    SizedBox(
+                      height: 36,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          const Expanded(
+                              flex: 3,
+                              child: BodyText(
+                                text: 'Product',
+                                fontSize: 14,
+                                align: TextAlign.center,
+                                color: primaryColor,
+                              )),
+                          Container(
+                            height: 36,
+                            width: 0.5,
+                            color: bodyBlack.withOpacity(0.4),
+                          ),
+                          const Expanded(
+                              flex: 2,
+                              child: BodyText(
+                                text: 'Qty',
+                                fontSize: 14,
+                                align: TextAlign.center,
+                                color: primaryColor,
+                              )),
+                          Container(
+                            height: 36,
+                            width: 0.5,
+                            color: bodyBlack.withOpacity(0.4),
+                          ),
+                          const Expanded(
+                              flex: 2,
+                              child: BodyText(
+                                text: 'Unit Price',
+                                fontSize: 14,
+                                align: TextAlign.center,
+                                color: primaryColor,
+                              )),
+                          Container(
+                            height: 36,
+                            width: 0.5,
+                            color: bodyBlack.withOpacity(0.4),
+                          ),
+                          const Expanded(
+                              flex: 2,
+                              child: BodyText(
+                                text: 'Total Price',
+                                fontSize: 14,
+                                align: TextAlign.center,
+                                color: primaryColor,
+                              )),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      width: MediaQuery.of(context).size.width,
+                      height: 1,
+                      color: bodyLightBlack,
+                    ),
+                    ListView.builder(
+                        shrinkWrap: true,
+                        padding: EdgeInsets.zero,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: productList.length,
+                        itemBuilder: (context, index) {
+                          var product = productList[index];
+                          String unitPrice = '${product.amount! / product.quantity!}';
+                          return Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Expanded(
+                                  flex: 3,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      CachedNetworkImage(
+                                        imageUrl: product.prodImageUrl!,
+                                        width: 30,
+                                        height: 30,
+                                      ),
+                                      const Space(
+                                        width: 2,
+                                      ),
+                                      Flexible(
+                                          child: BodyText(
+                                        text: product.prodName!,
+                                        align: TextAlign.start,
+                                        fontSize: 14,
+                                      )),
+                                    ],
+                                  )),
+                              Container(
+                                height: 30,
+                                width: 0.5,
+                                color: bodyBlack.withOpacity(0.4),
+                              ),
+                              Expanded(
+                                  flex: 2,
+                                  child: BodyText(
+                                    text: product.quantity.toString() ?? '',
+                                    align: TextAlign.center,
+                                    fontSize: 14,
+                                  )),
+                              Container(
+                                height: 30,
+                                width: 1,
+                                color: bodyBlack.withOpacity(0.4),
+                              ),
+                              Expanded(
+                                  flex: 2,
+                                  child: BodyText(
+                                    text: unitPrice,
+                                    align: TextAlign.center,
+                                    fontSize: 14,
+                                  )),
+                              Container(
+                                height: 30,
+                                width: 1,
+                                color: bodyBlack.withOpacity(0.4),
+                              ),
+                              Expanded(
+                                  flex: 2,
+                                  child: BodyText(
+                                    text: product.amount!.toString(),
+                                    align: TextAlign.center,
+                                    fontSize: 14,
+                                  )),
+                            ],
+                          );
+                        }),
+                    Container(
+                      margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      width: MediaQuery.of(context).size.width,
+                      height: 1,
+                      color: bodyLightBlack,
+                    ),
+                    widget.order.paymentStatus != null &&
+                            widget.order.paymentDetails!.isNotEmpty
+                        ? Container(
+                            width: MediaQuery.of(context).size.width,
+                            padding: const EdgeInsets.symmetric(vertical: 4.0),
+                            alignment: AlignmentDirectional.topStart,
+                            decoration: const BoxDecoration(
+                                border: Border(bottom: BorderSide(width: 0.5, color: bodyLightBlack))),
+                            child: BodyText(
+                              text: 'Payment Details',
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14.h,
+                            ),
+                          )
+                        : Container(),
+                    widget.order.paymentStatus != null &&
+                            widget.order.paymentDetails!.isNotEmpty
+                        ? Container(
+                       height: 36,
+                      decoration: const BoxDecoration(
+                          border: Border(bottom: BorderSide(width: 0.5, color: bodyLightBlack))),
+                      child: Row(children: [
+                            const Expanded(
+                                flex: 2,
+                                child: BodyText(
+                                    text: 'Date',
+                                    fontSize: 14,
+                                    align: TextAlign.center,fontWeight: FontWeight.bold,)),
                             Container(
-                              height: 30,
+                              height: 46,
                               width: 0.5,
                               color: bodyBlack.withOpacity(0.4),
                             ),
-                             Expanded(flex: 2, child: BodyText(text: product.quantity!,align: TextAlign.center,fontSize: 14,)),
+                            const Expanded(
+                                flex: 2,
+                                child: BodyText(
+                                    text: 'Paid Amount',
+                                    fontSize: 14,
+                                    align: TextAlign.center,fontWeight: FontWeight.bold)),
                             Container(
-                              height: 30,
-                              width: 1,
+                              height: 46,
+                              width: 0.5,
                               color: bodyBlack.withOpacity(0.4),
                             ),
-                             Expanded(flex: 2, child: BodyText(text:  unitPrice,align: TextAlign.center,fontSize: 14,)),
+                            const Expanded(
+                              flex: 2,
+                              child: BodyText(
+                                text: 'Payment Type',
+                                fontSize: 14,
+                                align: TextAlign.center,color: bodyBlack,fontWeight: FontWeight.bold),
+                            ),
                             Container(
-                              height: 30,
-                              width: 1,
+                              height: 46,
+                              width: 0.5,
                               color: bodyBlack.withOpacity(0.4),
                             ),
-                             Expanded(flex: 2, child: BodyText(text: product.amount!.toString(),align: TextAlign.center,fontSize: 14,)),
-                          ],
-                        );
-                      }),
-                  Container(
-                    margin: const EdgeInsets.fromLTRB(0,0,0,0),
-                    width: MediaQuery.of(context).size.width,
-                    height: 1,
-                    color: bodyLightBlack,
-                  ),
-
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    alignment: Alignment.topRight,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                            const Expanded(
+                                flex: 2,
+                                child: BodyText(
+                                    text: 'Due Amount',
+                                    fontSize: 14,
+                                    align: TextAlign.center,fontWeight: FontWeight.bold)),
+                          ]),
+                        )
+                        : Container(),
+                    widget.order.paymentDetails!.isNotEmpty
+                        ? ListView.builder(
+                            itemCount: widget.order.paymentDetails!.length,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              PaymentDetails paymentDetail =
+                                  widget.order.paymentDetails![index];
+                              return Container(
+                                height: 30,
+                                decoration: const BoxDecoration(
+                                    border: Border(
+                                        bottom: BorderSide(
+                                            width: 0.5,
+                                            color: bodyLightBlack))),
+                                child: Row(
+                                    children: [
+                                  Expanded(
+                                      flex: 2,
+                                      child: BodyText(
+                                          text: paymentDetail.date ?? '',
+                                          fontSize: 14,
+                                          align: TextAlign.center)),
+                                  Container(
+                                    height: 46,
+                                    width: 0.5,
+                                    color: bodyBlack.withOpacity(0.4),
+                                  ),
+                                  Expanded(
+                                      flex: 2,
+                                      child: BodyText(
+                                          text:
+                                              paymentDetail.amount.toString() ??
+                                                  '',
+                                          fontSize: 14,
+                                          align: TextAlign.center)),
+                                  Container(
+                                    height: 46,
+                                    width: 0.5,
+                                    color: bodyBlack.withOpacity(0.4),
+                                  ),
+                                  Expanded(
+                                    flex: 2,
+                                    child: NormalText(
+                                        text: paymentDetail.paymentType ?? '',
+                                        textSize: 14,
+                                        align: TextAlign.center,color: bodyBlack,),
+                                  ),
+                                  Container(
+                                    height: 46,
+                                    width: 0.5,
+                                    color: bodyBlack.withOpacity(0.4),
+                                  ),
+                                  Expanded(
+                                      flex: 2,
+                                      child: BodyText(
+                                          text: paymentDetail.dueAmount.toString() ??
+                                              '',
+                                          fontSize: 14,
+                                          align: TextAlign.center)),
+                                ]),
+                              );
+                            })
+                        : Container(),
+                    Column(
                       children: [
-                        SizedBox(
-                          width: 200,
-                          height: 30,
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          alignment: Alignment.topRight,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 4.h, vertical: 4.h),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const BodyText(text: 'Total ', fontSize: 14, align: TextAlign.center,fontWeight: FontWeight.bold,),
-                              BodyText(text: widget.order.totalAmount!, fontSize: 14, align: TextAlign.center,fontWeight: FontWeight.bold,),
+                              Expanded(
+                                flex: 1,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    BodyText(
+                                      text: 'Paid Amount: $rupeesSymbol',
+                                      fontSize: 14.h,
+                                      color: Colors.deepOrange,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    Flexible(
+                                        child: BodyText(
+                                      text: widget.order.paymentAmount ?? '0',
+                                      align: TextAlign.start,
+                                      fontSize: 16,
+                                      color: Colors.deepOrange,
+                                      fontWeight: FontWeight.bold,
+                                    ))
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                     BodyText(
+                                      text: 'Total Amount : $rupeesSymbol',
+                                      fontSize: 14.h,
+                                      align: TextAlign.center,
+                                      color: Colors.green,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    BodyText(
+                                      text: widget.order.remainingAmount ?? widget.order.totalAmount??'',
+                                      fontSize: 14,
+                                      align: TextAlign.center,
+                                      color: Colors.green,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
                         ),
                         Container(
-                          width: 210,
+                          width: MediaQuery.of(context).size.width,
                           height: 1,
                           color: primaryColor,
                         ),
                       ],
                     ),
-                  ),
-                  const Space(height: 8,),
-                 widget.order.remark != null ? Row(
-                   crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                    const BodyText(text: 'Remark : ',fontWeight: FontWeight.bold,),
-                      Flexible(child: BodyText(text: widget.order.remark!,
-                      align: TextAlign.start,))
-                  ],) : Container()
-
-
-
-                ],
-              ),
-            )
-          ],
+                    const Space(
+                      height: 8,
+                    ),
+                    widget.order.remark != null
+                        ? Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const BodyText(
+                                text: 'Remark : ',
+                                fontWeight: FontWeight.bold,
+                              ),
+                              Flexible(
+                                  child: BodyText(
+                                text: widget.order.remark!,
+                                align: TextAlign.start,
+                              ))
+                            ],
+                          )
+                        : Container()
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

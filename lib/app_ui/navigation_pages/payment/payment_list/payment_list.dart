@@ -7,7 +7,6 @@ import 'package:webnsoft_solution/app_ui/navigation_pages/customer/customer_list
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/home_bloc/home_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/home_bloc/home_event.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/home_bloc/home_state.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/order/order_list/order_list_widget.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/payment/bloc/payment_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/payment/bloc/payment_event.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/payment/bloc/payment_state.dart';
@@ -17,6 +16,7 @@ import 'package:webnsoft_solution/modal/distributor_list.dart';
 import 'package:webnsoft_solution/modal/payment/payment_list_modal.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
+import 'package:webnsoft_solution/utils/change_routes.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
 class PaymentList extends StatefulWidget {
@@ -29,7 +29,7 @@ class PaymentList extends StatefulWidget {
 }
 
 class _PaymentListState extends State<PaymentList> {
-  List<PaymentDetail> paymentList = [];
+  List<PaymentDetailData> paymentList = [];
   bool loading = true;
 
   @override
@@ -70,10 +70,10 @@ class _PaymentListState extends State<PaymentList> {
             physics: widget.fromHome== true ? const NeverScrollableScrollPhysics() : null,
             itemCount: widget.fromHome == true && paymentList.length>5 ? 5  :  paymentList.length,
             itemBuilder: (context, index) {
-              PaymentDetail paymentDetail = paymentList[index];
+              PaymentDetailData paymentDetail = paymentList[index];
               return GestureDetector(
                 onTap: (){
-                  Navigator.pushReplacementNamed(context, paymentDetailRoute,arguments: paymentDetail);
+                  ChangeRoutes.openPaymentDetailScreen(context, paymentDetail);
                 },
                   child: PaymentWidget(paymentDetail : paymentDetail));
             });

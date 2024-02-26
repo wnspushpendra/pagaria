@@ -1,24 +1,34 @@
 
 import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:open_file/open_file.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:webnsoft_solution/main.dart';
 import 'package:webnsoft_solution/modal/product_list.dart';
 import 'package:webnsoft_solution/utils/asset_images.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:webnsoft_solution/utils/util_methods.dart';
 
 class ProductsPdf{
 
-  saveAndOpenPdf(File pdfFile) async {
+  static saveAndOpenPdf(File pdfFile, BuildContext context) async {
     // Save the PDF to a permanent location
     final directory = await getExternalStorageDirectory();
-    final path = '${directory!.path}/my_invoice.pdf';
+    final path = '${directory!.path}/ledger.pdf';
     final savedFile = File(path);
     await savedFile.writeAsBytes(pdfFile.readAsBytesSync());
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      snackBarButton(context, 'Ledger downloaded', path);
+    });
+
     // Open the saved PDF file
-    OpenFile.open(path);
+   // OpenFile.open(path);
   }
 
   static Future<File> saveDocument(
@@ -61,7 +71,7 @@ class ProductsPdf{
           buildProductTable(productList, pdfColor, normalFont,boldFont)
         ]));
 
-    final file = await saveDocument(name: 'my_invoice.pdf', pdf: pdf);
+    final file = await saveDocument(name: 'pagaria_product.pdf', pdf: pdf);
     // Open the PDF file after it's generated
     OpenFile.open(file.path);
     return file;
@@ -142,5 +152,78 @@ class ProductsPdf{
       ],
     );
   }
-
 }
+
+
+Future<void> downloadAndOpenPDF(String url,String fileName) async {
+  final directory = await getExternalStorageDirectory();
+  final taskId = await FlutterDownloader.enqueue(
+    url: url,
+    savedDir: directory!.path,
+    fileName: 'sample.pdf',
+    showNotification: true,
+    openFileFromNotification: true,
+  );
+
+  FlutterDownloader.registerCallback(downloadCallback);
+/*
+  FlutterDownloader.registerCallback((id, status, progress) {
+    if (status == DownloadTaskStatus.complete.index) {
+      openDownloadedFile(directory.path, 'sample.pdf');
+    }
+  });*/
+}
+
+Future<void> openDownloadedFile(String path, String fileName) async {
+  final file = File('$path/$fileName');
+  if (await file.exists()) {
+    final filePath = file.path;
+    if (await canLaunch(filePath)) {
+      await launch(filePath);
+    } else {
+      throw 'Could not launch $filePath';
+    }
+  } else {
+    throw 'File does not exist';
+  }
+}
+
+
+Future<String> download(Dio dio, String url,String fileName) async {
+  var tempDir = await getExternalStorageDirectory();
+
+  try {
+    Response response = await dio.get(
+      url,
+      onReceiveProgress: null,
+      options: Options(
+          responseType: ResponseType.bytes,
+          followRedirects: false,
+          validateStatus: (status) { return status! < 500; }
+      ),
+    );
+    var file = File('${tempDir!.path}/myfile.pdf').openSync(mode: FileMode.write);
+    file.writeFromSync(response.data);
+  //  OpenFile.open('${tempDir.path}/myfile.pdf');
+    await file.close();
+    return '${tempDir.path}/myfile.pdf';
+
+  } catch (e) {
+    print(e);
+    return 'failed';
+  }
+}
+
+/*void updateProgress(done, total) {
+  progress = done / total;
+  setState(() {
+    if (progress >= 1) {
+      progressString = '✅ File has finished downloading. Try opening the file.';
+      didDownloadPDF = true;
+    } else {
+      progressString = 'Download progress: ${(progress * 100).toStringAsFixed(0)}% done.';
+    }
+  });
+}*/
+
+

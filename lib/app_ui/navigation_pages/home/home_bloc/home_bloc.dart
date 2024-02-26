@@ -7,6 +7,7 @@ import 'package:webnsoft_solution/app_ui/navigation_pages/home/home_bloc/home_ev
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/home_bloc/home_state.dart';
 import 'package:webnsoft_solution/modal/checkin_checkout/check_in_status.dart';
 import 'package:webnsoft_solution/modal/checkin_checkout/checkin_checkout.dart';
+import 'package:webnsoft_solution/modal/distributor/distributo_payment_modal.dart';
 import 'package:webnsoft_solution/modal/distributor_list.dart';
 import 'package:webnsoft_solution/modal/login/login_response.dart';
 import 'package:webnsoft_solution/utils/app_preferences.dart';
@@ -19,6 +20,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<HomeCustomerFetchEvent>((event, emit) => fetchCustomerApi(event));
     on<HomeCheckInStatusEvent>((event, emit) => checkInOutStatusApi(event));
     on<HomeCheckInOutUpdateEvent>((event, emit) {checkInOutApi(event);});
+    on<HomeFetchDistributorPaymentEvent>((event, emit) {fetchDistributorPayments(event);});
   }
 
   void fetchTargetApi(HomeTargetFetchEvent event) {}
@@ -102,6 +104,31 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
 
   }
+
+  void fetchDistributorPayments(HomeFetchDistributorPaymentEvent event) async {
+    /***************** getting token from preference      ****************/
+    String token = await getStringPref(userTokenPrefecences);
+    /***************** getting user from preference  method  ****************/
+    User user = await getUser();
+
+    Map<String, String> header = {
+      "Authorization": "Bearer $token",
+    };
+
+    Map<String, dynamic> body = <String, dynamic>{};
+    body['user_id'] = user.id.toString();
+    body['user_type'] = 'type_marketing_ex';
+
+    DistributorPaymentModal response = await distributorPayments(header, body);
+    if(response.status == true){
+      emit(HomeSuccess(recentOrderList : response.recentPayment!,pendingOrderList: response.duePayment,completedOrderList: response.completedPayment));
+    }else{
+      emit(HomeError(error : response.message.toString()));
+    }
+
+  }
+
+
 
 
 }

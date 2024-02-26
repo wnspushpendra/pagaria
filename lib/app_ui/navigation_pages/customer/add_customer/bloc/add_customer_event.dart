@@ -14,8 +14,8 @@ abstract class AddCustomerEvent {}
   final String panCardNumber;
   final String gstNumber;
   final String address;
-  final String city;
-  final String state;
+  final String? city;
+  final String? state;
   final String pinCode;
   final String profileImage;
   AddDistributorClickEvent({required this.fullName,required this.mobileNumber,required this.email,

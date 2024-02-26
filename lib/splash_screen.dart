@@ -11,6 +11,7 @@ import 'package:webnsoft_solution/utils/app_colors.dart';
 import 'package:webnsoft_solution/utils/app_preferences.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
 import 'package:webnsoft_solution/utils/asset_images.dart';
+import 'package:webnsoft_solution/utils/change_routes.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
 
@@ -133,9 +134,13 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
           User user = await getUser();
           if(user.roleId == '4'){
-           WidgetsBinding.instance.addPostFrameCallback((timeStamp) {  Navigator.pushReplacementNamed(context, homeRoute,arguments: user);});
+           WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+             ChangeRoutes.openHomeScreen(context, user);
+           });
           }else{
-            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {  Navigator.pushReplacementNamed(context, homeDistributorRoute,arguments: user);});
+            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+              ChangeRoutes.openHomeScreen(context, user);
+            });
           }
         });
       } else {

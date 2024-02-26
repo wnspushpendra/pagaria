@@ -24,6 +24,7 @@ import 'package:webnsoft_solution/routes/route_constatns.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
 import 'package:webnsoft_solution/utils/asset_images.dart';
+import 'package:webnsoft_solution/utils/change_routes.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -113,8 +114,8 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () =>
-            Navigator.pushReplacementNamed(context, addCustomerRoute),
+        onPressed: () => ChangeRoutes.openCustomerForOrderScreen(context),
+          //  Navigator.pushReplacementNamed(context, addCustomerRoute),
         child: const Icon(Icons.add),
       ),
       body: BlocConsumer<HomeBloc, HomeState>(

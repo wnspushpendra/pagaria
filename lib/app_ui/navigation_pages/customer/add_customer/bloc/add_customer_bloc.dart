@@ -76,8 +76,8 @@ class AddCustomerBloc extends Bloc<AddCustomerEvent, AddCustomerState> {
     panCardNumber = event.panCardNumber.isEmpty || event.panCardNumber.length != 10;
     gstNumber = event.gstNumber.isEmpty && event.panCardNumber.length != 15;
     address = event.address.isEmpty && event.address.length <=3;
-    city = event.city.isEmpty;
-    state = event.state.isEmpty;
+    city = event.city == null;
+    state = event.state == null;
     pinCode = event.pinCode.isEmpty || event.pinCode.length != 6;
     profileImage = event.profileImage.isEmpty;
     if(!fullName && !mobileNumber && !email && !dob && !gender &&  !firmName && !aadharNumber &&

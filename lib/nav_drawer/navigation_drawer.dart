@@ -8,6 +8,7 @@ import 'package:webnsoft_solution/routes/route_constatns.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
 import 'package:webnsoft_solution/utils/asset_images.dart';
+import 'package:webnsoft_solution/utils/change_routes.dart';
 import 'package:webnsoft_solution/utils/dialogs.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
@@ -41,7 +42,8 @@ class MyDrawer extends StatelessWidget {
                             icon: homeIcon,
                             onPressed: () async{
                               Scaffold.of(context).closeDrawer();
-                              Navigator.pushReplacementNamed(context,user.roleId =='4' ? homeRoute : homeDistributorRoute,arguments:  await getUser());
+                              ChangeRoutes.openHomeScreen(context, user);
+                           //   Navigator.pushReplacementNamed(context,user.roleId =='4' ? homeRoute : homeDistributorRoute,arguments:  await getUser());
                             }),
                         const Space(height: 10,),
                         /**** moving to user profile page *********/
@@ -50,8 +52,16 @@ class MyDrawer extends StatelessWidget {
                             icon: profileIcon,
                             onPressed: () async{
                               Scaffold.of(context).closeDrawer();
-                              Navigator.pushReplacementNamed(context, profileRoute,arguments: await getUser());
+                              ChangeRoutes.openProfileScreen(context, user);
                             }),
+                        /**** moving to user profile page *********/
+                        user.roleId == '4' ?    DrawerItem(
+                            name:'My Activity' ,
+                            icon: myActivityIcon,
+                            onPressed: () async{
+                              Scaffold.of(context).closeDrawer();
+                              ChangeRoutes.openMyActivityScreen(context);
+                            }) : Container(),
                         const Space(height: 10,),
                         /**** moving to product page *********/
                         DrawerItem(
@@ -59,7 +69,7 @@ class MyDrawer extends StatelessWidget {
                             icon:productIcon,
                             onPressed: () {
                               Scaffold.of(context).closeDrawer();
-                              Navigator.pushReplacementNamed(context, productRoute,arguments:  user.roleId =='5' ? user.id.toString() : null);
+                              ChangeRoutes.openProductScreen(context, user,null);
                             }),
                         const Space(height: 10,),
                         /**** moving to customer page *********/
@@ -77,7 +87,8 @@ class MyDrawer extends StatelessWidget {
                             icon: orderIcon,
                             onPressed: () {
                               Scaffold.of(context).closeDrawer();
-                              Navigator.pushReplacementNamed(context, orderRoute,arguments: true);
+                              ChangeRoutes.openOrderScreen(context, true);
+                           //   Navigator.pushReplacementNamed(context, orderRoute,arguments: true);
                             }),
                         const Space(height: 10,),
                         /**** moving to payment  page *********/
@@ -86,7 +97,8 @@ class MyDrawer extends StatelessWidget {
                             icon: paymentIcon,
                             onPressed: () {
                               Scaffold.of(context).closeDrawer();
-                              Navigator.pushReplacementNamed(context, paymentRoute);
+                              ChangeRoutes.openExecutivePaymentScreen(context, user);
+                             // Navigator.pushReplacementNamed(context, paymentRoute);
                             }),
                         const Space(height: 10,),
                         /**** moving to reset password page *********/

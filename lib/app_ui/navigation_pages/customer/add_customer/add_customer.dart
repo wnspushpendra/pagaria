@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:webnsoft_solution/app_common_widges/app_body_text.dart';
+import 'package:webnsoft_solution/app_common_widges/city_state_dropdown.dart';
 import 'package:webnsoft_solution/app_common_widges/custom_appbar.dart';
 import 'package:webnsoft_solution/app_common_widges/custom_button.dart';
 import 'package:webnsoft_solution/app_common_widges/custom_progressbar.dart';
@@ -46,6 +47,8 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
   bool? isFullName, isMobileNumber, isEmail,isDob,isGender,isFirmName,isPanCardNumber,isAadharNumber,isGstNumber, isAddress, isCity, isState, isPinCode,isProfileImage;
   String genderValue = '',path = '';
   bool showLoading = false;
+  String? selectedCity, selectedState;
+
 
 
   @override
@@ -200,7 +203,18 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
             validate: isAddress,
             errorMessage: streetMessage,
             onTextChange: (value) => setState(() => isAddress = value)),
-        Row(
+        CityStateDropdown(
+          selectedState: selectedState,
+          onChangeState: (value) {
+            selectedCity = null;
+            selectedState = value;
+          },
+          selectedCity: selectedCity,
+          onChangeCity: (value) {
+            selectedCity = value;
+          },
+        ),
+       /* Row(
           children: [
             Expanded(
               flex: 1,
@@ -226,7 +240,7 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
                   onTextChange: (value) => setState(() => isState = value)),
             ),
           ],
-        ),
+        ),*/
         CustomTextField(
             hint: "$pinCode*",
             label: "$pinCode*",
@@ -245,7 +259,7 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
         fullName: fullNameController.text, mobileNumber: mobileNumberController.text, email: emailController.text, 
         dob: dobController.text, gender: genderValue, firmName: firmNameController.text, aadharNumber: aadharCardController.text,
         panCardNumber: panCardController.text, gstNumber: gstNumberController.text, address: addressController.text,
-        city: cityController.text, state: stateController.text, pinCode: pinCodeController.text,
+        city: selectedCity, state: selectedState, pinCode: pinCodeController.text,
         profileImage: path));
   }
 

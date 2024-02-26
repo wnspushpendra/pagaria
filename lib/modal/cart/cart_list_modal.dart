@@ -1,3 +1,5 @@
+import 'package:webnsoft_solution/modal/product_list.dart';
+
 class CartProductResponseModal {
   bool? status;
   String? message;
@@ -13,20 +15,20 @@ class CartProductResponseModal {
     if (json['record'] != null) {
       cartItem = <CartItem>[];
       json['record'].forEach((v) {
-        cartItem!.add(new CartItem.fromJson(v));
+        cartItem!.add(CartItem.fromJson(v));
       });
     }
     productAmount = json['productAmount'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['status'] = this.status;
-    data['message'] = this.message;
-    if (this.cartItem != null) {
-      data['record'] = this.cartItem!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['status'] = status;
+    data['message'] = message;
+    if (cartItem != null) {
+      data['record'] = cartItem!.map((v) => v.toJson()).toList();
     }
-    data['productAmount'] = this.productAmount;
+    data['productAmount'] = productAmount;
     return data;
   }
 }
@@ -34,14 +36,14 @@ class CartProductResponseModal {
 class CartItem {
   int? id;
   String? productId;
-  String? quantity;
+  int? quantity;
   int? amount;
   String? unitPrice;
   String? userType;
   String? cartUserId;
   String? createdAt;
   String? updatedAt;
-  ProductDetails? productDetails;
+  Product? productDetails;
 
   CartItem(
       {this.id,
@@ -66,29 +68,29 @@ class CartItem {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     productDetails = json['product_details'] != null
-        ? new ProductDetails.fromJson(json['product_details'])
+        ? Product.fromJson(json['product_details'])
         : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['product_id'] = this.productId;
-    data['quantity'] = this.quantity;
-    data['amount'] = this.amount;
-    data['unit_price'] = this.unitPrice;
-    data['user_type'] = this.userType;
-    data['cart_user_id'] = this.cartUserId;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    if (this.productDetails != null) {
-      data['product_details'] = this.productDetails!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['product_id'] = productId;
+    data['quantity'] = quantity;
+    data['amount'] = amount;
+    data['unit_price'] = unitPrice;
+    data['user_type'] = userType;
+    data['cart_user_id'] = cartUserId;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    if (productDetails != null) {
+      data['product_details'] = productDetails!.toJson();
     }
     return data;
   }
 }
 
-class ProductDetails {
+/*class ProductDetails {
   int? id;
   String? prodName;
   String? prodImage;
@@ -153,26 +155,26 @@ class ProductDetails {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['prod_name'] = this.prodName;
-    data['prod_image'] = this.prodImage;
-    data['prod_image_url'] = this.prodImageUrl;
-    data['prod_short_description'] = this.prodShortDescription;
-    data['prod_description'] = this.prodDescription;
-    data['prod_distributor_price'] = this.prodDistributorPrice;
-    data['prod_customer_price'] = this.prodCustomerPrice;
-    data['prod_inventory'] = this.prodInventory;
-    data['prod_latestAdd_inventory'] = this.prodLatestAddInventory;
-    data['prod_min_distrubutor_qty'] = this.prodMinDistrubutorQty;
-    data['prod_min_customer_qty'] = this.prodMinCustomerQty;
-    data['prod_available'] = this.prodAvailable;
-    data['prod_categorie_id'] = this.prodCategorieId;
-    data['prod_status'] = this.prodStatus;
-    data['created_by_id'] = this.createdById;
-    data['admin_id'] = this.adminId;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['prod_name'] = prodName;
+    data['prod_image'] = prodImage;
+    data['prod_image_url'] = prodImageUrl;
+    data['prod_short_description'] = prodShortDescription;
+    data['prod_description'] = prodDescription;
+    data['prod_distributor_price'] = prodDistributorPrice;
+    data['prod_customer_price'] = prodCustomerPrice;
+    data['prod_inventory'] = prodInventory;
+    data['prod_latestAdd_inventory'] = prodLatestAddInventory;
+    data['prod_min_distrubutor_qty'] = prodMinDistrubutorQty;
+    data['prod_min_customer_qty'] = prodMinCustomerQty;
+    data['prod_available'] = prodAvailable;
+    data['prod_categorie_id'] = prodCategorieId;
+    data['prod_status'] = prodStatus;
+    data['created_by_id'] = createdById;
+    data['admin_id'] = adminId;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
     return data;
   }
-}
+}*/

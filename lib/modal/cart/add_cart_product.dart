@@ -27,7 +27,7 @@ class CartProduct {
   String? productId;
   String? userType;
   String? cartUserId;
-  String? quantity;
+  int? quantity;
   int? amount;
   String? updatedAt;
   String? createdAt;

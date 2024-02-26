@@ -15,8 +15,11 @@ import 'package:webnsoft_solution/app_ui/navigation_pages/home/home_bloc/home_ev
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/home_bloc/home_state.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/ui/tabs/disributor_payment.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/ui/target_screen.dart';
+import 'package:webnsoft_solution/modal/argument_modal/DistributorHomeArgument.dart';
 import 'package:webnsoft_solution/modal/checkin_checkout/check_in_status.dart';
 import 'package:webnsoft_solution/modal/checkin_checkout/checkin_checkout.dart';
+import 'package:webnsoft_solution/modal/distributor/distributo_payment_modal.dart';
+import 'package:webnsoft_solution/modal/distributor/distributor_order_modal.dart';
 import 'package:webnsoft_solution/modal/distributor_list.dart';
 import 'package:webnsoft_solution/modal/login/login_response.dart';
 import 'package:webnsoft_solution/nav_drawer/navigation_drawer.dart';
@@ -38,6 +41,18 @@ class HomeDistributorScreen extends StatefulWidget {
 
 class _HomeDistributorScreenState extends State<HomeDistributorScreen> {
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
+   List<DistributorPayment> recentPaymentList = [];
+   List<DistributorPayment> pendingPaymentList = [];
+   List<DistributorPayment> completedPaymentList = [];
+   String? errorMessage;
+   bool distributorLoading = true;
+
+
+  @override
+  void initState() {
+    context.read<HomeBloc>().add(HomeFetchDistributorPaymentEvent());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +62,7 @@ class _HomeDistributorScreenState extends State<HomeDistributorScreen> {
       length: 3,
       child: Scaffold(
         key: _key,
-          drawer: MyDrawer(user: widget.user),
+        drawer: MyDrawer(user: widget.user),
         appBar: AppBar(
           backgroundColor: primaryColor,
           elevation: 0,
@@ -83,48 +98,70 @@ class _HomeDistributorScreenState extends State<HomeDistributorScreen> {
               ),
             ],
           ),
-       /*   actions: [
+          actions: [
             IconButton(
-                onPressed: () => logoutDialog(context),
+                onPressed: () => Navigator.pushReplacementNamed(context, notificationRoute),
                 icon: const Icon(
-                  Icons.logout_rounded,
+                  Icons.notifications_active_outlined,
                   color: bodyWhite,
                 ))
-          ],*/
-        ),
-        body: Column(
-          children:  [
-             SizedBox(
-              height: 50,
-              child: TabBar(
-                tabAlignment: TabAlignment.start,
-                isScrollable: true,
-                tabs: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: const BodyText(text: 'Pending Payment'),
-                  ),
-                  Container(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: const BodyText(text: "Recent Payment")),
-                  Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: const BodyText(text: 'Completed Payment'),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: deviceHeight -130,
-              child: const TabBarView(
-                children: [
-                  DistributorPayments(paymentStatus: 'pending'),
-                  DistributorPayments(paymentStatus: 'recent'),
-                  DistributorPayments(paymentStatus: 'completed'),
-                ],
-              ),
-            ),
           ],
+
+        ),
+        body: BlocConsumer<HomeBloc, HomeState>(
+          listener: (context, state) {
+            if(state is HomeSuccess){
+              distributorLoading = false;
+              recentPaymentList = state.recentOrderList!;
+              pendingPaymentList = state.pendingOrderList!;
+              completedPaymentList = state.completedOrderList!;
+              setState(() {});
+            }
+            if(state is HomeError){
+              distributorLoading = false;
+              errorMessage = state.error;
+              setState(() {});
+
+            }
+          },
+          builder: (context, state) {
+            return distributorLoading ? const Center(child: CustomProgressBar(color: primaryColor,),) :
+             errorMessage != null ? Center(child: BodyText(text : errorMessage!,color: primaryColor,),) :
+              Column(
+              children: [
+                SizedBox(
+                  height: 50,
+                  child: TabBar(
+                    tabAlignment: TabAlignment.start,
+                    isScrollable: true,
+                    tabs: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: const BodyText(text: 'Pending Payment'),
+                      ),
+                      Container(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: const BodyText(text: "Recent Payment")),
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: const BodyText(text: 'Completed Payment'),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: deviceHeight - 130,
+                  child:  TabBarView(
+                    children: [
+                      DistributorPayments(argument: DistributorHomeArgument(status: 'pending',orderList: pendingPaymentList)),
+                      DistributorPayments(argument: DistributorHomeArgument(status: 'recent',orderList: recentPaymentList)),
+                      DistributorPayments(argument: DistributorHomeArgument(status: 'completed',orderList: completedPaymentList)),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );

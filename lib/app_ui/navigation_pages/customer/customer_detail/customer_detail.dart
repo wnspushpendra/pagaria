@@ -12,12 +12,12 @@ import 'package:webnsoft_solution/modal/customer_detail.dart';
 import 'package:webnsoft_solution/modal/distributor_list.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
+import 'package:webnsoft_solution/utils/change_routes.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
 class CustomerDetailScreen extends StatefulWidget {
   final CustomerDetailModal customerDetailModal;
-/*  final Customer? customer;
-  final int? from;*/
+
   const CustomerDetailScreen({ required this.customerDetailModal,super.key});
 
   @override
@@ -50,13 +50,18 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
                 Tab(child: BodyText(text: 'Ledger Book',color: bodyWhite,fontWeight: FontWeight.bold,),),
               ]),
         ),
-        body:   TabBarView(
-            children:[
-              CustomerBasicDetails(customer : widget.customerDetailModal.customerDetails!),
-               OrderScreen(distributorId: widget.customerDetailModal.customerDetails!.id.toString()),
-               CustomerPaymentScreen(customer : widget.customerDetailModal.customerDetails!),
-              LedgerScreen(argument:LedgerArgument(distributorId: widget.customerDetailModal.customerDetails!.id.toString())),
-            ] ),
+        body:   WillPopScope(
+            onWillPop: () async {
+              ChangeRoutes.openCustomerScreen(context, null);
+              return true;
+            },  child: TabBarView(
+              children:[
+                CustomerBasicDetails(customer : widget.customerDetailModal.customerDetails!),
+                 OrderScreen(distributorId: widget.customerDetailModal.customerDetails!.id.toString(),fromMenu: false,),
+                 CustomerPaymentScreen(customer : widget.customerDetailModal.customerDetails!),
+                LedgerScreen(argument:LedgerArgument(distributorId: widget.customerDetailModal.customerDetails!.id.toString())),
+              ] ),
+        ),
       ),
     );
   }

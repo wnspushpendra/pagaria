@@ -36,6 +36,7 @@ class Product {
   String? prodDescription;
   String? prodDistributorPrice;
   String? prodCustomerPrice;
+  String? prodInventoryType;
   String? prodInventory;
   String? prodLatestAddInventory;
   String? prodMinDistrubutorQty;
@@ -60,6 +61,7 @@ class Product {
         this.prodDescription,
         this.prodDistributorPrice,
         this.prodCustomerPrice,
+        this.prodInventoryType,
         this.prodInventory,
         this.prodLatestAddInventory,
         this.prodMinDistrubutorQty,
@@ -84,6 +86,7 @@ class Product {
     prodDescription = json['prod_description'];
     prodDistributorPrice = json['prod_distributor_price'];
     prodCustomerPrice = json['prod_customer_price'];
+    prodInventoryType = json['prod_inventory_type'];
     prodInventory = json['prod_inventory'];
     prodLatestAddInventory = json['prod_latestAdd_inventory'];
     prodMinDistrubutorQty = json['prod_min_distrubutor_qty'];
@@ -122,6 +125,7 @@ class Product {
     data['prod_description'] = prodDescription;
     data['prod_distributor_price'] = prodDistributorPrice;
     data['prod_customer_price'] = prodCustomerPrice;
+    data['prod_inventory_type'] = prodInventoryType;
     data['prod_inventory'] = prodInventory;
     data['prod_latestAdd_inventory'] = prodLatestAddInventory;
     data['prod_min_distrubutor_qty'] = prodMinDistrubutorQty;
@@ -193,7 +197,7 @@ class GalleryImages {
 
 class IsCart {
   int? id;
-  String? quantity;
+  int? quantity;
   String? productId;
   String? unitPrice;
   int? amount;

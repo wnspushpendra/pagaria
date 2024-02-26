@@ -5,15 +5,18 @@ import 'package:webnsoft_solution/app_ui/navigation_pages/customer/customer_deta
 import 'package:webnsoft_solution/app_ui/navigation_pages/customer/customer_list/widgets/customer.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/customer/add_customer/add_customer.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/customer/customer_payment/customer_payment.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/customer_by_order/customer_by_order.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/ledger/ledger.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/ledger/ledger_detail.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/ui/distributor/home_distributor.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/ui/home_marketing_executive.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/my_activity/my_activity.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/notification/notification.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/order/create_order/create_order.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/order/order_list/order.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/order/order_detail.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/payment/distributor_payment.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/payment/distributor_payment_by_order.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/payment/payment_detail/payment_detail.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/payment/payment_list/paymens.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/payment/payment_list/payment_list.dart';
@@ -22,6 +25,7 @@ import 'package:webnsoft_solution/app_ui/navigation_pages/product/product.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_detail/product_detail.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/profile/profile.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/payment/excutive_payment.dart';
+import 'package:webnsoft_solution/modal/argument_modal/DistributorPaymentArgument.dart';
 import 'package:webnsoft_solution/modal/argument_modal/LedgetArgument.dart';
 import 'package:webnsoft_solution/modal/argument_modal/ProductArgument.dart';
 import 'package:webnsoft_solution/modal/customer_detail.dart';
@@ -29,6 +33,7 @@ import 'package:webnsoft_solution/modal/distributor_list.dart';
 import 'package:webnsoft_solution/modal/argument_modal/HomeArgument.dart';
 import 'package:webnsoft_solution/modal/login/login_response.dart';
 import 'package:webnsoft_solution/modal/order/order_list_modal.dart';
+import 'package:webnsoft_solution/modal/order/user_role_order_list_modal.dart';
 import 'package:webnsoft_solution/modal/payment/payment_list_modal.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
 
@@ -49,6 +54,9 @@ class CustomRouter {
       case profileRoute:
         return MaterialPageRoute(
             builder: (_) => ProfileScreen(user: arguments as User));
+      case myActivityRoute:
+        return MaterialPageRoute(
+            builder: (_) => const UserActivity());
       case resetPasswordRoute:
         return MaterialPageRoute(
             builder: (_) => ResetPassword(
@@ -75,8 +83,10 @@ class CustomRouter {
       case customerListRoute:return MaterialPageRoute(builder: (_) => const CustomerListScreen());
       case paymentListRoute:
         return MaterialPageRoute(builder: (_) => const PaymentListScreen());
-      case paymentDetailRoute:
-        return MaterialPageRoute(builder: (_) =>  PaymentDetails(paymentDetail: arguments as PaymentDetail));
+        case customerForOrderRoute:
+        return MaterialPageRoute(builder: (_) => const SpecificCustomerOrder());
+    case paymentDetailRoute:
+      return MaterialPageRoute(builder: (_) =>  PaymentDetailScreen(paymentDetail: arguments as PaymentDetailData));
   /*    case addCustomerRoute:
         return MaterialPageRoute(builder: (_) => const AddCustomerScreen());*/
       case createOrderRoute:
@@ -88,17 +98,13 @@ class CustomRouter {
                 ));
       case orderDetailRoute:
         return MaterialPageRoute(
-            builder: (_) => OrderDetailScreen(
-                  order: arguments as OrderList,
-                ));
+            builder: (_) => OrderDetailScreen(order: arguments as Order,));
       case paymentRoute:
         return MaterialPageRoute(
             builder: (_) => const ExecutivePaymentScreen());
       case customerPaymentRoute:
         return MaterialPageRoute(
-            builder: (_) => CustomerPaymentScreen(
-                  customer: arguments as Customer,
-                ));
+            builder: (_) => CustomerPaymentScreen(customer: arguments as Customer,));
       case ledgerRoute:
         return MaterialPageRoute(
             builder: (_) =>
@@ -110,9 +116,10 @@ class CustomRouter {
                 ));
       case distributorPaymentRoute:
         return MaterialPageRoute(
-            builder: (_) => DistributorPaymentScreen(
-                  customerId: arguments as String,
-                ));
+            builder: (_) => DistributorPaymentScreen(customerId: arguments as String,));
+      case distributorOrderPaymentRoute:
+        return MaterialPageRoute(
+            builder: (_) => DistributorOrderPaymentScreen(argument: arguments as DistributorPaymentArgument,));
 
       // distributor routes
 

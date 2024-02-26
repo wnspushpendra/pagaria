@@ -31,6 +31,7 @@ import 'package:webnsoft_solution/utils/app_colors.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
 import 'package:webnsoft_solution/utils/asset_images.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:webnsoft_solution/utils/change_routes.dart';
 import 'package:webnsoft_solution/utils/dialogs.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
@@ -68,13 +69,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     super.initState();
   }
   initData() async{
-    User user = await getUser();
     var item = widget.productArgument.product;
     prodMinQty = item!.prodMinDistrubutorQty??'';
     quantity = item.prodMinDistrubutorQty??'';
     productAmount =  item.prodDistributorPrice ??'';
     if(item.isCart!.isNotEmpty){
-      quantity = item.isCart![0].quantity!;
+      quantity = item.isCart![0].quantity!.toString();
       productAmount = item.isCart![0].amount.toString();
     }
     setState(() {});
@@ -87,202 +87,211 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     if (product!.isCart != null && product.isCart!.isNotEmpty) {
       productAddRemove = true;
       cartItem.id = product.isCart![0].id;
-      cartItem.quantity = quantity;
+      cartItem.quantity = int.parse(quantity); // this line need to cross verify
       cartItem.productId = product.isCart![0].productId;
     }
 
-    return Scaffold(
-      appBar: appBarWidget(
-          context,
-          'Product Detail',
-          () => Navigator.pushReplacementNamed(context, productRoute,
-              arguments: widget.productArgument.distributorId)),
-      body: BlocConsumer<CheckOutBloc, CheckOutState>(
-        listener: (context, state) {
-          if (state is CheckOutSuccess) {
-            if (state.cartItem != null) {
-              quantity = state.cartItem!.quantity!;
-              productAmount = state.cartItem!.amount.toString();
-              widget.productArgument.product!.prodDistributorPrice = state.cartItem!.amount.toString();
-              widget.productArgument.product!.isCart![0].quantity = state.cartItem!.quantity;
-              cartItem.quantity = state.cartItem!.quantity;
-              cartItem.amount = state.cartItem!.amount;
+    return WillPopScope(
+      onWillPop: () async{
+        Navigator.pushReplacementNamed(context, productRoute, arguments: widget.productArgument.distributorId)    ;
+        return true;
+      },
+      child: Scaffold(
+        appBar: appBarWidget(
+            context,
+            'Product Detail',
+            () => Navigator.pushReplacementNamed(context, productRoute,
+                arguments: widget.productArgument.distributorId)
+        ),
+        body: BlocConsumer<CheckOutBloc, CheckOutState>(
+          listener: (context, state) {
+            if (state is CheckOutSuccess) {
+              if (state.cartItem != null) {
+                quantity = state.cartItem!.quantity!.toString();
+                productAmount = state.cartItem!.amount.toString();
+                widget.productArgument.product!.prodDistributorPrice = state.cartItem!.amount.toString();
+                widget.productArgument.product!.isCart![0].quantity = state.cartItem!.quantity;
+                cartItem.quantity = state.cartItem!.quantity;
+                cartItem.amount = state.cartItem!.amount;
+              }
+              setState(() {});
             }
-            setState(() {});
-          }
-          if (state is CheckOutError) {
-            snackBar(context, state.error);
-          }
-        },
-        builder: (context, state) {
-          return Stack(
-            children: [
-              SingleChildScrollView(
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height,
-                  child: ListView(
-                    children: [
-                      SizedBox(
-                          width: 70,
-                          height: height * 0.25,
-                          child: CachedNetworkImage(
-                            imageUrl: product.prodImageUrl.toString(),
-                            placeholder: (context, url) => Image.asset(
-                              defaultImage,
-                            ),
-                            errorWidget: (context, url, error) =>
-                                Image.asset(defaultImage),
-                          )),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 8),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Flexible(
-                                      child: BodyText(
-                                        text: product.prodName.toString(),
-                                        align: TextAlign.start,
-                                        fontSize: 22,
+            if (state is CheckOutError) {
+              snackBar(context, state.error);
+            }
+          },
+          builder: (context, state) {
+            return Stack(
+              children: [
+                SingleChildScrollView(
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height,
+                    child: ListView(
+                      children: [
+                        SizedBox(
+                            width: 70,
+                            height: height * 0.25,
+                            child: CachedNetworkImage(
+                              imageUrl: product.prodImageUrl.toString(),
+                              placeholder: (context, url) => Image.asset(
+                                defaultImage,
+                              ),
+                              errorWidget: (context, url, error) =>
+                                  Image.asset(defaultImage),
+                            )),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 8),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Flexible(
+                                        child: BodyText(
+                                          text: product.prodName.toString(),
+                                          align: TextAlign.start,
+                                          fontSize: 22,
+                                        ),
                                       ),
-                                    ),
-                                    BodyText(
-                                      text: '$rupeesSymbol$productAmount',
-                                      fontWeight: FontWeight.bold,),
-                                  ],
-                                ),
-                                BodyText(
-                                  text: "Total Products Qty :  ${product.prodInventory}",
-                                  fontSize: 16,
-                                ),
-                                const Space(height: 12,),
-                                BodyText(
-                                  text: product.prodShortDescription ?? '',
-                                  fontSize: 16,
-                                ),
-                                Stack(
-                                  children: [
-                                    Container(
-                                      height: 140,
-                                      padding: const EdgeInsets.symmetric(vertical: 12),
-                                      child: ListView.builder(
-                                          shrinkWrap: true,
-                                          scrollDirection: Axis.horizontal,
-                                          itemCount: product.galleryImages!.length  ,
-                                          itemBuilder: (context, index) {
-                                            var image = product.galleryImages![index];
-                                            return GestureDetector(
-                                              onTap: () => imageDialog( image.galleryImageUrl.toString(), context),
-                                              child: SizedBox(
-                                                height: 120,
-                                                width: 120,
-                                                child: CachedNetworkImage(
-                                                    imageUrl: image.galleryImageUrl!),
-                                              ),
-                                            );
-                                          }),
-                                    ),
+                                      BodyText(
+                                        text: '$rupeesSymbol$productAmount',
+                                        fontWeight: FontWeight.bold,),
+                                    ],
+                                  ),
+                                  if(product.prodInventoryType == 'yes')
+                                  BodyText(
+                                    text: "Total Products Qty :  ${product.prodInventory}",
+                                    fontSize: 16,
+                                  ),
+                                  const Space(height: 12,),
+                                  BodyText(
+                                    text: product.prodShortDescription ?? '',
+                                    fontSize: 16,
+                                  ),
+                                  product.galleryImages!.isEmpty? Container()  : Stack(
+                                    children: [
+                                      Container(
+                                        height: 140,
+                                        padding: const EdgeInsets.symmetric(vertical: 12),
+                                        child: ListView.builder(
+                                            shrinkWrap: true,
+                                            scrollDirection: Axis.horizontal,
+                                            itemCount: product.galleryImages!.length  ,
+                                            itemBuilder: (context, index) {
+                                              var image = product.galleryImages![index];
+                                              return GestureDetector(
+                                                onTap: () => imageDialog( image.galleryImageUrl.toString(), context),
+                                                child: SizedBox(
+                                                  height: 120,
+                                                  width: 120,
+                                                  child: CachedNetworkImage(
+                                                      imageUrl: image.galleryImageUrl!),
+                                                ),
+                                              );
+                                            }),
+                                      ),
 
-                                  ],
-                                ),
-                                Html(
-                                  data: product.prodDescription ?? '',
-                                ),
+                                    ],
+                                  ),
+                                  Html(
+                                    data: product.prodDescription ?? '',
+                                  ),
 
-                              ],
-                            ),
-                          ],
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      const Space(
-                        height: 8,
-                      ),
-                      const Space(
-                        height: 30,
-                      ),
-                    ],
+                        const Space(
+                          height: 8,
+                        ),
+                        const Space(
+                          height: 30,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              widget.productArgument.distributorId == null
-                  ? const SizedBox.shrink()
-                  : Positioned(
-                      bottom: 0,
-                      right: 0,
-                      left: 0,
-                      child: Container(
-                        decoration: defaultDecoration,
-                        child: product.isCart != null &&
-                                product.isCart!.isNotEmpty
-                            ? Row(
-                                children: [
-                                  Expanded(
-                                      flex: 1,
-                                      child: Container(
-                                        width: MediaQuery.of(context).size.width,
-                                        alignment: Alignment.center,
-                                        child: UpdateQuantityWidget(
-                                            cartItem: cartItem,
-                                            quantity: quantity,
-                                            distributorMinQty:
-                                                prodMinQty,
-                                            productAddRemove: productAddRemove),
-                                      )),
-                                  Expanded(
-                                      flex: 1,
-                                      child: CustomButton(
-                                          buttonText: 'Checkout',
-                                          margin: 0,
-                                          radius: 0,
-                                          buttonColor: Colors.green,
-                                          onClick: () => Navigator.pushReplacementNamed(context, checkOutRoute,arguments: widget.productArgument.distributorId!)
-                                      ))
-                                ],
-                              )
-                            : BlocConsumer<ProductBloc, ProductState>(
-                                listener: (context, state) {
-                                  if (state is CartProductAddSuccess) {
-                                    cartProduct = state.cartProduct;
-                                    quantity = cartProduct.quantity!;
-                                    productAmount = cartProduct.amount.toString();
+                widget.productArgument.distributorId == null
+                    ? const SizedBox.shrink()
+                    : Positioned(
+                        bottom: 0,
+                        right: 0,
+                        left: 0,
+                        child: Container(
+                          decoration: defaultDecoration,
+                          child: product.isCart != null &&
+                                  product.isCart!.isNotEmpty
+                              ? Row(
+                                  children: [
+                                    Expanded(
+                                        flex: 1,
+                                        child: Container(
+                                          width: MediaQuery.of(context).size.width,
+                                          alignment: Alignment.center,
+                                          child: UpdateQuantityWidget(
+                                            product: widget.productArgument.product,
+                                              cartItem: cartItem,
+                                              quantity: quantity,
+                                              distributorMinQty:
+                                                  prodMinQty,
+                                              productAddRemove: productAddRemove),
+                                        )),
+                                    Expanded(
+                                        flex: 1,
+                                        child: CustomButton(
+                                            buttonText: 'Checkout',
+                                            margin: 0,
+                                            radius: 0,
+                                            buttonColor: Colors.green,
+                                            onClick: () => Navigator.pushReplacementNamed(context, checkOutRoute,arguments: widget.productArgument.distributorId!)
+                                        ))
+                                  ],
+                                )
+                              : BlocConsumer<ProductBloc, ProductState>(
+                                  listener: (context, state) {
+                                    if (state is CartProductAddSuccess) {
+                                      cartProduct = state.cartProduct;
+                                      quantity = cartProduct.quantity!.toString();
+                                      productAmount = cartProduct.amount.toString();
 
-                                    IsCart cart = IsCart();
-                                    cart.id = cartProduct.id;
-                                    cart.productId = cartProduct.productId;
-                                    cart.quantity = cartProduct.quantity;
-                                    cart.amount = cartProduct.amount;
-                                    product.isCart!.add(cart);
-                                    setState(() {});
-                                  }
-                                  if(state is ProductError) {
-                                    addToCartLoading = false;
-                                    setState(() {});
-                                  }
-                                },
-                                builder: (context, state) {
-                                  return CustomButton(
-                                    buttonText: 'Add To Cart',
-                                    showLoading: addToCartLoading,
-                                    margin: 0,
-                                    radius: 0,
-                                    onClick: () {
-                                      addToCartLoading = true;
+                                      IsCart cart = IsCart();
+                                      cart.id = cartProduct.id;
+                                      cart.productId = cartProduct.productId;
+                                      cart.quantity = cartProduct.quantity;
+                                      cart.amount = cartProduct.amount;
+                                      product.isCart!.add(cart);
                                       setState(() {});
-                                      context.read<ProductBloc>().add(AddProductCartEvent(productId: product.id.toString()));
-                                    },
-                                  );
-                                },
-                              ),
-                      ))
-            ],
-          );
-        },
+                                    }
+                                    if(state is ProductError) {
+                                      addToCartLoading = false;
+                                      setState(() {});
+                                    }
+                                  },
+                                  builder: (context, state) {
+                                    return CustomButton(
+                                      buttonText: 'Add To Cart',
+                                      showLoading: addToCartLoading,
+                                      margin: 0,
+                                      radius: 0,
+                                      onClick: () {
+                                        addToCartLoading = true;
+                                        setState(() {});
+                                        context.read<ProductBloc>().add(AddProductCartEvent(productId: product.id.toString()));
+                                      },
+                                    );
+                                  },
+                                ),
+                        ))
+              ],
+            );
+          },
+        ),
       ),
     );
   }

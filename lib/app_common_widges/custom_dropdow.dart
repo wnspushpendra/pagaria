@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:webnsoft_solution/app_common_widges/app_body_text.dart';
+import 'package:webnsoft_solution/modal/distributor_list.dart';
 import 'package:webnsoft_solution/modal/firm_customer_modal.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
 
@@ -12,12 +13,15 @@ class CustomDropDown extends StatefulWidget {
   final List<String>? itemList;
   final List<Firm>? firmList;
   final List<AllCustomer>? customerList;
+  final List<Customer>? distributorList;
   final String? selectedValue;
   final Firm? selectedFirmValue;
   final AllCustomer? selectedCustomerValue;
+  final Customer? selectedDistributorValue;
   final ValueChanged<String>? onChangeValue;
   final ValueChanged<Firm>? onChangeFirm;
   final ValueChanged<AllCustomer>? onChangeCustomer;
+  final ValueChanged<Customer>? onChangeDisrtirbutor;
   final bool? fromLanguage;
   final bool? validate;
   final String? errorMessage;
@@ -28,13 +32,16 @@ class CustomDropDown extends StatefulWidget {
         required this.hint,
         this.itemList,
       this.firmList,
+        this.distributorList,
       this.customerList,
         this.selectedValue,
       this.selectedFirmValue,
       this.selectedCustomerValue,
+        this.selectedDistributorValue,
         this.onChangeValue,
        this.onChangeFirm,
         this.onChangeCustomer,
+        this.onChangeDisrtirbutor,
         this.fromLanguage = false,
         this.validate,
         this.errorMessage,
@@ -111,8 +118,35 @@ class _CustomDropDownState extends State<CustomDropDown> {
                 ),
               );
             }).toList(),
-          ) 
-          :  DropdownButton<String>(
+          )
+          : widget.type == 'distributor' ?
+          DropdownButton<Customer>(
+            dropdownColor: bodyWhite,
+            borderRadius: BorderRadius.circular(8),
+            isExpanded: true,
+            value: widget.selectedDistributorValue,
+            hint: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 0),
+              child: BodyText(text: widget.hint, color: bodyLightBlack,),
+            ),
+            onChanged: (Customer? newValue) {
+              setState(() {
+                widget.onChangeDisrtirbutor!(newValue!);
+              });
+            },
+            items: widget.distributorList!.map<DropdownMenuItem<Customer>>((Customer value) {
+              return DropdownMenuItem<Customer>(
+                alignment: AlignmentDirectional.centerStart,
+                value: value,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 0.0),
+                  child: BodyText(text: value.fullName!,),
+                ),
+              );
+            }).toList(),
+          )
+
+              :  DropdownButton<String>(
             dropdownColor: bodyWhite,
             borderRadius: BorderRadius.circular(8),
             isExpanded: true,

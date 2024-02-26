@@ -10,6 +10,7 @@ import 'package:webnsoft_solution/routes/route_constatns.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
 import 'package:webnsoft_solution/utils/app_preferences.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
+import 'package:webnsoft_solution/utils/change_routes.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
 class CustomerListScreen extends StatefulWidget {
@@ -23,19 +24,25 @@ class CustomerListScreen extends StatefulWidget {
 class _CustomerListScreenState extends State<CustomerListScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: appBarWidget(context, 'Customer',   () async{
-        Navigator.pushReplacementNamed(context, homeRoute,arguments:await getUser());
-      }),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.pushReplacementNamed(context, addCustomerRoute),
-        child: const Icon(Icons.add),
-      ),
+    return WillPopScope(
+      onWillPop: ()async{
+        ChangeRoutes.openHomeScreen(context, await getUser());
+        return true;
+      },
+      child: Scaffold(
+        appBar: appBarWidget(context, 'Customer',   () async{
+          Navigator.pushReplacementNamed(context, homeRoute,arguments:await getUser());
+        }),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => Navigator.pushReplacementNamed(context, addCustomerRoute),
+          child: const Icon(Icons.add),
+        ),
 
-      body: Container(
-        padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
-        child: const CustomerList(),
+        body: Container(
+          padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+          child: const CustomerList(),
 
+        ),
       ),
     );
   }

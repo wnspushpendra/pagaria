@@ -43,7 +43,7 @@ class _CheckOutListState extends State<CheckOutList> {
           itemBuilder: (context, index) {
             selectedIndex = index;
             CartItem cartItem = widget.cartList[index];
-            quantity = cartItem.quantity;
+            quantity = cartItem.quantity.toString();
             return Container(
               margin: const EdgeInsets.symmetric(vertical: 4),
               decoration: defaultDecoration,

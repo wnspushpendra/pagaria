@@ -1,6 +1,6 @@
 class OrderProduct {
   int? amount;
-  String? quantity;
+  int? quantity;
   String? prodName;
   String? userType;
   String? prodImage;
