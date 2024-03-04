@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:webnsoft_solution/app_common_widges/app_body_text.dart';
 import 'package:webnsoft_solution/app_common_widges/home_appbar.dart';
 import 'package:webnsoft_solution/app_common_widges/space.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/update_qty_widget.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/checkout/widgets/update_qty_widget.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_bloc/product_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_bloc/product_event.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_bloc/product_state.dart';

@@ -12,13 +12,13 @@ import 'package:webnsoft_solution/app_common_widges/home_appbar.dart';
 import 'package:webnsoft_solution/app_common_widges/location.dart';
 import 'package:webnsoft_solution/app_common_widges/space.dart';
 import 'package:webnsoft_solution/app_common_widges/update_product_qty.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/bloc/check_out_bloc.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/bloc/check_out_event.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/bloc/check_out_state.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/update_qty_widget.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/widget/bottom_sheet_delete_item.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/widget/bottom_widget_checkout.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/widget/checkout_list.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/checkout/bloc/check_out_bloc.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/checkout/bloc/check_out_event.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/checkout/bloc/check_out_state.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/checkout/widgets/update_qty_widget.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/checkout/widgets/bottom_sheet_delete_item.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/checkout/widgets/bottom_widget_checkout.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/checkout/widgets/checkout_list.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_bloc/product_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_bloc/product_event.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_bloc/product_state.dart';
@@ -103,6 +103,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
             setState(() {});
           }
           if (state is CheckOutError) {
+            ChangeRoutes.unAuthorizedError(context, state.error);
             checkOutLoading = false;
             snackBar(context, state.error);
             setState(() {});
@@ -135,7 +136,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                 selectedIndex = index;
                                 CartItem cartItem = cartList[index];
                                 quantity = cartItem.quantity.toString();
-                                prodMinQty = (userRole == '4' ?  cartItem.productDetails!.prodMinDistrubutorQty! : cartItem.productDetails!.prodMinCustomerQty)!;
+                                prodMinQty = (userRole == '4' ?  cartItem.productDetails!.prodMinDistrubutorQty! : cartItem.productDetails!.prodMinDistrubutorQty)!;
 
                                 return Container(
                                   margin: const EdgeInsets.symmetric(vertical: 4),
@@ -180,6 +181,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                                       }
                                                     }
                                                     if (state is ProductError) {
+                                                      ChangeRoutes.unAuthorizedError(context, state.error);
                                                       showDelete = true;
                                                       checkOutDeleteLoading = false;
                                                       setState(() {});

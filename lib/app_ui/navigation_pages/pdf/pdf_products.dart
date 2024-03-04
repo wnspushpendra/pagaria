@@ -214,16 +214,6 @@ Future<String> download(Dio dio, String url,String fileName) async {
   }
 }
 
-/*void updateProgress(done, total) {
-  progress = done / total;
-  setState(() {
-    if (progress >= 1) {
-      progressString = '✅ File has finished downloading. Try opening the file.';
-      didDownloadPDF = true;
-    } else {
-      progressString = 'Download progress: ${(progress * 100).toStringAsFixed(0)}% done.';
-    }
-  });
-}*/
+
 
 

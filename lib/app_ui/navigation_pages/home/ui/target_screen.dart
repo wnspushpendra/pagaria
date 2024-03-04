@@ -10,6 +10,7 @@ import 'package:webnsoft_solution/app_ui/navigation_pages/home/target_bloc/targe
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/target_bloc/target_state.dart';
 import 'package:webnsoft_solution/modal/executive/target_modal.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
+import 'package:webnsoft_solution/utils/change_routes.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
 /// ***************
@@ -66,10 +67,9 @@ class _TargetScreenState extends State<TargetScreen> {
         if (state is TargetError) {
           targetLoading = false;
           error = state.error;
-          if (state.error == 'unauthorization') {
-            backToLogin(context);
-          }
-         // snackBar(context, state.error);
+          ChangeRoutes.unAuthorizedError(context,state.error);
+
+          // snackBar(context, state.error);
         }
       },
       builder: (context, state) {

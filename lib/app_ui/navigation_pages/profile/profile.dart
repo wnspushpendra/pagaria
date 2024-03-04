@@ -20,6 +20,7 @@ import 'package:webnsoft_solution/modal/profile_detail.dart';
 import 'package:webnsoft_solution/utils/app_message.dart';
 import 'package:webnsoft_solution/utils/app_regex.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
+import 'package:webnsoft_solution/utils/change_routes.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -149,6 +150,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             snackBar(context, profileState.message);
           }
           if (profileState is ProfileError) {
+            ChangeRoutes.unAuthorizedError(context, profileState.errorMessage);
             setState(() => updateProfileErrorState(profileState));
           }
         },

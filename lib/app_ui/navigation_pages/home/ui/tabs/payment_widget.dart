@@ -33,7 +33,7 @@ class DistributorPaymentWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Row(
+        /*  Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
@@ -57,7 +57,7 @@ class DistributorPaymentWidget extends StatelessWidget {
                 ),
               ),
             ],
-          ),
+          ),*/
            Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -78,8 +78,8 @@ class DistributorPaymentWidget extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const BodyText(text: mobileNumber,fontSize: 16,color: primaryColor,align: TextAlign.start,),
-                      BodyText(text: order.executiveData != null ? order.executiveData!.contactNo.toString() : order.userData!.contactNo.toString() , color: bodyBlack,),
+                       BodyText(text: mobileNumber,fontSize: 12.h,color: primaryColor,align: TextAlign.start,),
+                      BodyText(text: order.executiveData != null ? order.executiveData!.contactNo.toString() : order.userData!.contactNo.toString() , color: bodyBlack,fontSize: 14.h,),
                     ],
                   )),
 
@@ -92,8 +92,8 @@ class DistributorPaymentWidget extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const BodyText(text: 'Total Amount',fontSize: 16,color: primaryColor,),
-                      NormalText(text: '${order.orderDetails!.totalAmount.toString()} ', color: bodyBlack,),
+                       BodyText(text: 'Total Amount',fontSize: 12.h,color:  primaryColor,),
+                      NormalText(text: '${order.orderDetails!.totalAmount.toString()} ', color: bodyBlack,textSize: 14.h,),
                     ],
                   )),
               paymentStatus == 'Pending Payment'?
@@ -102,8 +102,8 @@ class DistributorPaymentWidget extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const BodyText(text: 'Remaining  Amount',fontSize: 16,color: primaryColor,),
-                       NormalText(text: '$rupeesSymbol ${order.dueAmount.toString()}', color: Colors.green,),
+                       BodyText(text: 'Remaining  Amount',fontSize: 12.h,color: primaryColor,),
+                       NormalText(text: '$rupeesSymbol ${order.dueAmount.toString()}', color: Colors.green,textSize: 14.h,),
                     ],
                   )) :
               paymentStatus == 'Recent Payment'?
@@ -112,8 +112,8 @@ class DistributorPaymentWidget extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const BodyText(text: 'Paid Amount',fontSize: 16,color: primaryColor,),
-                      NormalText(text: '$rupeesSymbol ${order.amount.toString()}', color: Colors.green,),
+                       BodyText(text: 'Paid Amount',fontSize: 12.h,color: primaryColor,),
+                      NormalText(text: '$rupeesSymbol ${order.amount.toString()}', color: Colors.green,textSize: 14.h),
                     ],
                   ))  :
               Expanded(
@@ -121,13 +121,10 @@ class DistributorPaymentWidget extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const BodyText(text: 'Date',fontSize: 16,color: primaryColor,),
-                      NormalText(text: getDDMMYYYYDateStringDate(order.date!), color: bodyBlack,),
+                       BodyText(text: 'Date',fontSize: 12.h,color: primaryColor,),
+                      NormalText(text: getDDMMYYYYDateStringDate(order.date!), color: bodyBlack,textSize: 14.h,),
                     ],
-                  ))
-
-
-            ],
+                  ))],
           ),
             Column(
              crossAxisAlignment: CrossAxisAlignment.start,

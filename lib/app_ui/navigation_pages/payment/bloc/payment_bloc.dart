@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/payment/bloc/payment_event.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/payment/bloc/payment_state.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/payment/payment_apis.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/cart_api.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/checkout/cart_api.dart';
 import 'package:webnsoft_solution/modal/cart/cart_list_modal.dart';
 import 'package:webnsoft_solution/modal/firm_customer_modal.dart';
 import 'package:webnsoft_solution/modal/login/login_response.dart';
@@ -32,13 +32,17 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     Map<String, dynamic> body = <String, dynamic>{};
     body['marketing_executive_id'] = user.id.toString();
 
-
-    FirmCustomerResponseModal response = await firmCustomerListData(header, body);
-    if(response.status == true  && response.firm != null && response.firm!.isNotEmpty){
-      emit(PaymentSuccess(firmList :  response.firm));
-    }else{
-      emit(PaymentError(error : response.message.toString()));
-    }
+try {
+  FirmCustomerResponseModal response = await firmCustomerListData(header, body);
+  if (response.status == true && response.firm != null &&
+      response.firm!.isNotEmpty) {
+    emit(PaymentSuccess(firmList: response.firm));
+  } else {
+    emit(PaymentError(error: response.message.toString()));
+  }
+}catch(e){
+  emit(PaymentError(error: unAuthorization));
+}
 
   }
   duePayment(FetchCustomerDueAmountEvent event) async{
@@ -57,12 +61,16 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     }
     body['user_type'] = 'type_marketing_ex';
 
-    CustomerDueAmountModal response = await dueAmountData(header, body);
-
-    if(response.status == true){
-    emit(PaymentSuccess(totalAmount: response.totalAmount.toString(),dueAmount:  response.dueAmount.toString()));
-    }else{
-    emit(PaymentError(error: response.message.toString()));
+    try {
+      CustomerDueAmountModal response = await dueAmountData(header, body);
+      if (response.status == true) {
+        emit(PaymentSuccess(totalAmount: response.totalAmount.toString(),
+            dueAmount: response.dueAmount.toString()));
+      } else {
+        emit(PaymentError(error: response.message.toString()));
+      }
+    }catch(e){
+      emit(PaymentError(error: unAuthorization));
     }
   }
   makePayment(PaymentClickEvent event) async{
@@ -100,11 +108,18 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     body['payment_type'] = event.paymentOption;
     body['payment_reference_id'] = event.paymentReferenceNumber;
 
-    CustomerPaymentModal response = await customerPaymentData(event.path.toString(),header, body);
-    if(response.status == true /*&& response.order != null*/ && response.record != null){
-    emit(PaymentSuccess(/*order: response.order,*/ paymentRecord: response.record));
-    }else{
-      emit(PaymentError(error: response.message.toString()));
+    try {
+      CustomerPaymentModal response = await customerPaymentData(
+          event.path.toString(), header, body);
+      if (response.status == true /*&& response.order != null*/ &&
+          response.record != null) {
+        emit(PaymentSuccess(/*order: response.order,*/
+            paymentRecord: response.record));
+      } else {
+        emit(PaymentError(error: response.message.toString()));
+      }
+    }catch(e){
+      emit(PaymentError(error: unAuthorization));
     }
   }
 
@@ -142,12 +157,16 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     Map<String, dynamic> body = <String, dynamic>{};
     body['executive_id'] = user.id.toString();
 
-    PaymentListModal response = await customerPaymentListData(header, body);
-
-    if(response.status == true && response.paymentDetail != null && response.paymentDetail!.isNotEmpty){
-      emit(PaymentSuccess(paymentDetailList: response.paymentDetail));
-    }else{
-      emit(PaymentError(error: response.message.toString()));
+    try {
+      PaymentListModal response = await customerPaymentListData(header, body);
+      if (response.status == true && response.paymentDetail != null &&
+          response.paymentDetail!.isNotEmpty) {
+        emit(PaymentSuccess(paymentDetailList: response.paymentDetail));
+      } else {
+        emit(PaymentError(error: response.message.toString()));
+      }
+    }catch(e){
+      emit(PaymentError(error: unAuthorization));
     }
   }
 

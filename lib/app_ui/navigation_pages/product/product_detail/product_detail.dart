@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:webnsoft_solution/app_common_widges/app_body_text.dart';
 import 'package:webnsoft_solution/app_common_widges/asset_button.dart';
 import 'package:webnsoft_solution/app_common_widges/custom_appbar.dart';
@@ -10,10 +11,10 @@ import 'package:webnsoft_solution/app_common_widges/home_appbar.dart';
 import 'package:webnsoft_solution/app_common_widges/space.dart';
 import 'package:webnsoft_solution/app_common_widges/update_product_qty.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/order/create_order/product_count.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/bloc/check_out_bloc.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/bloc/check_out_event.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/bloc/check_out_state.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/update_qty_widget.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/checkout/bloc/check_out_bloc.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/checkout/bloc/check_out_event.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/checkout/bloc/check_out_state.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/checkout/widgets/update_qty_widget.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_bloc/product_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_bloc/product_event.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_bloc/product_state.dart';
@@ -165,13 +166,16 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                   ),
                                   if(product.prodInventoryType == 'yes')
                                   BodyText(
-                                    text: "Total Products Qty :  ${product.prodInventory}",
-                                    fontSize: 16,
+                                    text: "Stock :  ${product.availStock}",
+                                    fontSize: 16.h,
+                                    color: Colors.green,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                   const Space(height: 12,),
                                   BodyText(
                                     text: product.prodShortDescription ?? '',
-                                    fontSize: 16,
+                                    fontSize: 14.h,
+                                    align: TextAlign.start,
                                   ),
                                   product.galleryImages!.isEmpty? Container()  : Stack(
                                     children: [
@@ -201,7 +205,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                   Html(
                                     data: product.prodDescription ?? '',
                                   ),
-
                                 ],
                               ),
                             ],

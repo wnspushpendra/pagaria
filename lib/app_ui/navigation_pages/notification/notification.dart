@@ -1,6 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:webnsoft_solution/app_common_widges/app_body_text.dart';
 import 'package:webnsoft_solution/app_common_widges/custom_appbar.dart';
+import 'package:webnsoft_solution/app_common_widges/custom_progressbar.dart';
+import 'package:webnsoft_solution/app_common_widges/home_appbar.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/notification/bloc/notification_bloc.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/notification/bloc/notification_event.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/notification/bloc/notification_state.dart';
+import 'package:webnsoft_solution/modal/notification/notification_modal.dart';
+import 'package:webnsoft_solution/utils/app_colors.dart';
+import 'package:webnsoft_solution/utils/change_routes.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
 class NotificationList extends StatefulWidget {
@@ -11,27 +21,89 @@ class NotificationList extends StatefulWidget {
 }
 
 class _NotificationListState extends State<NotificationList> {
+  bool notificationLoading = true;
+
+  List<NotificationData> notificationList = [];
+  String? errorMessage;
+
+  @override
+  void initState() {
+    context.read<NotificationBloc>().add(NotificationFetchEvent());
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarWidget(context, 'Notification', () => backUserHome(context)),
-      body: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 0,vertical: 0),
-        child: ListView.builder(
-          padding: const EdgeInsets.all(0),
-          itemCount: 10,
-            itemBuilder: (context,index){
-              return ListTile(
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    BodyText(text: 'Notification $index',align: TextAlign.start,fontSize: 16,fontWeight: FontWeight.bold,),
-                    const BodyText(text: '10-12-2024',align: TextAlign.start,fontSize: 16,),
-                  ],
-                ),
-                subtitle: const Flexible(child: BodyText(text: 'Simple shot description  for notification list with flex data  ',align: TextAlign.start,fontSize: 16,)),
-              );
-            }),
+      appBar:
+          appBarWidget(context, 'Notification', () async => ChangeRoutes.openHomeScreen(context, await getUser())),
+      body: BlocConsumer<NotificationBloc, NotificationState>(
+        listener: (context, state) {
+          if (state is NotificationSuccess) {
+            notificationLoading = false;
+            notificationList = state.notification;
+            setState(() {});
+          }
+          if (state is NotificationError) {
+            notificationLoading = false;
+            ChangeRoutes.unAuthorizedError(context, state.error);
+            errorMessage = state.error;
+            setState(() {});
+          }
+        },
+        builder: (context, state) {
+          return errorMessage != null
+              ? Center(
+                  child: BodyText(
+                    text: errorMessage!,
+                    fontSize: 14.h,
+                    color: primaryColor,
+                  ),
+                )
+              : notificationLoading
+                  ? const Center(
+                      child: CustomProgressBar(),
+                    )
+                  : Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 0, vertical: 0),
+                      child: ListView.builder(
+                          padding: const EdgeInsets.all(0),
+                          itemCount: notificationList.length,
+                          itemBuilder: (context, index) {
+                            NotificationData data = notificationList[index];
+                            return Container(
+                              margin: EdgeInsets.symmetric(vertical: 4.h,horizontal: 6.h),
+                              decoration: defaultDecoration,
+                              child: ListTile(
+                                title: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    BodyText(
+                                      text: data.notificationTitle??'',
+                                      align: TextAlign.start,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                     BodyText(
+                                      text: data.notificationDate?? '${data.notificationTime}' ?? ''??'',
+                                      align: TextAlign.start,
+                                      fontSize: 16,
+                                    ),
+                                  ],
+                                ),
+                                subtitle:  Flexible(
+                                    child: BodyText(
+                                  text: data.notificationMessage??'',
+                                  align: TextAlign.start,
+                                  fontSize: 16,
+                                )),
+                              ),
+                            );
+                          }),
+                    );
+        },
       ),
     );
   }

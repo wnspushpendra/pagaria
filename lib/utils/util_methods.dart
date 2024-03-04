@@ -125,7 +125,7 @@ snackBar(BuildContext context, String message) {
 }
 
 
-/// * showing a snackBar
+/// * showing a snackBar with button
 snackBarButton(BuildContext context, String message,String path) {
   final snackBar = SnackBar(
     behavior: SnackBarBehavior.floating,

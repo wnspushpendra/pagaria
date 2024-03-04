@@ -549,7 +549,15 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                               ),
                               Expanded(
                                 flex: 1,
-                                child: Row(
+                                child: widget.order.paymentAmount == widget.order.totalAmount ?
+                                BodyText(
+                                  text: 'Paid',
+                                  fontSize: 14.h,
+                                  align: TextAlign.end,
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.bold,
+                                )
+                               : Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                      BodyText(

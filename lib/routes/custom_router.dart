@@ -20,7 +20,7 @@ import 'package:webnsoft_solution/app_ui/navigation_pages/payment/distributor_pa
 import 'package:webnsoft_solution/app_ui/navigation_pages/payment/payment_detail/payment_detail.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/payment/payment_list/paymens.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/payment/payment_list/payment_list.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/checkout_sceen.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/checkout/checkout_sceen.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_detail/product_detail.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/profile/profile.dart';

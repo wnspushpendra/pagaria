@@ -9,6 +9,7 @@ abstract class ProductEvent {}
   final String cartItemId;
   RemoveProductCartEvent({required this.cartItemId});
  }
+ class DeleteCartEvent extends ProductEvent {}
 
 class ProductLoadEvent extends ProductEvent {
   final String categoryId;

@@ -77,6 +77,7 @@ class _DistributorPaymentScreenState extends State<DistributorPaymentScreen> {
             setState(() {});
           }
           if(state is PaymentError){
+            ChangeRoutes.unAuthorizedError(context, state.error);
            paymentLoading = false;
             errorMessage = state.error;
             customerPaymentDetailLoading = false;

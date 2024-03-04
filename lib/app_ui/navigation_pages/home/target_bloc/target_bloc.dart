@@ -1,5 +1,3 @@
-
-
 import 'dart:convert';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,13 +33,17 @@ class TargetBloc extends Bloc<TargetEvent, TargetState> {
     body['user_type'] = 'type_marketing_ex';
 
     emit(TargetLoading());
-
-    TargetModal response = await targetData(header, body);
-
-    if (response.status == true && response.target != null) {
-      emit(TargetSuccess(targetList: response.target!,));
-    } else {
-      emit(TargetError(error: response.message.toString()));
+    try {
+      TargetModal response = await targetData(header, body);
+      if (response.status == true && response.target != null) {
+        emit(TargetSuccess(
+          targetList: response.target!,
+        ));
+      } else {
+        emit(TargetError(error: response.message.toString()));
+      }
+    } catch (e) {
+      emit(TargetError(error: unAuthorization));
     }
   }
 }

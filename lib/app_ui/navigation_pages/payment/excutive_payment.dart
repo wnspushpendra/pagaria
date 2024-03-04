@@ -103,6 +103,7 @@ class _ExecutivePaymentScreenState extends State<ExecutivePaymentScreen> {
               setState(() {});
             }
             if(state is PaymentError){
+              ChangeRoutes.unAuthorizedError(context, state.error);
               firmCustomerLoading = false;
               paymentLoading = false;
               fetchPaymentLoading = false;

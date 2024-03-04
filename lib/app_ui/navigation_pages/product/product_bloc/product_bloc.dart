@@ -17,6 +17,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     on<ProductLoadEvent>((event, emit) => loadProductList(event));
     on<AddProductCartEvent>((event, emit) => addToCart(event));
     on<RemoveProductCartEvent>((event, emit) => removeFromCart(event));
+    on<DeleteCartEvent>((event, emit) => deleteCartEvent(event));
   }
 
   void loadProductList(ProductLoadEvent event) async{
@@ -36,12 +37,16 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
     emit(ProductLoading());
 
-    ProductListResponse response = await productApi(header, body);
-
-    if(response.status == true && response.productList != null){
-      emit(ProductSuccess(productList: response.productList!,userRole: user.roleId));
-    }else{
-      emit(ProductError(error: response.message.toString()));
+    try {
+      ProductListResponse response = await productApi(header, body);
+      if (response.status == true && response.productList != null) {
+        emit(ProductSuccess(
+            productList: response.productList!, userRole: user.roleId));
+      } else {
+        emit(ProductError(error: response.message.toString()));
+      }
+    }catch(e){
+      emit(ProductError(error: unAuthorization));
     }
 
 
@@ -63,15 +68,16 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
     emit(CartProductRemoveLoading());
 
-
-    AddProductCartResponse response = await addCartApi(header, body);
-
-    if(response.status == true && response.cartProduct != null){
-      emit(CartProductAddSuccess(cartProduct: response.cartProduct!));
-    }else{
-      emit(ProductError(error: response.message.toString()));
-    }
-
+try {
+  AddProductCartResponse response = await addCartApi(header, body);
+  if (response.status == true && response.cartProduct != null) {
+    emit(CartProductAddSuccess(cartProduct: response.cartProduct!));
+  } else {
+    emit(ProductError(error: response.message.toString()));
+  }
+}catch(e){
+  emit(ProductError(error: unAuthorization));
+}
   }
   void removeFromCart(RemoveProductCartEvent event) async{
     /***************** getting token from preference      ****************/
@@ -87,15 +93,44 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     body['cart_item_id'] = event.cartItemId.toString();
 
     //emit(ProductLoading());
+try {
+  RemoveCartItemModal response = await removeFromCartApi(header, body);
+  if (response.status == true && response.cartItemId != null) {
+    emit(CartProductRemoveSuccess(message: response.cartItemId!));
+  } else {
+    emit(ProductError(error: response.message.toString()));
+  }
+}catch(e){
+  emit(ProductError(error: unAuthorization));
+}
 
-    RemoveCartItemModal response = await removeFromCartApi(header, body);
+  }
 
-    if(response.status == true && response.cartItemId != null){
-      emit(CartProductRemoveSuccess(message: response.cartItemId!));
-    }else{
-      emit(ProductError(error: response.message.toString()));
+  void deleteCartEvent(DeleteCartEvent event) async{
+    /***************** getting token from preference      ****************/
+    String token = await getStringPref(userTokenPrefecences);
+    /***************** getting user from preference  method  ****************/
+    User user = await getUser();
+
+    Map<String, String> header = {
+      "Authorization": "Bearer $token",
+    };
+
+    Map<String, dynamic> body = <String, dynamic>{};
+    body['cart_user_id'] = user.id.toString();
+    body['user_type'] = 'type_marketing_ex';
+
+    //emit(ProductLoading());
+    try {
+      RemoveCartItemModal response = await deleteCartRequest(header, body);
+      if (response.status == true ) {
+        emit(CartDeleteSuccess(message: response.message!));
+      } else {
+        emit(ProductError(error: response.message.toString()));
+      }
+    }catch(e){
+      emit(ProductError(error: unAuthorization));
     }
-
 
   }
 }

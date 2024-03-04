@@ -86,6 +86,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
+
+
+
+
+
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
@@ -94,17 +100,28 @@ class _MyAppState extends State<MyApp> {
           create: (context) => InternetCubit(),
           child: MultiBlocProvider(
             providers: getProvider,
-            child: BlocBuilder<InternetCubit, InternetState>(
-              builder: (context, state) {
-                return MaterialApp(
-                  title: 'Flutter Demo',
-                  debugShowCheckedModeBanner: false,
-                  theme: appTheme,
-                  home: state == InternetState.initial ||
-                          state == InternetState.connected
-                      ? const SplashScreen()
-                      : const NetworkErrorDialog(),
-                  onGenerateRoute: CustomRouter.generateRoute,
+            child: Builder(
+              builder: (context) {
+                return BlocBuilder<InternetCubit, InternetState>(
+                    builder: (context, state) {
+                      if (state == InternetState.connected) {
+                        return ScreenUtilInit(
+                          designSize: const Size(375, 812),
+                          builder: (BuildContext context, child) => MaterialApp(
+                            title: 'Flutter Demo',
+                            debugShowCheckedModeBanner: false,
+                            theme: appTheme,
+                            home:  const SplashScreen(),
+                            onGenerateRoute: CustomRouter.generateRoute,
+                          ),
+                        );
+                      } else {
+                        return MaterialApp(
+                          theme: ThemeData(primaryColor: Colors.white),
+                          home: const NetworkErrorDialog(),
+                        );
+                      }
+                    }
                 );
               },
             ),

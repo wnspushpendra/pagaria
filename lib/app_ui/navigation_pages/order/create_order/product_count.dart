@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:webnsoft_solution/app_common_widges/app_body_text.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/bloc/check_out_bloc.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/bloc/check_out_state.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/checkout/bloc/check_out_bloc.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/checkout/bloc/check_out_state.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
 
 class Count extends StatefulWidget {

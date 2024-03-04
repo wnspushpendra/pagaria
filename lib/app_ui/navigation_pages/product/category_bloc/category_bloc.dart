@@ -16,7 +16,9 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     });
   }
 
-  void loadCategoryApi(CategoryLoadEvent event,) async {
+  void loadCategoryApi(
+    CategoryLoadEvent event,
+  ) async {
     /***************** getting token from preference      ****************/
     String token = await getStringPref(userTokenPrefecences);
     /***************** getting user from preference  method  ****************/
@@ -28,20 +30,24 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
 
     Map<String, dynamic> body = <String, dynamic>{};
     body['user_id'] = user.id.toString();
-    body['user_type'] =  'type_marketing_ex' ;
+    body['user_type'] = 'type_marketing_ex';
     body['admin_id'] = '16';
 
     emit(CategoryLoading());
 
-    CategoryListResponse response = await categoryApi(header, body);
-    if (response.status == true) {
-      if (response.categoryList == null || response.categoryList!.isEmpty) {
-        emit(CategoryError(error: response.message!));
+    try {
+      CategoryListResponse response = await categoryApi(header, body);
+      if (response.status == true) {
+        if (response.categoryList == null || response.categoryList!.isEmpty) {
+          emit(CategoryError(error: response.message!));
+        } else {
+          emit(CategorySuccess(categoryList: response.categoryList!));
+        }
       } else {
-        emit(CategorySuccess(categoryList: response.categoryList!));
+        emit(CategoryError(error: response.message.toString()));
       }
+    } catch (e) {
+      emit(CategoryError(error: unAuthorization));
     }
-    else{
-  emit(CategoryError(error: response.message.toString()));
   }
-}}
+}

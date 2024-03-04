@@ -32,21 +32,31 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     // form body data
     Map<String, dynamic> body = <String, dynamic>{};
 
-    if(user.roleId == '4' && event.fromMenu != false){
-      body['booked_by_id'] = user.id.toString();
-    }else {
-
-      body['user_id'] = user.roleId == '5' ? user.id.toString() : event.distributorId.toString();
+    if(user.roleId == '4' ) {
+      if (event.fromMenu != false) {
+        body['booked_by_id'] = user.id.toString();
+      }
+      else {
+        body['booked_by_id'] = user.id.toString();
+        body['user_id'] =  event.distributorId.toString();
+      }
+    }else{
+    body['user_id'] = user.id.toString();
     }
     body['user_type'] = 'type_marketing_ex';
 
-    // request
-    UserRoleOrderModal response = await userOrderListApi(header, body);
-    // handling response
-    if(response.status == true && response.order != null && response.order!.isNotEmpty){
-    emit(OrderSuccess( orderList: response.order!,userRole: user.roleId));
-    }else{
-    emit(OrderError(error: response.message.toString()));
+    try {
+      // request
+      UserRoleOrderModal response = await userOrderListApi(header, body);
+      // handling response
+      if (response.status == true && response.order != null &&
+          response.order!.isNotEmpty) {
+        emit(OrderSuccess(orderList: response.order!, userRole: user.roleId));
+      } else {
+        emit(OrderError(error: response.message.toString()));
+      }
+    }catch(e){
+      emit(OrderError(error: unAuthorization));
     }
   }
 
@@ -73,13 +83,18 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     body['zip_code'] = zipCode;
 
     emit(OrderLoading());
-    // request
-    OrderResponse response = await orderApi(header, body);
-    // handling response
-    if(response.status == true && response.orderDetail != null){
-      emit(OrderSuccess( orderDetail: response.orderDetail!));
-    }else{
-      emit(OrderError(error: response.message.toString()));
+
+    try {
+      // request
+      OrderResponse response = await orderApi(header, body);
+      // handling response
+      if (response.status == true && response.orderDetail != null) {
+        emit(OrderSuccess(orderDetail: response.orderDetail!));
+      } else {
+        emit(OrderError(error: response.message.toString()));
+      }
+    }catch(e){
+      emit(OrderError(error: unAuthorization));
     }
   }
 }

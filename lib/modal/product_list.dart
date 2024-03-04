@@ -38,6 +38,7 @@ class Product {
   String? prodCustomerPrice;
   String? prodInventoryType;
   String? prodInventory;
+  String? availStock;
   String? prodLatestAddInventory;
   String? prodMinDistrubutorQty;
   String? prodMinCustomerQty;
@@ -88,6 +89,7 @@ class Product {
     prodCustomerPrice = json['prod_customer_price'];
     prodInventoryType = json['prod_inventory_type'];
     prodInventory = json['prod_inventory'];
+    availStock = json['available_stock'];
     prodLatestAddInventory = json['prod_latestAdd_inventory'];
     prodMinDistrubutorQty = json['prod_min_distrubutor_qty'];
     prodMinCustomerQty = json['prod_min_customer_qty'];
@@ -127,6 +129,7 @@ class Product {
     data['prod_customer_price'] = prodCustomerPrice;
     data['prod_inventory_type'] = prodInventoryType;
     data['prod_inventory'] = prodInventory;
+    data['available_stock'] = availStock;
     data['prod_latestAdd_inventory'] = prodLatestAddInventory;
     data['prod_min_distrubutor_qty'] = prodMinDistrubutorQty;
     data['prod_min_customer_qty'] = prodMinCustomerQty;

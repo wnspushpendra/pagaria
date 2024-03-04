@@ -1,8 +1,8 @@
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/bloc/check_out_event.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/bloc/check_out_state.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/cart_api.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/checkout/bloc/check_out_event.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/checkout/bloc/check_out_state.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/checkout/cart_api.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_bloc/product_api.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_bloc/product_event.dart';
 import 'package:webnsoft_solution/modal/cart/cart_item_count.dart';
@@ -32,14 +32,19 @@ class CheckOutBloc extends Bloc<CheckOutEvent, CheckOutState> {
     };
     Map<String, dynamic> body = <String, dynamic>{};
     body['user_id'] = user.id.toString();
-    body['user_type'] =  'type_marketing_ex' ;
+    body['user_type'] = 'type_marketing_ex';
 
-    CartProductResponseModal response = await cartListDataApi(header, body);
-
-    if(response.status == true && response.cartItem != null){
-      emit(CheckOutSuccess(cartList : response.cartItem!,productAmount: response.productAmount.toString(),userRole: user.roleId));
-    }else{
-      emit(CheckOutError(error: response.message.toString()));
+    try {
+      CartProductResponseModal response = await cartListDataApi(header, body);
+      if (response.status == true && response.cartItem != null) {
+        emit(CheckOutSuccess(cartList: response.cartItem!,
+            productAmount: response.productAmount.toString(),
+            userRole: user.roleId));
+      } else {
+        emit(CheckOutError(error: response.message.toString()));
+      }
+    } catch (e) {
+      emit(CheckOutError(error: unAuthorization));
     }
   }
 
@@ -60,7 +65,7 @@ class CheckOutBloc extends Bloc<CheckOutEvent, CheckOutState> {
 
     emit(CheckOutUpdateQtyLoading());
 
-    // request
+    try{// request
     UpdateCartQuantityResponseModal response = await updateCartQtyApi(header, body);
     // handling response
     if(response.status == true && response.updateCartItem != null){
@@ -68,11 +73,13 @@ class CheckOutBloc extends Bloc<CheckOutEvent, CheckOutState> {
     }else{
       emit(CheckOutError(error: response.message.toString()));
     }
-  }
+  }catch(e){
+      emit(CheckOutError(error: unAuthorization));
+    }}
 
   void cartItemCount(CartItemCountEvent event) async {
     // header
-    Map<String, String> header =  {
+    Map<String, String> header = {
       "Authorization": "Bearer ${await getStringPref(userTokenPrefecences)}",
     };
     User user = await getUserPref(userProfileDataPrefecences);
@@ -80,18 +87,21 @@ class CheckOutBloc extends Bloc<CheckOutEvent, CheckOutState> {
     // form body data
     Map<String, dynamic> body = <String, dynamic>{};
     body['user_id'] = user.id.toString();
-    body['user_type'] =  'type_marketing_ex' ;
+    body['user_type'] = 'type_marketing_ex';
 
-    // request
-    CartCountModal response = await cartCountApi(header, body);
-    // handling response
-    if(response.status == true && response.cartItemCount != null){
-      emit(CheckOutSuccess(cartItemCount : response.cartItemCount!));
-    }else{
-      emit(CheckOutError(error: response.message.toString()));
+    try {
+      // request
+      CartCountModal response = await cartCountApi(header, body);
+      // handling response
+      if (response.status == true && response.cartItemCount != null) {
+        emit(CheckOutSuccess(cartItemCount: response.cartItemCount!));
+      } else {
+        emit(CheckOutError(error: response.message.toString()));
+      }
+    } catch (e) {
+      emit(CheckOutError(error: unAuthorization));
     }
   }
-
 
 
 }

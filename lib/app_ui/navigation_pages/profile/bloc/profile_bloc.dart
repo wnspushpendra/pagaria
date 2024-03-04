@@ -102,16 +102,22 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     print(map);
 
     emit(ProfileLoading());
-    // request for api
-    UserResponse response = await editMarketExecutiveStatus(event.isNewImage, event.path, header, map,user.roleId.toString());
-    // checking response status and emitting state.
-    if (response.status == true) {
-      saveUserPref(response.profileData!.user!, userProfileDataPrefecences);
-      User user = await getUserPref(userProfileDataPrefecences);
-      print(user);
-      emit(ProfileSuccess(message: response.message.toString()));
-    } else {
-      emit(ProfileError(errorMessage: response.message.toString()));
+
+    try {
+      // request for api
+      UserResponse response = await editMarketExecutiveStatus(
+          event.isNewImage, event.path, header, map, user.roleId.toString());
+      // checking response status and emitting state.
+      if (response.status == true) {
+        saveUserPref(response.profileData!.user!, userProfileDataPrefecences);
+        User user = await getUserPref(userProfileDataPrefecences);
+        print(user);
+        emit(ProfileSuccess(message: response.message.toString()));
+      } else {
+        emit(ProfileError(errorMessage: response.message.toString()));
+      }
+    }catch(e){
+      emit(ProfileError(errorMessage: unAuthorization));
     }
   }
 

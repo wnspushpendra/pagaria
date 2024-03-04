@@ -119,7 +119,6 @@ class MyDrawer extends StatelessWidget {
                       ],
                     ),
                   )
-
                 ],
               ),
             ),
@@ -131,7 +130,7 @@ class MyDrawer extends StatelessWidget {
 
   Widget headerWidget(BuildContext context, User user,) {
     return Container(
-      height: 147.h,
+      height: 150.h,
       color: bodyWhite,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -142,7 +141,7 @@ class MyDrawer extends StatelessWidget {
               Container(
                 alignment: Alignment.center,
                 child: Container(
-                  height: 80.h,
+                  height: 75.h,
                   color: Colors.white,
                   child: Image.asset(logo),
                 ),
@@ -163,8 +162,4 @@ class MyDrawer extends StatelessWidget {
     );
   }
 
-/*  getImage() async {
-    image = await getStringPref(Constant.userImagePref);
-    name = await getStringPref(Constant.userNamePref);
-  }*/
 }

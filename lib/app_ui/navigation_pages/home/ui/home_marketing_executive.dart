@@ -14,7 +14,10 @@ import 'package:webnsoft_solution/app_ui/navigation_pages/home/home_bloc/home_bl
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/home_bloc/home_event.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/home_bloc/home_state.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/ui/target_screen.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/notification/notification_count.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/payment/payment_list/payment_list.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_bloc/product_bloc.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_bloc/product_event.dart';
 import 'package:webnsoft_solution/modal/checkin_checkout/check_in_status.dart';
 import 'package:webnsoft_solution/modal/checkin_checkout/checkin_checkout.dart';
 import 'package:webnsoft_solution/modal/distributor_list.dart';
@@ -54,6 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     context.read<HomeBloc>().add(HomeCheckInStatusEvent());
     context.read<HomeBloc>().add(HomeCustomerFetchEvent());
+    context.read<ProductBloc>().add(DeleteCartEvent());
     checkLocation();
     super.initState();
   }
@@ -104,13 +108,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-        actions: [
-          IconButton(
-              onPressed: () => Navigator.pushReplacementNamed(context, notificationRoute),
-              icon: const Icon(
-                Icons.notifications_active_outlined,
-                color: bodyWhite,
-              ))
+        actions: const [
+          NotificationCount()
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -162,9 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
             setState(() {});
           }
           if(homeState is HomeCheckInOurError){
-            if(homeState.error == 'unauthorization'){
-              backToLogin(context);
-            }
+            ChangeRoutes.unAuthorizedError(context,homeState.error);
             checkInOutLoading = false;
             setState(() {});
           }

@@ -49,18 +49,15 @@ class _LedgerScreenState extends State<LedgerScreen> {
 
   @override
   void initState() {
-    context
-        .read<LedgerBloc>()
-        .add(LedgerFetchEvent(distributorId: widget.argument.distributorId!));
+    context.read<LedgerBloc>().add(LedgerFetchEvent(distributorId: widget.argument.distributorId!));
+    context.read<LedgerBloc>().add(LedgerDownloadEvent(distributorId: widget.argument.distributorId!));
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: widget.argument.showAppbar == null
-          ? null
-          : AppBar(
+      appBar: AppBar(
               leading: IconButton(
                 icon: const Icon(
                   Icons.arrow_back_ios_new,
@@ -105,298 +102,294 @@ class _LedgerScreenState extends State<LedgerScreen> {
                   file!,
                   pageSpacing: 0,
                 );
-          /* Stack(
+
+           Stack(
                 children: [
                   Container(
                     height: MediaQuery.of(context).size.height,
                     padding: const EdgeInsets.fromLTRB(0, 0, 0, 70),
-                    child: Expanded(
-                      child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: ledgerList.length,
-                          itemBuilder: (context, index) {
-                            Ledger ledgerOrder = ledgerList[index];
-                            if(ledgerOrder.paymentDetails != null && ledgerOrder.paymentDetails!.isNotEmpty){
-                              paymentDetailList = ledgerOrder.paymentDetails!;
-                            }
-                            var  productList = (json.decode(ledgerOrder.allProduct!) as List).map((data) => OrderProduct.fromJson(data)).toList();
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: ledgerList.length,
+                        itemBuilder: (context, index) {
+                          Ledger ledgerOrder = ledgerList[index];
+                          if(ledgerOrder.paymentDetails != null && ledgerOrder.paymentDetails!.isNotEmpty){
+                            paymentDetailList = ledgerOrder.paymentDetails!;
+                          }
+                          var  productList = (json.decode(ledgerOrder.allProduct!) as List).map((data) => OrderProduct.fromJson(data)).toList();
 
-                            return Column(
-                              children: [
-                                Container(
-                                  alignment: Alignment.center,
-                                  decoration: const BoxDecoration(
-                                    border: Border(
-                                        bottom: BorderSide(
-                                      width: 1,
-                                      color: bodyBlack
-                                    ),  top: BorderSide(
-                                      width: 1,
-                                      color: bodyBlack
-                                    ),
-                                    )
+                          return Column(
+                            children: [
+                              Container(
+                                alignment: Alignment.center,
+                                decoration: const BoxDecoration(
+                                  border: Border(
+                                      bottom: BorderSide(
+                                    width: 1,
+                                    color: bodyBlack
+                                  ),  top: BorderSide(
+                                    width: 1,
+                                    color: bodyBlack
                                   ),
-                                  child: Column(
-                                    children: [
-                                      SizedBox(
-                                        height: 54,
-                                        child: Row(
-                                          children: [
-                                             Expanded(
-                                                flex: 1,
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    const BodyText(
-                                                      text: 'Order ID',
-                                                      fontSize: 14,
-                                                      align: TextAlign.center,
-                                                      color: primaryColor,
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
-                                                    BodyText(
-                                                        text: ledgerOrder.id.toString()??'',
-                                                        fontSize: 14,
-                                                        align: TextAlign.center),
-                                                  ],
-                                                )),
-                                            Container(
-                                              height: 60,
-                                              width: 0.5,
-                                              color: bodyBlack.withOpacity(0.4),
-                                            ),
-                                             Expanded(
-                                                flex: 1,
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    const BodyText(
-                                                      text: 'Product',
-                                                      fontSize: 14,
-                                                      align: TextAlign.center,
-                                                      color: primaryColor,
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
-                                                    BodyText(
-                                                      text: productList.length.toString() ?? '',
-                                                      fontSize: 14,
-                                                      align: TextAlign.center,
-                                                    ),
-                                                  ],
-                                                )),
-
-                                         */ /*   Container(
-                                              height: 46,
-                                              width: 0.5,
-                                              color: bodyBlack.withOpacity(0.4),
-                                            ),
-                                            Expanded(
-                                                flex: 1,
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    const BodyText(
-                                                      text: 'Order Amount',
-                                                      fontSize: 14,
-                                                      align: TextAlign.center,
-                                                      color: primaryColor,
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
-                                                    BodyText(
-                                                      text: ledgerOrder.totalAmount.toString(),
-                                                      fontSize: 14,
-                                                      align: TextAlign.center,
-                                                    ),
-                                                  ],
-                                                )),*/ /*
-                                            Container(
-                                              height: 60,
-                                              width: 0.5,
-                                              color: bodyBlack.withOpacity(0.4),
-                                            ),
-                                            Expanded(
-                                                flex: 1,
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    const BodyText(
-                                                      text: 'Order Date',
-                                                      fontSize: 14,
-                                                      align: TextAlign.center,
-                                                      color: primaryColor,
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
-                                                    BodyText(
-                                                        text: getDDMMYYYYDateStringDate(ledgerOrder.createdAt.toString()),
-                                                        fontSize: 14,
-                                                        align: TextAlign.center),
-                                                  ],
-                                                )),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        height: 1,
-                                        width: MediaQuery.of(context).size.width,
-                                        color: bodyBlack.withOpacity(0.4),
-                                      ),
-                                      Padding(
-                                        padding : const EdgeInsets.symmetric(horizontal : 8,vertical: 4),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Expanded(
-                                              flex : 1,
-                                              child: Row(
-                                                children: [
-                                                  const BodyText(text: 'Order Amount : ',fontSize: 16,),
-                                                  BodyText(text: ledgerOrder.totalAmount??'',fontSize: 16,fontWeight: FontWeight.bold,),
-
-                                                ],
-                                              ),
-                                            ),
-                                            Expanded(
-                                              flex : 1,
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.end,
-                                                children: [
-                                                  const BodyText(text: 'Paid Amount : ',fontSize: 16,),
-                                                  BodyText(text: ledgerOrder.paymentAmount??'',fontSize: 16,fontWeight: FontWeight.bold,),
-
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    ],
-                                  ),
+                                  )
                                 ),
-                                paymentDetailList.isNotEmpty ? Container(
-                                  height: 30,
-                                  decoration: const BoxDecoration(
-                                      border: Border(bottom: BorderSide(
-                                          width: 1,
-                                          color: bodyLightBlack
-                                      ))
-                                  ),
-                                  child: Row(
-                                    children: [
-                                    const Expanded(
-                                        flex: 2,
-                                        child: BodyText(
-                                          text: 'Date',
-                                          fontSize: 14,
-                                          align: TextAlign.center,
-                                          color: primaryColor,
-                                        )),
+                                child: Column(
+                                  children: [
+                                    SizedBox(
+                                      height: 54,
+                                      child: Row(
+                                        children: [
+                                           Expanded(
+                                              flex: 1,
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  const BodyText(
+                                                    text: 'Order ID',
+                                                    fontSize: 14,
+                                                    align: TextAlign.center,
+                                                    color: primaryColor,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                  BodyText(
+                                                      text: ledgerOrder.id.toString()??'',
+                                                      fontSize: 14,
+                                                      align: TextAlign.center),
+                                                ],
+                                              )),
+                                          Container(
+                                            height: 60,
+                                            width: 0.5,
+                                            color: bodyBlack.withOpacity(0.4),
+                                          ),
+                                           Expanded(
+                                              flex: 1,
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  const BodyText(
+                                                    text: 'Product',
+                                                    fontSize: 14,
+                                                    align: TextAlign.center,
+                                                    color: primaryColor,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                  BodyText(
+                                                    text: productList.length.toString() ?? '',
+                                                    fontSize: 14,
+                                                    align: TextAlign.center,
+                                                  ),
+                                                ],
+                                              )),
+                                          Container(
+                                            height: 46,
+                                            width: 0.5,
+                                            color: bodyBlack.withOpacity(0.4),
+                                          ),
+                                          Expanded(
+                                              flex: 1,
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  const BodyText(
+                                                    text: 'Order Amount',
+                                                    fontSize: 14,
+                                                    align: TextAlign.center,
+                                                    color: primaryColor,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                  BodyText(
+                                                    text: ledgerOrder.totalAmount.toString(),
+                                                    fontSize: 14,
+                                                    align: TextAlign.center,
+                                                  ),
+                                                ],
+                                              )),
+                                          Container(
+                                            height: 60,
+                                            width: 0.5,
+                                            color: bodyBlack.withOpacity(0.4),
+                                          ),
+                                          Expanded(
+                                              flex: 1,
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  const BodyText(
+                                                    text: 'Order Date',
+                                                    fontSize: 14,
+                                                    align: TextAlign.center,
+                                                    color: primaryColor,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                  BodyText(
+                                                      text: getDDMMYYYYDateStringDate(ledgerOrder.createdAt.toString()),
+                                                      fontSize: 14,
+                                                      align: TextAlign.center),
+                                                ],
+                                              )),
+                                        ],
+                                      ),
+                                    ),
                                     Container(
-                                      height: 46,
-                                      width: 0.5,
+                                      height: 1,
+                                      width: MediaQuery.of(context).size.width,
                                       color: bodyBlack.withOpacity(0.4),
                                     ),
-                                    const Expanded(
+                                    Padding(
+                                      padding : const EdgeInsets.symmetric(horizontal : 8,vertical: 4),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Expanded(
+                                            flex : 1,
+                                            child: Row(
+                                              children: [
+                                                const BodyText(text: 'Order Amount : ',fontSize: 16,),
+                                                BodyText(text: ledgerOrder.totalAmount??'',fontSize: 16,fontWeight: FontWeight.bold,),
+
+                                              ],
+                                            ),
+                                          ),
+                                          Expanded(
+                                            flex : 1,
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.end,
+                                              children: [
+                                                const BodyText(text: 'Paid Amount : ',fontSize: 16,),
+                                                BodyText(text: ledgerOrder.paymentAmount??'',fontSize: 16,fontWeight: FontWeight.bold,),
+
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              paymentDetailList.isNotEmpty ? Container(
+                                height: 30,
+                                decoration: const BoxDecoration(
+                                    border: Border(bottom: BorderSide(
+                                        width: 1,
+                                        color: bodyLightBlack
+                                    ))
+                                ),
+                                child: Row(
+                                  children: [
+                                  const Expanded(
                                       flex: 2,
                                       child: BodyText(
-                                        text: 'Amount',
+                                        text: 'Date',
                                         fontSize: 14,
                                         align: TextAlign.center,
                                         color: primaryColor,
+                                      )),
+                                  Container(
+                                    height: 46,
+                                    width: 0.5,
+                                    color: bodyBlack.withOpacity(0.4),
+                                  ),
+                                  const Expanded(
+                                    flex: 2,
+                                    child: BodyText(
+                                      text: 'Amount',
+                                      fontSize: 14,
+                                      align: TextAlign.center,
+                                      color: primaryColor,
+                                    ),
+                                  ),
+                                  Container(
+                                    height: 46,
+                                    width: 0.5,
+                                    color: bodyBlack.withOpacity(0.4),
+                                  ),
+                                  const Expanded(
+                                      flex: 2,
+                                      child: BodyText(
+                                        text: 'Type',
+                                        fontSize: 14,
+                                        align: TextAlign.center,
+                                        color: primaryColor,
+                                      )),
+                                  Container(
+                                    height: 46,
+                                    width: 0.5,
+                                    color: bodyBlack.withOpacity(0.4),
+                                  ),
+                                  const Expanded(
+                                      flex: 2,
+                                      child: BodyText(
+                                        text: 'Due Amount',
+                                        fontSize: 14,
+                                        align: TextAlign.center,
+                                        color: primaryColor,
+                                      )),
+                                ],),
+                              ) : Container(),
+                              paymentDetailList.isNotEmpty ? ListView.builder(
+                                  itemCount: paymentDetailList.length,
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    PaymentDetails paymentDetail = paymentDetailList[index];
+                                    return Container(
+                                      height: 30,
+                                      decoration: const BoxDecoration(
+                                          border: Border(bottom: BorderSide(
+                                              width: 0.5,
+                                              color: bodyLightBlack
+                                          ))
                                       ),
-                                    ),
-                                    Container(
-                                      height: 46,
-                                      width: 0.5,
-                                      color: bodyBlack.withOpacity(0.4),
-                                    ),
-                                    const Expanded(
-                                        flex: 2,
-                                        child: BodyText(
-                                          text: 'Type',
-                                          fontSize: 14,
-                                          align: TextAlign.center,
-                                          color: primaryColor,
-                                        )),
-                                    Container(
-                                      height: 46,
-                                      width: 0.5,
-                                      color: bodyBlack.withOpacity(0.4),
-                                    ),
-                                    const Expanded(
-                                        flex: 2,
-                                        child: BodyText(
-                                          text: 'Due Amount',
-                                          fontSize: 14,
-                                          align: TextAlign.center,
-                                          color: primaryColor,
-                                        )),
-                                  ],),
-                                ) : Container(),
-                                paymentDetailList.isNotEmpty ? ListView.builder(
-                                    itemCount: paymentDetailList.length,
-                                    shrinkWrap: true,
-                                    physics: const NeverScrollableScrollPhysics(),
-                                    itemBuilder: (context, index) {
-
-                                      PaymentDetails paymentDetail = paymentDetailList[index];
-
-                                      return Container(
-                                        height: 30,
-                                        decoration: const BoxDecoration(
-                                            border: Border(bottom: BorderSide(
-                                                width: 0.5,
-                                                color: bodyLightBlack
-                                            ))
-                                        ),
-                                        child: Row(
-                                            children: [
-                                           Expanded(
-                                              flex: 2,
-                                              child: BodyText(
-                                                  text: paymentDetail.date??'',
-                                                  fontSize: 14,
-                                                  align: TextAlign.center)),
-                                          Container(
-                                            height: 46,
-                                            width: 0.5,
-                                            color: bodyBlack.withOpacity(0.4),
-                                          ),
-                                           Expanded(
-                                              flex: 2,
-                                              child: BodyText(
-                                                  text: paymentDetail.amount.toString()??'',
-                                                  fontSize: 14,
-                                                  align: TextAlign.center)),
-                                          Container(
-                                            height: 46,
-                                            width: 0.5,
-                                            color: bodyBlack.withOpacity(0.4),
-                                          ),
-                                           Expanded(
+                                      child: Row(
+                                          children: [
+                                         Expanded(
                                             flex: 2,
                                             child: BodyText(
-                                                text: paymentDetail.paymentType??'',
+                                                text: paymentDetail.date??'',
                                                 fontSize: 14,
-                                                align: TextAlign.center),
-                                          ),
-                                          Container(
-                                            height: 46,
-                                            width: 0.5,
-                                            color: bodyBlack.withOpacity(0.4),
-                                          ),
-                                           Expanded(
-                                              flex: 2,
-                                              child: BodyText(
-                                                  text: paymentDetail.dueAmount.toString()??'',
-                                                  fontSize: 14,
-                                                  align: TextAlign.center)),
-                                        ]),
-                                      );
-                                    }) : Container()
-                              ],
-                            );
-                          }),
-                    ),
+                                                align: TextAlign.center)),
+                                        Container(
+                                          height: 46,
+                                          width: 0.5,
+                                          color: bodyBlack.withOpacity(0.4),
+                                        ),
+                                         Expanded(
+                                            flex: 2,
+                                            child: BodyText(
+                                                text: paymentDetail.amount.toString()??'',
+                                                fontSize: 14,
+                                                align: TextAlign.center)),
+                                        Container(
+                                          height: 46,
+                                          width: 0.5,
+                                          color: bodyBlack.withOpacity(0.4),
+                                        ),
+                                         Expanded(
+                                          flex: 2,
+                                          child: BodyText(
+                                              text: paymentDetail.paymentType??'',
+                                              fontSize: 14,
+                                              align: TextAlign.center),
+                                        ),
+                                        Container(
+                                          height: 46,
+                                          width: 0.5,
+                                          color: bodyBlack.withOpacity(0.4),
+                                        ),
+                                         Expanded(
+                                            flex: 2,
+                                            child: BodyText(
+                                                text: paymentDetail.dueAmount.toString()??'',
+                                                fontSize: 14,
+                                                align: TextAlign.center)),
+                                      ]),
+                                    );
+                                  }) : Container()
+                            ],
+                          );
+                        }),
                   ),
                   Align(
                     alignment: Alignment.bottomCenter,
@@ -465,7 +458,7 @@ class _LedgerScreenState extends State<LedgerScreen> {
                   )
 
                 ],
-              );*/
+              );
         },
       ),
     );

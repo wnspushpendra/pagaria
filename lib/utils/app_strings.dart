@@ -1,6 +1,9 @@
 /// ********* app name **************************
-const String appName = 'Mangalyam Metromonial';
+const String appName = 'WebnSoftSolution';
 /// *****************************
+///
+const String unAuthorization = 'unauthorization';
+
 
 /// ********************** User Login Preferences **********************
 

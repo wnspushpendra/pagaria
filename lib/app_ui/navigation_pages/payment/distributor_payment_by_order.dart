@@ -77,6 +77,7 @@ class _DistributorOrderPaymentScreenState
            // Navigator.pushReplacementNamed(context, orderRoute, arguments: true);
           }
           if(state is PaymentError){
+            ChangeRoutes.unAuthorizedError(context, state.error);
             paymentLoading = false;
             snackBar(context, state.error!);
             setState(() {});

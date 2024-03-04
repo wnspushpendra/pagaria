@@ -17,8 +17,8 @@ import 'package:http/http.dart' as http;
 
 class LedgerBloc extends Bloc<LedgerEvent, LedgerState> {
   LedgerBloc() : super(LedgerLoading()) {
-  //  on<LedgerFetchEvent>((event, emit) => ledgerData(event));
-    on<LedgerFetchEvent>((event, emit) => ledgerDownload(event));
+    on<LedgerFetchEvent>((event, emit) => ledgerData(event));
+    on<LedgerDownloadEvent>((event, emit) => ledgerDownload(event));
   }
 
   ledgerData(LedgerFetchEvent event) async {
@@ -30,24 +30,28 @@ class LedgerBloc extends Bloc<LedgerEvent, LedgerState> {
     body['user_id'] = event.distributorId;
     body['user_type'] = 'type_marketing_ex';
 
-    LedgerModal response = await ledgerDataRequest(header,body);
-
-    if(response.status == true && response.ledger != null && response.ledger!.isNotEmpty){
-     emit( LedgerSuccess(ledgerList : response.ledger!,ledgerTotal: response.totalAmount!,ledgerPendingTotal: response.dueAmount.toString()!));
-    }else{
-      emit(LedgerError(error : response.message.toString()));
+    try {
+      LedgerModal response = await ledgerDataRequest(header, body);
+      if (response.status == true && response.ledger != null && response.ledger!.isNotEmpty) {
+        emit(LedgerSuccess(ledgerList: response.ledger!,
+            ledgerTotal: response.totalAmount!,
+            ledgerPendingTotal: response.dueAmount.toString()));
+      } else {
+        emit(LedgerError(error: response.message.toString()));
+      }
+    }catch(e){
+      emit((LedgerError(error: unAuthorization)));
     }
   }
 
-
-   ledgerDownload(LedgerFetchEvent event) async {
+   ledgerDownload(LedgerDownloadEvent event) async {
     Map<String, String> header =  {
       "Authorization": "Bearer ${await getStringPref(userTokenPrefecences)}",
     };
     User user = await getUser();
 
     Map<String, dynamic> body = <String, dynamic>{};
-    body['user_id'] ='115';
+    body['user_id'] = event.distributorId.toString();
     body['user_type'] = 'type_marketing_ex';
 
     final response = await http.post(Uri.parse(baseUrl+ledgerDownloadApi),headers: header,body: body);
@@ -56,7 +60,6 @@ class LedgerBloc extends Bloc<LedgerEvent, LedgerState> {
       String tempPath = tempDir.path;
       File file = File('$tempPath/my.pdf');
       await file.writeAsBytes(response.bodyBytes);
-
       emit(LedgerDownloadSuccess(file: file));
     } else {
       throw Exception('Failed to load PDF');

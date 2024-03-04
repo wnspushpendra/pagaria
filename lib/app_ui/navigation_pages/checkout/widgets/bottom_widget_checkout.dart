@@ -9,7 +9,7 @@ import 'package:webnsoft_solution/app_common_widges/location.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/order/order_bloc/order_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/order/order_bloc/order_event.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/order/order_bloc/order_state.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/bloc/check_out_bloc.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/checkout/bloc/check_out_bloc.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';

@@ -16,9 +16,9 @@ import 'package:webnsoft_solution/app_ui/navigation_pages/pdf/product_list_pdf.d
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/category_bloc/category_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/category_bloc/category_event.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/category_bloc/category_state.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/bloc/check_out_bloc.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/bloc/check_out_event.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/bloc/check_out_state.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/checkout/bloc/check_out_bloc.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/checkout/bloc/check_out_event.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/checkout/bloc/check_out_state.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_bloc/product_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_bloc/product_event.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_bloc/product_state.dart';
@@ -184,6 +184,10 @@ class _ProductScreenState extends State<ProductScreen> {
                             filterProductList = productList;
                           });
                         }
+                        if(productState is ProductError){
+                          ChangeRoutes.unAuthorizedError(context, productState.error);
+
+                        }
                       },
                       builder: (context, state) {
                         return productLoading
@@ -215,6 +219,7 @@ class _ProductScreenState extends State<ProductScreen> {
                       });
                     }
                     if (categoryState is CategoryError) {
+                      ChangeRoutes.unAuthorizedError(context, categoryState.error);
                       errorMessage = categoryState.error;
                       loadCategory = false;
                       setState(() {});

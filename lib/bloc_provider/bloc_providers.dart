@@ -10,10 +10,11 @@ import 'package:webnsoft_solution/app_ui/navigation_pages/home/logout_bloc/logou
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/target_bloc/target_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/ledger/bloc/ledger_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/my_activity/bloc/my_activity_bloc.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/notification/bloc/notification_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/order/order_bloc/order_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/payment/bloc/payment_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/category_bloc/category_bloc.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/product/checkout/bloc/check_out_bloc.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/checkout/bloc/check_out_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_bloc/product_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_detail/product_details_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/profile/bloc/profile_bloc.dart';
@@ -24,6 +25,7 @@ get getProvider => [
   BlocProvider(create: (context) => LoginBloc()),
   BlocProvider(create: (context) => LogoutBloc()),
   BlocProvider(create: (context) => HomeBloc()),
+  BlocProvider(create: (context) => NotificationBloc()),
   BlocProvider(create: (context) => TargetBloc()),
   BlocProvider(create: (context) => CategoryBloc()),
   BlocProvider(create: (context) => ProductBloc()),

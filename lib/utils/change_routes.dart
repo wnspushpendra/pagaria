@@ -10,13 +10,46 @@ import 'package:webnsoft_solution/utils/app_strings.dart';
 
 class ChangeRoutes{
 
+
+// getting header
+  static Future<Map<String, String>> getHeaders() async {
+    String userToken = await getStringPref(userTokenPrefecences);
+    Map<String, String> headers = {
+      "Authorization": "Bearer $userToken",
+    };
+    return headers;
+  }
+
   /// * get user data shared preference
   static Future<User> getUser() async{
     return await getUserPref(userProfileDataPrefecences);
   }
+
+  /// * get user id shared preference
+  static Future<String> getUserId() async {
+    User user = await getUser();
+    return user.id.toString();
+  }
+
+  static openLoginScreen(BuildContext context) async{
+    Navigator.pushReplacementNamed(context, loginRoute,);
+  }
+
+  static unAuthorizedError(BuildContext context,String? error) {
+    if(error != null && error.isNotEmpty && error == unAuthorization){
+      openLoginScreen(context);
+    }
+  }
+
+
+
   // back user home screen
   static Future<void> openHomeScreen(BuildContext context,User user) async{
     Navigator.pushReplacementNamed(context, user.roleId == '4' ? homeRoute :homeDistributorRoute, arguments: user);
+  }
+  // back user home screen
+  static Future<void> openNotificationScreen(BuildContext context) async{
+    Navigator.pushReplacementNamed(context, notificationRoute);
   }
 
   static openProfileScreen(BuildContext context, User user) async{

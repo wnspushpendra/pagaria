@@ -23,7 +23,14 @@ class CartProductRemoveSuccess extends ProductState {
   CartProductRemoveSuccess({required this.message });
 }
 
+class CartDeleteSuccess extends ProductState {
+  final String message;
+  CartDeleteSuccess({required this.message});
+}
+
 class ProductError extends ProductState {
   final String error;
   ProductError({required this.error});
 }
+
+

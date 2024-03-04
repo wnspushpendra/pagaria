@@ -85,9 +85,7 @@ class _OrderScreenState extends State<OrderScreen> {
             }
             if(state is OrderError){
               loadOrder = false;
-              if(state.error == 'unauthorization'){
-                backToLogin(context);
-              }
+            ChangeRoutes.unAuthorizedError(context, state.error);
               errorMessage = state.error;
               setState(() => snackBar(context, state.error ) );
             }
@@ -259,17 +257,7 @@ class _OrderScreenState extends State<OrderScreen> {
       ),
     );
   }
-  void downloadPDF(String url, String pdfName) async {
-    final directory = await getExternalStorageDirectory();
-    final taskId = await FlutterDownloader.enqueue(
-      url: url,
-      savedDir: directory!.path,
-      fileName: pdfName,
-      showNotification: true,
-      openFileFromNotification: true,
-    );
-    //  FlutterDownloader.registerCallback(mainCallback);
-  }
+
 
   downLoadInvoice(String pdfUrl,String pdfName) async{
     snackBar(context, 'file download started');
@@ -280,7 +268,7 @@ class _OrderScreenState extends State<OrderScreen> {
       });
     }else{
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        snackBarButton(context, 'Invoice Downloade', response);
+        snackBarButton(context, 'Invoice Download', response);
       });
     }
   }

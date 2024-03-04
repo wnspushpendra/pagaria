@@ -24,11 +24,16 @@ class MyActivityBloc extends Bloc<MyActivityEvent, MyActivityState> {
     Map<String, dynamic> body = <String, dynamic>{};
     body['user_id'] =  user.id.toString();
 
-    MyActivityModal response = await myActivity(header,body);
-    if(response.status == true && response.myActivityData != null && response.myActivityData!.isNotEmpty){
-      emit(MyActivitySuccess(myActivity: response.myActivityData!));
-    }else{
-      emit(MyActivityError(error: response.message.toString()));
+    try {
+      MyActivityModal response = await myActivity(header, body);
+      if (response.status == true && response.myActivityData != null &&
+          response.myActivityData!.isNotEmpty) {
+        emit(MyActivitySuccess(myActivity: response.myActivityData!));
+      } else {
+        emit(MyActivityError(error: response.message.toString()));
+      }
+    }catch(e){
+      emit(MyActivityError(error: unAuthorization));
     }
 
   }

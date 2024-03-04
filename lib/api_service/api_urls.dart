@@ -13,6 +13,7 @@ const String productDetailsApi = 'product-details';
 const String addToCartProductApi = 'add-to-cart';
 const String removeFromCartProductApi = 'cart-item-remove';
 const String cartListApi = 'cart-show';
+const String deleteCartApi = 'delete-cart-data';
 const String cartItemCountApi = 'cart-item-count';
 const String updateProductQtyApi = 'add-prod-cart-qty';
 const String submitOrderApi = 'book-order';
@@ -37,4 +38,8 @@ const String ledgerDownloadApi = 'payment-ledger-generate-pdf';
 const String updateDistributorProfileApi = 'edit-distributor';
 const String distributorPaymentsApi = 'payment-history-distributor';
 const String paymentForOrderApi = 'payment-by-order';
+
+// notification
+const String notificationApi = 'user-notification';
+
 
