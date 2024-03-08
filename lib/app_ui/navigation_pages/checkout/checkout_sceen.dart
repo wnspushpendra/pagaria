@@ -4,30 +4,23 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:location/location.dart';
 import 'package:webnsoft_solution/app_common_widges/app_body_text.dart';
-import 'package:webnsoft_solution/app_common_widges/asset_button.dart';
 import 'package:webnsoft_solution/app_common_widges/custom_appbar.dart';
-import 'package:webnsoft_solution/app_common_widges/custom_button.dart';
 import 'package:webnsoft_solution/app_common_widges/custom_progressbar.dart';
 import 'package:webnsoft_solution/app_common_widges/home_appbar.dart';
 import 'package:webnsoft_solution/app_common_widges/location.dart';
 import 'package:webnsoft_solution/app_common_widges/space.dart';
-import 'package:webnsoft_solution/app_common_widges/update_product_qty.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/checkout/bloc/check_out_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/checkout/bloc/check_out_event.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/checkout/bloc/check_out_state.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/checkout/widgets/update_qty_widget.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/checkout/widgets/bottom_sheet_delete_item.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/checkout/widgets/bottom_widget_checkout.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/checkout/widgets/checkout_list.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_bloc/product_bloc.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_bloc/product_event.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_bloc/product_state.dart';
 import 'package:webnsoft_solution/modal/cart/cart_list_modal.dart';
-import 'package:webnsoft_solution/modal/cart/update_cart_qty.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
-import 'package:webnsoft_solution/utils/asset_images.dart';
 import 'package:webnsoft_solution/utils/change_routes.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
@@ -58,9 +51,10 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
 
   @override
   void initState() {
-    super.initState();
     checkLocation();
     context.read<CheckOutBloc>().add(CheckOutListEvent());
+    super.initState();
+
   }
 
   checkLocation() async {
@@ -241,13 +235,12 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                 );
                               }),
                         ),
-                        locationData != null ?
                         Positioned(
                             bottom: 0,
                             right: 0,
                             left: 0,
-                            child: CheckoutBottomWidget(totalCartAmount: productAmount,distributorId : widget.distributorId,locationData: locationData!,placeMark: placeMark,)
-                          ) : Container()
+                            child: CheckoutBottomWidget(totalCartAmount: productAmount,distributorId : widget.distributorId,locationData: locationData,placeMark: placeMark,)
+                          )
                       ],
                     );
         },

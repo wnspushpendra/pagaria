@@ -17,7 +17,7 @@ import 'package:webnsoft_solution/utils/util_methods.dart';
 class CheckoutBottomWidget extends StatefulWidget {
   final String distributorId;
   final String totalCartAmount;
-  final LocationData locationData;
+  final LocationData? locationData;
   final Placemark? placeMark;
 
 
@@ -32,11 +32,6 @@ class _CheckoutBottomWidgetState extends State<CheckoutBottomWidget> {
   LocationData? locationData;
   Placemark? placeMark;
 
-  @override
-  void initState() {
-    checkLocation();
-    super.initState();
-  }
 
   checkLocation() async {
     locationData = await checkLocationPermission();
@@ -44,6 +39,11 @@ class _CheckoutBottomWidgetState extends State<CheckoutBottomWidget> {
     setState(() {});
   }
 
+  @override
+  void initState() {
+    checkLocation();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<OrderBloc, OrderState>(
@@ -72,12 +72,12 @@ class _CheckoutBottomWidgetState extends State<CheckoutBottomWidget> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-           locationData != null?  CustomButton(
+            CustomButton(
                   buttonText: 'Place Order',
                   radius: 0,
                   margin: 0,
                   showLoading: orderPlaceLoading,
-                  onClick: () {
+                  onClick: () async{
                     if (locationData != null) {
                       context.read<OrderBloc>().add(OrderSubmitEvent(
                           distributorId: widget.distributorId,
@@ -85,9 +85,9 @@ class _CheckoutBottomWidgetState extends State<CheckoutBottomWidget> {
                           locationData: locationData!,
                           placeMark: placeMark));
                     } else {
-                      checkLocationPermission();
+                      checkLocation();
                     }
-                  }) : Container(),
+                  }),
             ],
           ),
         );

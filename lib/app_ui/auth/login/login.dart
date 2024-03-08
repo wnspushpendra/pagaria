@@ -25,6 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   bool? isValidEmail, isValidPassword,isLoading;
+  bool showPassword = true;
 
 
   @override
@@ -70,8 +71,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 20,
                   ),
                   CustomTextField(
-                      hint: email,
-                      label: email,
+                      hint: "$email*",
+                      label: "$email*",
                       controller: emailController,
                       validate: isValidEmail,
                       errorMessage: emailAddressMessage,
@@ -80,6 +81,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       hint: password,
                       label: password,
                       controller: passwordController,
+                      isPasswordField: showPassword,
+                      icon: showPassword ?const Icon(Icons.visibility_off) : const Icon(Icons.visibility),
+                      onClick:() => setState(() => showPassword = !showPassword),
                       validate: isValidPassword,
                       errorMessage: passwordMessage,
                       onTextChange: (value) {}),
