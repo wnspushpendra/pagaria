@@ -8,7 +8,7 @@ class CustomTextField extends StatefulWidget {
   final String hint;
   final String label;
   final TextEditingController controller;
-  final ValueChanged<bool> onTextChange;
+  final ValueChanged<bool>? onTextChange;
   final bool isPasswordField;
   final List<TextInputFormatter>? inputFormatter;
   final int? maxLines;
@@ -16,6 +16,7 @@ class CustomTextField extends StatefulWidget {
   final bool? editable;
   final bool? isEmail;
   final bool? allCaps;
+  final bool? isMobile;
   final FocusNode? focusNode;
   final Function? onClick;
   final TextInputAction? textInputAction;
@@ -23,16 +24,18 @@ class CustomTextField extends StatefulWidget {
   final String? errorMessage;
   bool? validate;
 
+
   CustomTextField(
       {super.key,
       required this.hint,
       required this.label,
       required this.controller,
-      required this.onTextChange,
+       this.onTextChange,
       this.isPasswordField = false,
       this.editable = true,
       this.isEmail = false,
       this.allCaps = false,
+        this.isMobile = false,
       this.focusNode,
       this.inputFormatter,
       this.maxLines,
@@ -50,7 +53,6 @@ class CustomTextField extends StatefulWidget {
 
 class _CustomTextFieldState extends State<CustomTextField> {
   FocusNode focusNode = FocusNode();
-  var keyboardtype = TextInputType.text;
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +66,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         obscureText: widget.isPasswordField ? true : false,
         inputFormatters: widget.inputFormatter,
         maxLines: widget.isPasswordField ? 1 : widget.maxLines ?? 1,
-        keyboardType: keyboardtype,
+        keyboardType: widget.isMobile==true ? TextInputType.number : TextInputType.text ,
         minLines: 1,
         enabled: widget.editable,
         textAlign: TextAlign.start,
@@ -102,29 +104,15 @@ class _CustomTextFieldState extends State<CustomTextField> {
             )),
         onChanged: (value) {
           if (value.isNotEmpty) {
-            /* if (value.length > 5 && keyboardtype != TextInputType.number) {
-              focusNode.unfocus();
-              setState(() {
-                keyboardtype = TextInputType.number;
-                widget.inputFormatter = InputFieldFormatter.numberFormat;
-              });
-              Future.delayed(const Duration(microseconds: 1000),(){
-                FocusScope.of(context).requestFocus(focusNode);
-              });
-            }
-            if(value.length == 9){
-              keyboardtype = TextInputType.text;
-              widget.inputFormatter = InputFieldFormatter.textFormat;
-              Future.delayed(const Duration(microseconds: 1000),(){
-                FocusScope.of(context).requestFocus(focusNode);
-              });
-            }*/
-
             widget.validate = false;
-            widget.onTextChange(widget.validate!);
+            if(widget.onTextChange != null){
+              widget.onTextChange!(widget.validate!);
+            }
           } else {
             widget.validate = true;
-            widget.onTextChange(widget.validate!);
+            if(widget.onTextChange != null){
+              widget.onTextChange!(widget.validate!);
+            }
           }
         },
       ),

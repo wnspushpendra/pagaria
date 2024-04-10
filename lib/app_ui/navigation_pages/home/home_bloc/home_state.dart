@@ -4,13 +4,15 @@ import 'package:webnsoft_solution/modal/checkin_checkout/checkin_checkout.dart';
 import 'package:webnsoft_solution/modal/distributor/distributo_payment_modal.dart';
 import 'package:webnsoft_solution/modal/distributor/distributor_order_modal.dart';
 import 'package:webnsoft_solution/modal/distributor_list.dart';
+import 'package:webnsoft_solution/modal/login/login_response.dart';
 
 abstract class HomeState {}
 
 class HomeLoading extends HomeState {}
 class HomeCheckInOutLoading extends HomeState {}
 class HomeSuccess extends HomeState {
-  final List<Customer>? distributorList;
+ // final List<Customer>? distributorList;
+ final List<User>? distributorList;
   final CheckInData? checkInData;
   final CheckInOutRecord? checkInOutRecord;
   final List<DistributorPayment>? recentOrderList;

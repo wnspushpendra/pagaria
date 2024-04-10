@@ -71,23 +71,9 @@ Future<void> logoutDialog(BuildContext context) async {
           ),
         ),
         actions: <Widget>[
-    /*      TextButton(
-            child: const Text(yes),
-            onPressed: () async {
-              clearPref();
-              Navigator.pop(context);
-              Navigator.pushReplacementNamed(context, loginRoute);
-              snackBar(context,logoutMessage);
-            },
-          ),*/
-
           BlocConsumer<LogoutBloc,LogoutState>(
               listener: (context,states) async {
                 if(states is LogoutSuccess) {
-                  clearPref();
-                  Navigator.pop(context);
-                  Navigator.pushReplacementNamed(context, loginRoute);
-                  snackBar(context,states.message);
                 } else if (states is LogoutError){
                   snackBar(context,states.error);
                 }
@@ -97,6 +83,10 @@ Future<void> logoutDialog(BuildContext context) async {
                   child: const Text(yes),
                   onPressed: () async {
                     context.read<LogoutBloc>().add(LogoutClickEvent());
+                    clearPref();
+                    Navigator.pop(context);
+                    Navigator.pushReplacementNamed(context, loginRoute);
+                    snackBar(context,logoutMessage);
                   },
                 );
               }),

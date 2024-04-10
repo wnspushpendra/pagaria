@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:location_platform_interface/location_platform_interface.dart';
@@ -12,13 +15,13 @@ import 'package:webnsoft_solution/modal/login/login_response.dart';
 import 'package:webnsoft_solution/utils/app_preferences.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
 import 'package:webnsoft_solution/utils/change_routes.dart';
+import 'package:webnsoft_solution/utils/firebase_instance.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc() : super(HomeLoading()) {
-    on<HomeTargetFetchEvent>((event, emit) {
-      fetchTargetApi(event);
-    });
+    on<FirebaseTokenEvent>((event, emit) {updateFirebaseToken(event);});
+    on<HomeTargetFetchEvent>((event, emit) {fetchTargetApi(event);});
     on<HomeCustomerFetchEvent>((event, emit) => fetchCustomerApi(event));
     on<HomeCheckInStatusEvent>((event, emit) => checkInOutStatusApi(event));
     on<HomeCheckInOutUpdateEvent>((event, emit) {
@@ -66,12 +69,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       "Authorization": "Bearer $token",
     };
 
-    String address =
-        '${event.placeMark?.street}, ${event.placeMark?.locality}, ${event.placeMark?.administrativeArea}, ${event.placeMark?.country}';
+    String address = '${event.placeMark?.street}, ${event.placeMark?.locality}, ${event.placeMark?.administrativeArea}, ${event.placeMark?.country}';
     String zipCode = '${event.placeMark?.postalCode}';
 
-    String status =
-        event.checkInOutStatus == 'check_in' ? 'check_out' : 'check_in';
+    String status = event.checkInOutStatus == 'check_in' ? 'check_out' : 'check_in';
 
     Map<String, dynamic> body = <String, dynamic>{};
     body['marketing_executive_id'] = user.id.toString();
@@ -84,8 +85,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     emit(HomeCheckInOutLoading());
 
     try {
-      CheckInCheckOutResponse response =
-          await checkInOutUpdateApi(header, body);
+      CheckInCheckOutResponse response = await checkInOutUpdateApi(header, body);
       if (response.status == true && response.checkInOutRecord != null) {
         emit(HomeSuccess(checkInOutRecord: response.checkInOutRecord!));
       } else {
@@ -112,7 +112,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     try {
       DistributorListResponse response = await distributorListApi(header, body);
-      if (response.status == true && response.customerList != null) {
+      if (response.status == true && response.customerList != null && response.customerList!.isNotEmpty) {
         emit(HomeSuccess(distributorList: response.customerList!));
       } else {
         emit(HomeError(error: response.message.toString()));
@@ -150,5 +150,27 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     } catch (e) {
       emit(HomeError(error: unAuthorization));
     }
+  }
+
+  void updateFirebaseToken(FirebaseTokenEvent event) async{
+    String deviceType = '';
+    if(Platform.isAndroid){
+      deviceType = 'android';
+    }
+    if(Platform.isIOS){
+      deviceType = 'iOS';
+    }
+
+    var token = await FirebaseInstance.getFcmToken();
+    print(token);
+
+    Map<String,dynamic> map = <String, dynamic>{};
+    map['user_id'] = await ChangeRoutes.getUserId();
+    map['type'] = 'distributor';
+    map['device_type'] = deviceType;
+    map['device_token'] = await FirebaseInstance.getFcmToken();
+    print(map);
+
+    await userTokenAndDevice(await ChangeRoutes.getHeaders(),map);
   }
 }

@@ -1,38 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:location/location.dart';
+
 import 'package:webnsoft_solution/app_common_widges/app_body_text.dart';
-import 'package:webnsoft_solution/app_common_widges/custom_button.dart';
 import 'package:webnsoft_solution/app_common_widges/custom_progressbar.dart';
-import 'package:webnsoft_solution/app_common_widges/home_appbar.dart';
-import 'package:webnsoft_solution/app_common_widges/location.dart';
+
 import 'package:webnsoft_solution/app_common_widges/space.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/customer/customer_list/widgets/customer_list.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/home_bloc/home_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/home_bloc/home_event.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/home_bloc/home_state.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/ui/tabs/disributor_payment.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/home/ui/target_screen.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/notification/bloc/notification_bloc.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/notification/bloc/notification_event.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/notification/bloc/notification_state.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/notification/notification_count.dart';
 import 'package:webnsoft_solution/modal/argument_modal/DistributorHomeArgument.dart';
-import 'package:webnsoft_solution/modal/checkin_checkout/check_in_status.dart';
-import 'package:webnsoft_solution/modal/checkin_checkout/checkin_checkout.dart';
 import 'package:webnsoft_solution/modal/distributor/distributo_payment_modal.dart';
-import 'package:webnsoft_solution/modal/distributor/distributor_order_modal.dart';
-import 'package:webnsoft_solution/modal/distributor_list.dart';
 import 'package:webnsoft_solution/modal/login/login_response.dart';
 import 'package:webnsoft_solution/nav_drawer/navigation_drawer.dart';
-import 'package:webnsoft_solution/routes/route_constatns.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
 import 'package:webnsoft_solution/utils/asset_images.dart';
 import 'package:webnsoft_solution/utils/change_routes.dart';
-import 'package:webnsoft_solution/utils/dialogs.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
 class HomeDistributorScreen extends StatefulWidget {
@@ -55,6 +40,7 @@ class _HomeDistributorScreenState extends State<HomeDistributorScreen> {
 
   @override
   void initState() {
+    context.read<HomeBloc>().add(FirebaseTokenEvent());
     context.read<HomeBloc>().add(HomeFetchDistributorPaymentEvent());
     super.initState();
   }
@@ -103,9 +89,21 @@ class _HomeDistributorScreenState extends State<HomeDistributorScreen> {
               ),
             ],
           ),
-          actions: const [
+          actions:  const [
+    /*        SizedBox(
+              width: 10,
+              child: IconButton(
+                padding: const EdgeInsets.all(0),
+                  onPressed: () async => ChangeRoutes.openProductScreen(context, await getUser(), await ChangeRoutes.getUserId()),
+                  icon: const Icon(Icons.add,color: bodyWhite,)),
+            ),*/
             NotificationCount()
           ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async => ChangeRoutes.openProductScreen(context, await getUser(), await ChangeRoutes.getUser()),
+          child: const Icon(Icons.add),
+
         ),
         body: BlocConsumer<HomeBloc, HomeState>(
           listener: (context, state) {
@@ -137,7 +135,7 @@ class _HomeDistributorScreenState extends State<HomeDistributorScreen> {
                           color: primaryColor,
                         ),
                       )
-                    : Column(
+                    : ListView(
                         children: [
                           SizedBox(
                             height: 50,

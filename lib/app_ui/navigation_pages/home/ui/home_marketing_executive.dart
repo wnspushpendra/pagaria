@@ -48,13 +48,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   bool homeLoading = false;
   bool checkInOutLoading = false;
-  List<Customer> customerList = [];
+  List<User> customerList = [];
+ // List<Customer> customerList = [];
   LocationData? locationData;
   Placemark? placeMark;
 
 
   @override
   void initState() {
+   // context.read<HomeBloc>().add(FirebaseTokenEvent());
     context.read<HomeBloc>().add(HomeCheckInStatusEvent());
     context.read<HomeBloc>().add(HomeCustomerFetchEvent());
     context.read<ProductBloc>().add(DeleteCartEvent());
@@ -197,18 +199,19 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             CustomButton(
                                 buttonText: checkInStatus == 'check_in' ? 'Check-Out' : 'Check-In',
-                                buttonWidth: 110,
-                                buttonHeight: 40,
+                                buttonWidth: 130.h,
+                                buttonHeight: 40.h,
                                 margin: 0,
                                 buttonColor: checkInStatus == 'check_in' ? Colors.red : Colors.green,
                                 buttonTextSize: 12,
                                 showLoading: checkInOutLoading,
-                                onClick: ()  {
+                                onClick: () async  {
+                                  locationData = await  checkLocationPermission();
                                   if(locationData != null){
-                                    context.read<HomeBloc>().add(HomeCheckInOutUpdateEvent(checkInOutStatus : checkInStatus,locationData : locationData!,placeMark : placeMark));
-                                  }else{
-                                    checkLocationPermission();
-                                    //snackBar(context, 'No location permission please on your location');
+                                    checkInOutLoading = true; setState(() {});
+                                    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                                      context.read<HomeBloc>().add(HomeCheckInOutUpdateEvent(checkInOutStatus : checkInStatus,locationData : locationData!,placeMark : placeMark));
+                                    });
                                   }
                                 })
                           ],

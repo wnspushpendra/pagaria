@@ -1,11 +1,14 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/single_child_widget.dart';
 import 'package:shimmer_loading/shimmer_loading.dart';
 import 'package:webnsoft_solution/app_common_widges/app_body_text.dart';
 import 'package:webnsoft_solution/app_common_widges/asset_button.dart';
@@ -25,6 +28,7 @@ import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_bloc/p
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/widget/category/category.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/widget/product/product_list.dart';
 import 'package:webnsoft_solution/modal/category_list.dart';
+import 'package:webnsoft_solution/modal/login/login_response.dart';
 import 'package:webnsoft_solution/modal/product_list.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
@@ -33,12 +37,11 @@ import 'package:webnsoft_solution/utils/asset_images.dart';
 import 'package:webnsoft_solution/utils/change_routes.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
-
-
-
 class ProductScreen extends StatefulWidget {
-  final String? distributorId;
-  const ProductScreen({this.distributorId, super.key});
+ // final String? distributorId;
+  final User? distributor;
+
+  const ProductScreen({this.distributor, super.key});
 
   @override
   State<ProductScreen> createState() => _ProductScreenState();
@@ -87,7 +90,7 @@ class _ProductScreenState extends State<ProductScreen> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     return WillPopScope(
-      onWillPop: () async{
+      onWillPop: () async {
         ChangeRoutes.openHomeScreen(context, await getUser());
         return true;
       },
@@ -101,14 +104,14 @@ class _ProductScreenState extends State<ProductScreen> {
                 ),
                 onPressed: () async {
                   ChangeRoutes.openHomeScreen(context, await getUser());
-
                 }),
             title: const BodyText(
               text: 'Product',
               color: bodyWhite,
             ),
             actions: [
-              widget.distributorId != null
+             // widget.user!.distributorId != null
+              widget.distributor != null
                   ? BlocConsumer<CheckOutBloc, CheckOutState>(
                       listener: (context, state) {
                         if (state is CheckOutSuccess) {
@@ -124,7 +127,8 @@ class _ProductScreenState extends State<ProductScreen> {
                           child: Stack(
                             children: [
                               IconButton(
-                                  onPressed: () => Navigator.pushReplacementNamed(context, checkOutRoute, arguments: widget.distributorId),
+                                  onPressed: () => ChangeRoutes.openCheckOutScreen(context,widget.distributor),
+                                     /* Navigator.pushReplacementNamed(context, checkOutRoute, arguments: widget.distributorId*/
                                   icon: Image.asset(
                                     cartIcon,
                                     height: 30,
@@ -144,105 +148,164 @@ class _ProductScreenState extends State<ProductScreen> {
                       },
                     )
                   : Container(),
-              widget.distributorId == null
-                  ? productList.isNotEmpty ? AssetButton(
-                      image: downloadLedger,
-                      color: bodyWhite,
-                      onPressed: () async{
-                        snackBar(context, 'downloading product list data');
-                        File pdfFile = await ProductsPdf().generateProductPdf(productList);
-                        saveAndOpenPdf(pdfFile);
-
-                      })
-                  : Container() : Container()
+           //   widget.distributorId == null
+              widget.distributor == null
+                  ? productList.isNotEmpty
+                      ? AssetButton(
+                          image: downloadLedger,
+                          color: bodyWhite,
+                          onPressed: () async {
+                            snackBar(context, 'downloading product list data');
+                            File pdfFile = await ProductsPdf().generateProductPdf(productList);
+                            saveAndOpenPdf(pdfFile);
+                          })
+                      : Container()
+                  : Container()
             ],
           ),
-          body: ListView(
+          body: Stack(
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: CustomTextField(
-                    hint: search,
-                    label: search,
-                    controller: searchProductController,
-                    onTextChange: (value) => filteredProductList(searchProductController.text)),
-              ),
-              Stack(
-                children: [
-                  Container(
-                    padding: EdgeInsets.fromLTRB(0, height * 0.15, 0, 0),
-                    child: BlocConsumer<ProductBloc, ProductState>(
-                      listener: (context, productState) {
-                        if (productState is ProductLoading) {
-                          setState(() => productLoading = true);
-                        }
-                        if (productState is ProductSuccess) {
-                          productLoading = false;
-                          setState(() {
-                            productList = productState.productList;
-                            userRole = productState.userRole!;
-                            filterProductList = productList;
-                          });
-                        }
-                        if(productState is ProductError){
-                          ChangeRoutes.unAuthorizedError(context, productState.error);
-
-                        }
-                      },
-                      builder: (context, state) {
-                        return productLoading
-                            ? const CustomProgressBar(heightV: 300,)
-                            : SizedBox(
-                                height: height * 0.65,
-                                child: ProductList(
-                                  userRole: userRole,
-                                  productList: filterProductList,
-                                  distributorId: widget.distributorId,
-                                ),
-                              );
-                      },
-                    ),
-                  ),
-                  BlocConsumer<CategoryBloc, CategoryState>(
-                      listener: (context, categoryState) {
-                    if (categoryState is CategoryLoading) {
-                      setState(() => loadCategory = true);
+              Container(
+                margin: EdgeInsets.only(top: height*0.24),
+                height: height,
+                child: BlocConsumer<ProductBloc, ProductState>(
+                  listener: (context, productState) {
+                    if (productState is ProductLoading) {
+                      setState(() => productLoading = true);
                     }
-                    if (categoryState is CategorySuccess) {
+                    if (productState is ProductSuccess) {
+                      productLoading = false;
                       setState(() {
-                        loadCategory = false;
-                        categoryList = categoryState.categoryList;
-                        categoryList.insert(0, Categories(id: 0, catName: 'Pagaria Products',));
-                        if (categoryList.isNotEmpty) {
-                          context.read<ProductBloc>().add(ProductLoadEvent(categoryId: '0'));
-                        }
+                        productList = productState.productList;
+                        userRole = productState.userRole!;
+                        filterProductList = productList;
                       });
                     }
-                    if (categoryState is CategoryError) {
-                      ChangeRoutes.unAuthorizedError(context, categoryState.error);
-                      errorMessage = categoryState.error;
-                      loadCategory = false;
+                    if (productState is ProductError) {
+                      errorMessage = productState.error;
+                      ChangeRoutes.unAuthorizedError(context, productState.error);
                       setState(() {});
                     }
-                  }, builder: (context, categoryState) {
-                    return loadCategory
-                        ? const CustomProgressBar()
-                        : errorMessage.isNotEmpty
-                            ? Container(
-                                height: MediaQuery.of(context).size.height,
-                                alignment: Alignment.center,
-                                child: BodyText(
-                                  text: errorMessage,
-                                  color: primaryColor,
-                                ))
-                            : SizedBox(
-                                height: height * 0.20,
-                                child: Category(categoryList: categoryList,
-                                  onClick: (String catId) => context.read<ProductBloc>().add(ProductLoadEvent(categoryId: catId)),
-                                ),
+                  },
+                  builder: (context, state) {
+                    return productLoading
+                        ? const CustomProgressBar(
+                            heightV: 300,
+                          )
+                        : SingleChildScrollView(
+                            child: ProductList(
+                              userRole: userRole,
+                              productList: filterProductList,
+                            user: widget.distributor,
+                            //  distributorId: widget.distributorId,
+                            ),
+                          );
+                  },
+                ),
+              ),
+              Container(
+                height: height*0.28.h,
+                child: Column(
+                  children: [
+                    Container(
+                      height: height * 0.09,
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: CustomTextField(
+                          hint: search,
+                          label: search,
+                          controller: searchProductController,
+                          onTextChange: (value) =>
+                              filteredProductList(searchProductController.text)),
+                    ),
+                    /*  Container(
+                      margin: EdgeInsets.fromLTRB(0, height * 0.15, 0, height * 0.15 ),
+                      child: BlocConsumer<ProductBloc, ProductState>(
+                        listener: (context, productState) {
+                          if (productState is ProductLoading) {
+                            setState(() => productLoading = true);
+                          }
+                          if (productState is ProductSuccess) {
+                            productLoading = false;
+                            setState(() {
+                              productList = productState.productList;
+                              userRole = productState.userRole!;
+                              filterProductList = productList;
+                            });
+                          }
+                          if(productState is ProductError){
+                            errorMessage = productState.error;
+                            ChangeRoutes.unAuthorizedError(context, productState.error);
+                            setState(() {});
+
+                          }
+                        },
+                        builder: (context, state) {
+                          return productLoading
+                              ? const CustomProgressBar(heightV: 300,)
+                              : ProductList(
+                                userRole: userRole,
+                                productList: filterProductList,
+                                distributorId: widget.distributorId,
                               );
-                  }),
-                ],
+                        },
+                      ),
+                    ),*/
+                    SizedBox(
+                      height: height * 0.2,
+                      child: BlocConsumer<CategoryBloc, CategoryState>(
+                          listener: (context, categoryState) {
+                        if (categoryState is CategoryLoading) {
+                          setState(() => loadCategory = true);
+                        }
+                        if (categoryState is CategorySuccess) {
+                          setState(() {
+                            loadCategory = false;
+                            categoryList = categoryState.categoryList;
+                            categoryList.insert(
+                                0,
+                                Categories(
+                                  id: 0,
+                                  catName: 'Pagaria Products',
+                                ));
+                            if (categoryList.isNotEmpty) {
+                              context
+                                  .read<ProductBloc>()
+                                  .add(ProductLoadEvent(categoryId: '0'));
+                            }
+                          });
+                        }
+                        if (categoryState is CategoryError) {
+                          ChangeRoutes.unAuthorizedError(
+                              context, categoryState.error);
+                          errorMessage = categoryState.error;
+                          loadCategory = false;
+                          setState(() {});
+                        }
+                      }, builder: (context, categoryState) {
+                        return loadCategory
+                            ? const CustomProgressBar()
+                            : errorMessage.isNotEmpty
+                                ? Container(
+                                    height: MediaQuery.of(context).size.height,
+                                    alignment: Alignment.center,
+                                    child: BodyText(
+                                      text: errorMessage,
+                                      color: primaryColor,
+                                    ))
+                                : SizedBox(
+                                    height: height * 0.20,
+                                    child: Category(
+                                      categoryList: categoryList,
+                                      onClick: (String catId) => context
+                                          .read<ProductBloc>()
+                                          .add(ProductLoadEvent(
+                                              categoryId: catId)),
+                                    ),
+                                  );
+                      }),
+                    ),
+                  ],
+                ),
               ),
             ],
           )),

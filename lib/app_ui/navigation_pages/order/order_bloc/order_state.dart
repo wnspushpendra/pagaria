@@ -18,7 +18,15 @@ class OrderSuccess extends OrderState {
   final String? userRole;
   OrderSuccess({this.orderList, this.orderDetail,this.userRole});
 }
+class OrderSubmitSuccess extends OrderState {}
 class OrderError extends OrderState {
-  final String error;
-  OrderError({required this.error});
+  final String? error;
+  final bool? houseNo;
+  final bool? town;
+  final bool? address;
+  final bool? city;
+  final bool? state;
+  final bool? zipCode;
+
+  OrderError({ this.error,this.houseNo,this.town,this.city,this.state,this.address,this.zipCode});
 }

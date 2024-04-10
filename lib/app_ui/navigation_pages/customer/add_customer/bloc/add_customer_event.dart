@@ -13,14 +13,18 @@ abstract class AddCustomerEvent {}
   final String aadharNumber;
   final String panCardNumber;
   final String gstNumber;
+  final String houseNo;
+  final String town;
   final String address;
   final String? city;
   final String? state;
   final String pinCode;
+  final String landmark;
   final String profileImage;
   AddDistributorClickEvent({required this.fullName,required this.mobileNumber,required this.email,
    required this.dob,required this.gender,required this.firmName,required this.aadharNumber,required this.panCardNumber,required this.gstNumber,
-   required this.address,required this.city,required this.state,required this.pinCode,required this.profileImage});
+   required this.houseNo,required this.town,
+    required this.address,required this.city,required this.state,required this.pinCode,required this.landmark,required this.profileImage});
 
  }
 

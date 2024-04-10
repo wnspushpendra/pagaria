@@ -18,6 +18,7 @@ class LedgerError extends LedgerState {
 }
 
 class LedgerDownloadSuccess extends LedgerState {
-  File file;
-  LedgerDownloadSuccess({required this.file});
+  File? file;
+  String? url;
+  LedgerDownloadSuccess({ this.file,this.url});
 }

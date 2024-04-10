@@ -5,6 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:webnsoft_solution/app_common_widges/intererror_dialog.dart';
 import 'package:webnsoft_solution/app_common_widges/location.dart';
@@ -16,9 +17,12 @@ import 'package:webnsoft_solution/internet_cubit/internet_state.dart';
 import 'package:webnsoft_solution/routes/custom_router.dart';
 import 'package:webnsoft_solution/splash_screen.dart';
 import 'package:webnsoft_solution/theme/app_theme.dart';
+import 'package:webnsoft_solution/utils/app_preferences.dart';
+import 'package:webnsoft_solution/utils/app_strings.dart';
 import 'package:webnsoft_solution/utils/firebase_instance.dart';
 import 'package:webnsoft_solution/utils/permisson_handler.dart';
 import 'package:flutter_statusbarcolor_ns/flutter_statusbarcolor_ns.dart';
+import 'package:webnsoft_solution/utils/show_local_notification.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
 class MyHttpOverrides extends HttpOverrides {
@@ -45,8 +49,8 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 initializeDependencies() async {
-  HttpOverrides.global = MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
+  HttpOverrides.global = MyHttpOverrides();
   await FlutterDownloader.initialize();
   handleStoragePermission().then((value) {});
   checkLocationPermission();
@@ -54,7 +58,6 @@ initializeDependencies() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   FirebaseInstance.notificationPermission();
-  await FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
   // Initialize Firebase Messaging
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   // Handle incoming messages
@@ -62,13 +65,27 @@ initializeDependencies() async {
     print("Foreground Message Received: $message");
   });
 
-  String? fcmToken = await FirebaseInstance.getFcmToken();
-  if (fcmToken != null) {
-    String resultAsString = fcmToken;
-    print(resultAsString);
-  } else {
-    print("Failed to get FCM token");
-  }
+  await FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+
+
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
+  flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+      AndroidFlutterLocalNotificationsPlugin>()?.requestNotificationsPermission();
+
+
+  // Initialize Firebase Messaging
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  // Handle incoming messages
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print("Foreground Message Received: $message");
+  });
+  setStringPref(firebaseTokenPrefecences, await FirebaseInstance.getFcmToken()??'');
 }
 
 void main() async {
@@ -86,10 +103,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
-
-
-
 
 
   @override

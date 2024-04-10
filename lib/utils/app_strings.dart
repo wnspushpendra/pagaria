@@ -7,6 +7,7 @@ const String unAuthorization = 'unauthorization';
 
 /// ********************** User Login Preferences **********************
 
+const String firebaseTokenPrefecences = 'firebase-token';
 const String userLoginPrefecences = 'user-login';
 const String userIdPrefecences = 'user-id';
 const String userTokenPrefecences = 'token';
@@ -48,9 +49,12 @@ const String dob = 'Date of Birth';
 const String mobileNumber = 'Mobile Number';
 const String aadhar = 'Aadhar Number';
 const String street = 'Address';
+const String houseNo = 'House Number/Building Number';
+const String town = 'Town';
 const String city = 'City';
 const String state = 'State';
 const String pinCode = 'Pin Code';
+const String landmark = 'Landmark';
 const String rupeesSymbol = '₹';
 const String firmName = 'Firm Name';
 const String address = 'Address';
@@ -82,6 +86,7 @@ const String payment = 'Payment';
 const String customer = 'Customer';
 const String pickupToAddress = 'Pickup To Address';
 const String orderList = 'Order List';
+const String orders = 'Orders';
 
 
 /// ********************** Select/Pic Image  **********************

@@ -1,7 +1,9 @@
 import 'package:webnsoft_solution/modal/distributor_list.dart';
+import 'package:webnsoft_solution/modal/login/login_response.dart';
 
 class CustomerDetailModal {
-  Customer? customerDetails;
+  User? customerDetails;
+ // Customer? customerDetails;
   int? index;
   bool? fromMenu;
 

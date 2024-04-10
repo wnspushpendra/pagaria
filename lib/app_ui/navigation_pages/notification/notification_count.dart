@@ -16,11 +16,11 @@ class NotificationCount extends StatefulWidget {
 }
 
 class _NotificationCountState extends State<NotificationCount> {
-  String? count;
+  String count = '0';
 
   @override
   void initState() {
-    context.read<NotificationBloc>().add(NotificationFetchEvent());
+    context.read<NotificationBloc>().add(NotificationCountEvent());
     super.initState();
   }
   @override
@@ -28,7 +28,7 @@ class _NotificationCountState extends State<NotificationCount> {
     return BlocListener<NotificationBloc, NotificationState>(
       listener: (context, state) {
         if (state is NotificationSuccess) {
-          count = state.notification.length.toString();
+          count = state.count!;
           setState(() {});
         }
       },
@@ -42,7 +42,7 @@ class _NotificationCountState extends State<NotificationCount> {
                   Icons.notifications_active_outlined,
                   color: bodyWhite, size: 24.h,
                 )),
-            count==null ?Container() :  Positioned(
+             Positioned(
               right: 0,
               child: Container(
                 alignment: Alignment.center,

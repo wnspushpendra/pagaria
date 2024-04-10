@@ -20,8 +20,9 @@ class ProfileError extends ProfileState {
   final bool? fullName;
   final bool? mobileNumber;
   final bool? email;
-  final bool? aadharNumber;
+  final bool? aadhaarNumber;
   final bool? panNumber;
+  final bool? gst;
   final bool? address;
   final bool? city;
   final bool? state;
@@ -33,8 +34,9 @@ class ProfileError extends ProfileState {
      this.fullName,
      this.mobileNumber,
      this.email,
-     this.aadharNumber,
+     this.aadhaarNumber,
      this.panNumber,
+    this.gst,
      this.address,
      this.city,
      this.state,

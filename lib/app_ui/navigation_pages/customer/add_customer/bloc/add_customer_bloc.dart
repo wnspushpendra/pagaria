@@ -36,6 +36,12 @@ class AddCustomerBloc extends Bloc<AddCustomerEvent, AddCustomerState> {
     'Content-Type': 'multipart/form-data',
       "Authorization": "Bearer $token",
     };
+    String aadhaar;
+    if(event.aadharNumber.isNotEmpty){
+      aadhaar = event.aadharNumber.replaceAll(' ', ''); // Replace all spaces with an empty string
+
+    }
+
     Map<String,dynamic> map = <String, dynamic>{};
     map['user_name'] = event.fullName;
     map['contact_no'] = event.mobileNumber;
@@ -43,14 +49,19 @@ class AddCustomerBloc extends Bloc<AddCustomerEvent, AddCustomerState> {
     map['date_of_birth'] = event.dob;
     map['gender'] = event.gender;
     map['firm_name'] = event.firmName;
-    map['aadhar_no'] = event.aadharNumber;
+    map['aadhar_no'] = event.aadharNumber.isNotEmpty ? event.aadharNumber.replaceAll(' ', '') : '';
     map['pan_card_no'] = event.panCardNumber;
     map['gst_no'] = event.gstNumber;
+    map['house_number'] = event.houseNo;
+    map['town'] = event.town;
     map['address'] = event.address;
-    map['city'] = event.city;
-    map['state'] = event.state;
+    map['city'] = event.city ??'';
+    map['state'] = event.state??'';
+    map['landmark'] = event.landmark;
     map['zip_code'] = event.pinCode;
     map['created_by_id'] = user.id;
+
+    print(map);
 
     // request for api
     AddDistributorResponse response = await addDistributorStatus(event.profileImage,header,map);
@@ -68,7 +79,7 @@ class AddCustomerBloc extends Bloc<AddCustomerEvent, AddCustomerState> {
 
     fullName = event.fullName.isEmpty && !isNameValid(event.fullName);
     mobileNumber = event.mobileNumber.isEmpty && event.mobileNumber.length != 10  ;
-    email = event.email.isEmpty && !isValidEmail(event.email) ;
+    email = event.email.isEmpty || !isValidEmail(event.email) ;
     dob = event.dob.isEmpty;
     gender = event.gender.isEmpty;
     firmName = event.firmName.isEmpty;
@@ -80,12 +91,12 @@ class AddCustomerBloc extends Bloc<AddCustomerEvent, AddCustomerState> {
     state = event.state == null;
     pinCode = event.pinCode.isEmpty || event.pinCode.length != 6;
     profileImage = event.profileImage.isEmpty;
-    if(!fullName && !mobileNumber && !email && !dob && !gender &&  !firmName && !aadharNumber &&
-        !panCardNumber &&  !gstNumber && !address && !city && !state && !pinCode && !profileImage ){
+    if(!fullName && !mobileNumber && !email && !dob && !gender &&  !firmName /*&& !aadharNumber &&
+        !panCardNumber &&  !gstNumber && !address && !city && !state && !pinCode && !profileImage*/ ){
      return true;
     }else{
       emit(AddCustomerError(name: fullName, mobileNumber: mobileNumber, email: email,dob: dob,gender: gender,firmName: firmName,
-          aadharNumber : aadharNumber,panCardNumber: panCardNumber,gstNumber:  gstNumber,address: address, city: city, state: state, pinCode: pinCode,profileImage: profileImage));
+         /* aadharNumber : aadharNumber,panCardNumber: panCardNumber,gstNumber:  gstNumber,address: address, city: city, state: state, pinCode: pinCode,profileImage: profileImage*/));
 
       return false;
      }

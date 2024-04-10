@@ -10,22 +10,24 @@ import 'package:webnsoft_solution/utils/util_methods.dart';
 ///
 Future<UserResponse> editMarketExecutiveStatus(bool isNewImage,
     String imagePath, Map<String, String> header, body, String roleId) async {
-  var endPoints =
-      roleId == '4' ? updateExecutiveProfileApi : updateDistributorProfileApi;
-  print(endPoints);
+  var endPoints = roleId == '4' ? updateExecutiveProfileApi : updateDistributorProfileApi;
 
   var request = http.MultipartRequest('POST', Uri.parse(baseUrl + endPoints));
   request.headers.addAll(header);
-  var image;
-  if (isNewImage) {
-    /*** if new image selected */
-    image = await http.MultipartFile.fromPath('profile_image', imagePath);
-  } else {
-    /*** if old image passed */
-    File file = await downloadImageAndUpload(imagePath);
-    image = await http.MultipartFile.fromPath('profile_image', file.path);
+
+  if(imagePath.isNotEmpty){
+    var image;
+    if (isNewImage) {
+      /*** if new image selected */
+      image = await http.MultipartFile.fromPath('profile_image', imagePath);
+    } else {
+      /*** if old image passed */
+      File file = await downloadImageAndUpload(imagePath);
+      image = await http.MultipartFile.fromPath('profile_image', file.path);
+    }
+    request.files.add(image);
   }
-  request.files.add(image);
+
   body.forEach((key, value) {
     request.fields[key] = value.toString();
   });

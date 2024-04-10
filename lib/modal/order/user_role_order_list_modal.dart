@@ -29,8 +29,6 @@ class UserRoleOrderModal {
 
 class Order {
   int? id;
-  String? pdfName;
-  String? pdfUrl;
   String? totalAmount;
   String? allProduct;
   String? userType;
@@ -51,6 +49,15 @@ class Order {
   String? currentLocation;
   String? longitude;
   String? latitude;
+  String? pdfUrl;
+  String? pdfName;
+  String? landmark;
+  String? zipCode;
+  String? address;
+  String? state;
+  String? city;
+  String? houseNumber;
+  String? town;
   String? createdAt;
   String? updatedAt;
   String? remainingAmount;
@@ -60,8 +67,6 @@ class Order {
 
   Order(
       {this.id,
-        this.pdfName,
-        this.pdfUrl,
         this.totalAmount,
         this.allProduct,
         this.userType,
@@ -82,6 +87,15 @@ class Order {
         this.currentLocation,
         this.longitude,
         this.latitude,
+        this.pdfUrl,
+        this.pdfName,
+        this.landmark,
+        this.zipCode,
+        this.address,
+        this.state,
+        this.city,
+        this.houseNumber,
+        this.town,
         this.createdAt,
         this.updatedAt,
         this.remainingAmount,
@@ -91,8 +105,6 @@ class Order {
 
   Order.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    pdfName = json['pdf_name'];
-    pdfUrl = json['pdf_url'];
     totalAmount = json['total_amount'];
     allProduct = json['allProduct'];
     userType = json['user_type'];
@@ -113,6 +125,15 @@ class Order {
     currentLocation = json['current_location'];
     longitude = json['longitude'];
     latitude = json['latitude'];
+    pdfUrl = json['pdf_url'];
+    pdfName = json['pdf_name'];
+    landmark = json['landmark'];
+    zipCode = json['zip_code'];
+    address = json['address'];
+    state = json['state'];
+    city = json['city'];
+    houseNumber = json['house_number'];
+    town = json['town'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     remainingAmount = json['remaining_amount'];
@@ -132,32 +153,39 @@ class Order {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['pdf_name'] = pdfName;
-    data['pdf_url'] = pdfUrl;
-    data['total_amount'] = totalAmount;
-    data['allProduct'] = allProduct;
-    data['user_type'] = userType;
-    data['user_id'] = userId;
-    data['booked_by_id'] = bookedById;
-    data['admin_id'] = adminId;
-    data['order_status'] = orderStatus;
-    data['tracking_id'] = trackingId;
-    data['remark'] = remark;
-    data['shipping_address'] = shippingAddress;
-    data['payment_status'] = paymentStatus;
-    data['payment_amount'] = paymentAmount;
-    data['payment_date'] = paymentDate;
-    data['total_quantity'] = totalQuantity;
-    data['pick_up_date'] = pickUpDate;
-    data['pick_up_time'] = pickUpTime;
-    data['pick_up_type'] = pickUpType;
-    data['current_location'] = currentLocation;
-    data['longitude'] = longitude;
-    data['latitude'] = latitude;
-    data['created_at'] = createdAt;
-    data['updated_at'] = updatedAt;
-    data['remaining_amount'] = remainingAmount;
+    data['id'] = this.id;
+    data['total_amount'] = this.totalAmount;
+    data['allProduct'] = this.allProduct;
+    data['user_type'] = this.userType;
+    data['user_id'] = this.userId;
+    data['booked_by_id'] = this.bookedById;
+    data['admin_id'] = this.adminId;
+    data['order_status'] = this.orderStatus;
+    data['tracking_id'] = this.trackingId;
+    data['remark'] = this.remark;
+    data['shipping_address'] = this.shippingAddress;
+    data['payment_status'] = this.paymentStatus;
+    data['payment_amount'] = this.paymentAmount;
+    data['payment_date'] = this.paymentDate;
+    data['total_quantity'] = this.totalQuantity;
+    data['pick_up_date'] = this.pickUpDate;
+    data['pick_up_time'] = this.pickUpTime;
+    data['pick_up_type'] = this.pickUpType;
+    data['current_location'] = this.currentLocation;
+    data['longitude'] = this.longitude;
+    data['latitude'] = this.latitude;
+    data['pdf_url'] = this.pdfUrl;
+    data['pdf_name'] = this.pdfName;
+    data['landmark'] = this.landmark;
+    data['zip_code'] = this.zipCode;
+    data['address'] = this.address;
+    data['state'] = this.state;
+    data['city'] = this.city;
+    data['house_number'] = this.houseNumber;
+    data['town'] = this.town;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    data['remaining_amount'] = this.remainingAmount;
     if (bookedUser != null) {
       data['booked_user'] = bookedUser!.toJson();
     }

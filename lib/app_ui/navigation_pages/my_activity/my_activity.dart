@@ -34,120 +34,125 @@ class _UserActivityState extends State<UserActivity> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: appBarWidget(context, 'My Activity',
-          () async => ChangeRoutes.openHomeScreen(context, await getUser())),
-      body: BlocConsumer<MyActivityBloc, MyActivityState>(
-        listener: (context, state) {
-          if (state is MyActivitySuccess) {
-            loading = false;
-            myActivityList = state.myActivity;
-          }
-          if (state is MyActivityError) {
-            loading = false;
-            errorMessage = state.error;
-            snackBar(context, errorMessage!);
-          }
-        },
-        builder: (context, state) {
-          return loading
-              ? const Center(
-                  child: CustomProgressBar(),
-                )
-              : errorMessage != null
-                  ? Center(
-                      child: BodyText(
-                        text: errorMessage!,
-                      ),
-                    )
-                  : ListView.builder(
-                      itemCount: myActivityList.length,
-                      itemBuilder: (context, index) {
-                        MyActivityData data = myActivityList[index];
-                        bool checkIn = data.status == 'check_out';
-                        return Container(
-                          margin: EdgeInsets.symmetric(vertical: 4.h,horizontal: 8.h),
-                          padding: EdgeInsets.symmetric(vertical: 4.h,horizontal: 8.h),
-                          decoration: defaultDecoration,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                    flex: 1,
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                         BodyText(text: 'Date',fontSize: 14.h,),
-                                        BodyText(
-                                            text: data.date != null
-                                                ? getDDMMYYYYDateStringDate(
-                                                    data.date!)
-                                                : '',fontSize: 14.h,),
-                                      ],
+    return PopScope(
+      canPop: false,
+      onPopInvoked : (didPop) async{
+        ChangeRoutes.openHomeScreen(context, await getUser());      },
+      child: Scaffold(
+        appBar: appBarWidget(context, 'My Activity',
+            () async => ChangeRoutes.openHomeScreen(context, await getUser())),
+        body: BlocConsumer<MyActivityBloc, MyActivityState>(
+          listener: (context, state) {
+            if (state is MyActivitySuccess) {
+              loading = false;
+              myActivityList = state.myActivity;
+            }
+            if (state is MyActivityError) {
+              loading = false;
+              errorMessage = state.error;
+              //snackBar(context, errorMessage!);
+            }
+          },
+          builder: (context, state) {
+            return loading
+                ? const Center(
+                    child: CustomProgressBar(),
+                  )
+                : errorMessage != null
+                    ? Center(
+                        child: BodyText(
+                          text: errorMessage!,
+                        ),
+                      )
+                    : ListView.builder(
+                        itemCount: myActivityList.length,
+                        itemBuilder: (context, index) {
+                          MyActivityData data = myActivityList[index];
+                          bool checkIn = data.status == 'check_out';
+                          return Container(
+                            margin: EdgeInsets.symmetric(vertical: 4.h,horizontal: 8.h),
+                            padding: EdgeInsets.symmetric(vertical: 4.h,horizontal: 8.h),
+                            decoration: defaultDecoration,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 1,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                           BodyText(text: 'Date',fontSize: 14.h,),
+                                          BodyText(
+                                              text: data.date != null
+                                                  ? getDDMMYYYYDateStringDate(
+                                                      data.date!)
+                                                  : '',fontSize: 14.h,),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  Expanded(
-                                    flex: 1,
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                         BodyText(text: 'Working hours',fontSize: 14.h,),
-                                        BodyText(
-                                            text: data.totalWorkingTime != null ? getHHMMFromHHMMSS(data.totalWorkingTime!) : '',fontSize: 14.h,),
-                                      ],
+                                    Expanded(
+                                      flex: 1,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                           BodyText(text: 'Working hours',fontSize: 14.h,),
+                                          BodyText(
+                                              text: data.totalWorkingTime != null ? getHHMMFromHHMMSS(data.totalWorkingTime!) : '',fontSize: 14.h,),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    flex: 1,
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                         BodyText(text: 'Check In Time',fontSize: 14.h,),
-                                        BodyText(text: data.checkInTime ?? 'NA',fontSize: 14.h,color: Colors.green,fontWeight: FontWeight.bold,),
-                                      ],
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 1,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                           BodyText(text: 'Check In Time',fontSize: 14.h,),
+                                          BodyText(text: data.checkInTime ?? 'NA',fontSize: 14.h,color: Colors.green,fontWeight: FontWeight.bold,),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                 Expanded(
-                                    flex: 1,
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                         BodyText(text: 'Check Out Time',fontSize: 14.h,),
-                                        BodyText(text: data.checkOutTime ?? '00:00',fontSize: 14.h,color: primaryColor,fontWeight: FontWeight.bold,),
-                                      ],
-                                    ),
-                                  ) ,
-                                ],
-                              ),
-                              Space(height: 2.h,),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  BodyText(text: 'CheckIn Address: ',fontSize: 13.h,align: TextAlign.start,color: Colors.green,),
-                                   Flexible(child: BodyText(text: '${data.addressCheckin} ${data.zipCodeCheckin} ',fontSize: 13.h,align: TextAlign.start,)),
-                                ],
-                              ),
-                              Space(height: 2.h,),
-                              !checkIn ? Container() : Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  BodyText(text: 'CheckOut Address: ',fontSize: 13.h,align: TextAlign.start,color: primaryColor,),
-                                   Flexible(child: BodyText(text: checkIn ? '${data.addressCheckout} ${data.zipCodeCheckout}' : 'NA' , fontSize: 13.h,align: TextAlign.start,)),
-                                ],
-                              ),
-                            ],
-                          ),
-                        );
-                      });
-        },
+                                   Expanded(
+                                      flex: 1,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                           BodyText(text: 'Check Out Time',fontSize: 14.h,),
+                                          BodyText(text: data.checkOutTime ?? '00:00',fontSize: 14.h,color: primaryColor,fontWeight: FontWeight.bold,),
+                                        ],
+                                      ),
+                                    ) ,
+                                  ],
+                                ),
+                                Space(height: 2.h,),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    BodyText(text: 'CheckIn Address: ',fontSize: 13.h,align: TextAlign.start,color: Colors.green,),
+                                     Flexible(child: BodyText(text: '${data.addressCheckin} ${data.zipCodeCheckin} ',fontSize: 13.h,align: TextAlign.start,)),
+                                  ],
+                                ),
+                                Space(height: 2.h,),
+                                !checkIn ? Container() : Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    BodyText(text: 'CheckOut Address: ',fontSize: 13.h,align: TextAlign.start,color: primaryColor,),
+                                     Flexible(child: BodyText(text: checkIn ? '${data.addressCheckout} ${data.zipCodeCheckout}' : 'NA' , fontSize: 13.h,align: TextAlign.start,)),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        });
+          },
+        ),
       ),
     );
   }

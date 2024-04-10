@@ -1,10 +1,13 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:webnsoft_solution/app_common_widges/app_body_text.dart';
+import 'package:webnsoft_solution/app_common_widges/asset_button.dart';
 import 'package:webnsoft_solution/app_common_widges/normal_text.dart';
 import 'package:webnsoft_solution/app_common_widges/order_payment_status.dart';
 import 'package:webnsoft_solution/app_common_widges/space.dart';
@@ -13,6 +16,7 @@ import 'package:webnsoft_solution/modal/order/user_role_order_list_modal.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
+import 'package:webnsoft_solution/utils/asset_images.dart';
 import 'package:webnsoft_solution/utils/change_routes.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
@@ -66,14 +70,13 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           titleSpacing: 0,
           title: const NormalText(text: 'Order Detail'),
           actions: [
-            IconButton(
-                onPressed: () {
-                  // downloadAndOpenFile();
-                },
-                icon: const Icon(
-                  Icons.download_for_offline,
-                  color: bodyWhite,
-                ))
+
+         /*   {
+            File pdfFile = await OrderPdf().generateProductPdf(widget.order,productList);
+            saveAndOpenPdf(pdfFile);
+            }*/
+
+            AssetButton(image: downloadLedger,color: bodyWhite, onPressed: () => downLoadInvoice(context,widget.order.pdfUrl!,"${widget.order.bookedUser!.fullName!}.pdf")),
           ],
         ),
         body: /*widget.order.pdfUrl != null ?SfPdfViewer.network(widget.order.pdfUrl!) :
@@ -84,18 +87,20 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 8),
                 padding: const EdgeInsets.symmetric(horizontal: 8),
+
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(
-                        width: 80,
-                        height: 100,
-                        child: CachedNetworkImage(
-                          imageUrl: widget.order.bookedUser!.profileImageUrl!,
-                          width: 80,
-                          height: 80,
-                        )),
+                    ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(40.h)),
+                        child:widget.order.bookedUser!.profileImageUrl != null && widget.order.bookedUser!.profileImageUrl != "https://pagaria.wecoderelationship.com" ?
+                        CachedNetworkImage(
+                          imageUrl:  widget.order.bookedUser!.profileImageUrl! ,
+                          width: 80.h,
+                          height: 80.h,
+                          fit: BoxFit.fill,
+                        ) : Image.asset(profileDefaultImage, width: 80.h,height: 80.h,)),
                     const Space(
                       width: 10,
                     ),
@@ -106,10 +111,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                           children: [
                             SizedBox(
                                 width: MediaQuery.of(context).size.width,
-                                child: const BodyText(
+                                child:  BodyText(
                                   text: 'Order Info',
                                   align: TextAlign.start,
-                                  fontSize: 18,
+                                  fontSize: 16.h,
                                   fontWeight: FontWeight.bold,
                                 )),
                             Row(
@@ -118,43 +123,48 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                 BodyText(
                                   text: widget.order.bookedUser!.fullName!,
                                   align: TextAlign.start,
-                                  fontSize: 14,
+                                  fontSize: 14.h,
                                   fontWeight: FontWeight.bold,
                                 ),
                                 BodyText(
                                   text: 'Order ID : ${widget.order.id}',
                                   align: TextAlign.start,
-                                  fontSize: 14,
+                                  fontSize: 14.h,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ],
                             ),
                             Row(
                               children: [
-                                const BodyText(
+                                 BodyText(
                                   text: "$mobileNumber : ",
                                   align: TextAlign.start,
-                                  fontSize: 14,
+                                  fontSize: 14.h,
                                 ),
                                     BodyText(
                                   text: widget.order.userData!.contactNo!,
                                   align: TextAlign.start,
-                                  fontSize: 14,
+                                  fontSize: 14.h,
                                 ),
 
                               ],
                             ),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                    const BodyText(
+                                     BodyText(
                                   text: "$email : ",
                                   align: TextAlign.start,
-                                  fontSize: 14,
+                                  fontSize: 14.h,
                                 ),
-                                BodyText(
-                                  text: widget.order.bookedUser!.email!,
-                                  align: TextAlign.start,
-                                  fontSize: 14,
+                                Flexible(
+                                  child: BodyText(
+                                    text: widget.order.bookedUser!.email!,
+                                    align: TextAlign.start,
+                                    fontSize: 14.h,
+                                    color: bodyBlack,
+                                  ),
                                 ),
                               ],
                             ),
@@ -175,19 +185,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                padding: const EdgeInsets.symmetric(horizontal: 12.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                         BodyText(
-                      text:
-                          'Address : ${widget.order.bookedUser!.address},${widget.order.bookedUser!.city} ${widget.order.bookedUser!.state} ${widget.order.bookedUser!.zipCode}',
-                      align: TextAlign.start,
-                      fontSize: 14,
-                    ),
-                    Space(
-                      height: 4.h,
-                    ),
+
                     widget.order.orderStatus != null
                         ? Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -196,9 +198,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                 flex: 1,
                                 child: Row(
                                   children: [
-                                    const BodyText(
+                                     BodyText(
                                       text: 'Order Status :  ',
-                                      fontSize: 16,
+                                      fontSize: 15.h,
                                     ),
                                     OrderPaymentStatus(
                                         status: widget.order.orderStatus!),
@@ -233,6 +235,38 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   ],
                 ),
               ),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 12.h),
+                padding: EdgeInsets.symmetric(
+                    horizontal: 6.h, vertical: 4.h),
+                decoration: BoxDecoration(
+                    border:
+                    Border.all(width: 1, color: bodyLightBlack)),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                /*    widget.order.bookedUser!.address != null?
+                    BodyText(
+                      text:
+                      'Address : ${widget.order.bookedUser!.address},${widget.order.bookedUser!.city} ${widget.order.bookedUser!.state} ${widget.order.bookedUser!.zipCode}',
+                      align: TextAlign.start,
+                      fontSize: 14.h,
+                    ) : const SizedBox.shrink(),*/
+                    BodyText(
+                      text: 'Order Address Details : ',
+                      fontSize: 14.h,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    BodyText(
+                      text:
+                      '${widget.order.address ?? ''},${widget.order.city ?? ''} ${widget.order.state ?? ''} ${widget.order.landmark ?? ''} ${widget.order.zipCode ?? ''} ' ?? '',
+                      align: TextAlign.start,
+                      fontSize: 14.h,
+                    ),
+                  ],
+                ),
+              ),
+
 
               Container(
                 alignment: Alignment.center,
@@ -268,7 +302,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                           const Expanded(
                               flex: 2,
                               child: BodyText(
-                                text: 'Qty',
+                                text: 'QTY',
                                 fontSize: 14,
                                 align: TextAlign.center,
                                 color: primaryColor,
@@ -325,14 +359,14 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
-                                      CachedNetworkImage(
+                                  /*    CachedNetworkImage(
                                         imageUrl: product.prodImageUrl!,
                                         width: 30,
                                         height: 30,
                                       ),
                                       const Space(
                                         width: 2,
-                                      ),
+                                      ),*/
                                       Flexible(
                                           child: BodyText(
                                         text: product.prodName!,
@@ -408,33 +442,33 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                       decoration: const BoxDecoration(
                           border: Border(bottom: BorderSide(width: 0.5, color: bodyLightBlack))),
                       child: Row(children: [
-                            const Expanded(
+                             Expanded(
                                 flex: 2,
                                 child: BodyText(
                                     text: 'Date',
-                                    fontSize: 14,
+                                    fontSize: 14.h,
                                     align: TextAlign.center,fontWeight: FontWeight.bold,)),
                             Container(
                               height: 46,
                               width: 0.5,
                               color: bodyBlack.withOpacity(0.4),
                             ),
-                            const Expanded(
+                             Expanded(
                                 flex: 2,
                                 child: BodyText(
                                     text: 'Paid Amount',
-                                    fontSize: 14,
+                                    fontSize: 13.h,
                                     align: TextAlign.center,fontWeight: FontWeight.bold)),
                             Container(
                               height: 46,
                               width: 0.5,
                               color: bodyBlack.withOpacity(0.4),
                             ),
-                            const Expanded(
+                             Expanded(
                               flex: 2,
                               child: BodyText(
                                 text: 'Payment Type',
-                                fontSize: 14,
+                                fontSize: 13.h,
                                 align: TextAlign.center,color: bodyBlack,fontWeight: FontWeight.bold),
                             ),
                             Container(
@@ -442,11 +476,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                               width: 0.5,
                               color: bodyBlack.withOpacity(0.4),
                             ),
-                            const Expanded(
+                             Expanded(
                                 flex: 2,
                                 child: BodyText(
                                     text: 'Due Amount',
-                                    fontSize: 14,
+                                    fontSize: 13.h,
                                     align: TextAlign.center,fontWeight: FontWeight.bold)),
                           ]),
                         )
@@ -471,8 +505,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                   Expanded(
                                       flex: 2,
                                       child: BodyText(
-                                          text: paymentDetail.date ?? '',
-                                          fontSize: 14,
+                                          text: paymentDetail.date != null ? getDDMMYYYYDateStringDate(paymentDetail.date!) :getDDMMYYYYDateStringDate(widget.order.createdAt!),
+                                          fontSize: 14.h,
                                           align: TextAlign.center)),
                                   Container(
                                     height: 46,
@@ -482,10 +516,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                   Expanded(
                                       flex: 2,
                                       child: BodyText(
-                                          text:
-                                              paymentDetail.amount.toString() ??
-                                                  '',
-                                          fontSize: 14,
+                                          text:  '$rupeesSymbol${paymentDetail.amount == null ?  '0' : paymentDetail.amount.toString()}',
+                                          fontSize: 14.h,
+                                          color: Colors.green,
                                           align: TextAlign.center)),
                                   Container(
                                     height: 46,
@@ -495,8 +528,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                   Expanded(
                                     flex: 2,
                                     child: NormalText(
-                                        text: paymentDetail.paymentType ?? '',
-                                        textSize: 14,
+                                        text: paymentDetail.paymentType ?? '-',
+                                        textSize: 14.h,
                                         align: TextAlign.center,color: bodyBlack,),
                                   ),
                                   Container(
@@ -507,9 +540,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                   Expanded(
                                       flex: 2,
                                       child: BodyText(
-                                          text: paymentDetail.dueAmount.toString() ??
-                                              '',
-                                          fontSize: 14,
+                                          text: paymentDetail.dueAmount.toString() ?? '',
+                                          fontSize: 14.h,
                                           align: TextAlign.center)),
                                 ]),
                               );
@@ -540,7 +572,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                         child: BodyText(
                                       text: widget.order.paymentAmount ?? '0',
                                       align: TextAlign.start,
-                                      fontSize: 16,
+                                      fontSize: 14.h,
                                       color: Colors.deepOrange,
                                       fontWeight: FontWeight.bold,
                                     ))
@@ -561,7 +593,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                      BodyText(
-                                      text: 'Total Amount : $rupeesSymbol',
+                                      text: 'Total Due : $rupeesSymbol',
                                       fontSize: 14.h,
                                       align: TextAlign.center,
                                       color: Colors.green,

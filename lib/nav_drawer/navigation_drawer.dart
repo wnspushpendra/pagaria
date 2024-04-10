@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:webnsoft_solution/app_common_widges/app_body_text.dart';
 import 'package:webnsoft_solution/app_common_widges/space.dart';
+import 'package:webnsoft_solution/modal/argument_modal/LedgetArgument.dart';
 import 'package:webnsoft_solution/modal/login/login_response.dart';
 import 'package:webnsoft_solution/nav_drawer/drawer_item.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
@@ -29,7 +31,7 @@ class MyDrawer extends StatelessWidget {
                 children: [
                   const Space(height: 16,),
                   /**** navigation header page *********/
-                  headerWidget(context, user),
+                  userHeader(context, user),
                   Container(
                     color: primaryColor,
                     height: MediaQuery.of(context).size.height,
@@ -54,7 +56,7 @@ class MyDrawer extends StatelessWidget {
                               Scaffold.of(context).closeDrawer();
                               ChangeRoutes.openProfileScreen(context, user);
                             }),
-                        /**** moving to user profile page *********/
+                        /**** moving to My Activity page *********/
                         user.roleId == '4' ?    DrawerItem(
                             name:'My Activity' ,
                             icon: myActivityIcon,
@@ -63,6 +65,14 @@ class MyDrawer extends StatelessWidget {
                               ChangeRoutes.openMyActivityScreen(context);
                             }) : Container(),
                         const Space(height: 10,),
+                        /**** moving to user profile page *********/
+                        user.roleId == '5' ?    DrawerItem(
+                            name:'My Ledger' ,
+                            icon: downloadLedger,
+                            onPressed: () async{
+                              Scaffold.of(context).closeDrawer();
+                              ChangeRoutes.openLedgerScreen(context,await ChangeRoutes.getUserId(),true);
+                            }) : Container(),
                         /**** moving to product page *********/
                         DrawerItem(
                             name: product,
@@ -83,7 +93,7 @@ class MyDrawer extends StatelessWidget {
                         const Space(height: 10,),
                         /**** moving to order list page *********/
                         DrawerItem(
-                            name: orderList,
+                            name: orders,
                             icon: orderIcon,
                             onPressed: () {
                               Scaffold.of(context).closeDrawer();
@@ -128,7 +138,33 @@ class MyDrawer extends StatelessWidget {
     );
   }
 
-  Widget headerWidget(BuildContext context, User user,) {
+  Widget userHeader(BuildContext context, User user,) {
+    return Container(
+    color: bodyWhite,
+    width: MediaQuery.of(context).size.width,
+    padding: EdgeInsets.symmetric(horizontal: 12.h),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Space(height: 15.h,),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(40.h),
+          child: user.profileImageUrl != null && user.profileImageUrl.toString() != 'https://pagaria.wecoderelationship.com' ?
+          CachedNetworkImage(
+            imageUrl: user.profileImageUrl!,
+            fit: BoxFit.fill, width: 80.h,height: 80.h,
+          )
+              : Image.asset(profileDefaultImage, width: 80.h,height: 80.h,),
+        ),
+        Space(height: 8.h,),
+        BodyText(text: user.fullName??'',fontWeight: FontWeight.bold,),
+        BodyText(text: user.email??'',fontWeight: FontWeight.bold,),
+        Space(height: 8.h,),
+
+
+      ],
+    ),
+    );
     return Container(
       height: 150.h,
       color: bodyWhite,
@@ -161,5 +197,34 @@ class MyDrawer extends StatelessWidget {
       ),
     );
   }
+/*  Widget userHeader(BuildContext context,) {
+    return Container(
+      color: bodyWhite,
+      width: MediaQuery.of(context).size.width,
+      padding: EdgeInsets.symmetric(horizontal: 12.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Space(height: 15.h,),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(40.h),
+            child: widget.user!.profileImageUrl != null && widget.user!.profileImageUrl.toString() != 'https://pagaria.wecoderelationship.com' ?
+            CachedNetworkImage(
+              imageUrl: widget.user!.profileImageUrl!,
+              fit: BoxFit.fill, width: 80.h,height: 80.h,
+            )
+                : Image.asset(AssetImages.profileDefaultImage, width: 80.h,height: 80.h,),
+          ),
+          Space(height: 8.h,),
+          BodyText(text: widget.user!.fullName??'',fontWeight: FontWeight.bold,),
+          BodyText(text: widget.user!.email??'',fontWeight: FontWeight.bold,),
+          Space(height: 8.h,),
+
+
+        ],
+      ),
+    );
+  }*/
+
 
 }

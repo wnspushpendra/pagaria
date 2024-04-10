@@ -28,82 +28,150 @@ class _NotificationListState extends State<NotificationList> {
 
   @override
   void initState() {
+    context.read<NotificationBloc>().add(NotificationReadUnreadUpdateEvent());
     context.read<NotificationBloc>().add(NotificationFetchEvent());
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar:
-          appBarWidget(context, 'Notification', () async => ChangeRoutes.openHomeScreen(context, await getUser())),
-      body: BlocConsumer<NotificationBloc, NotificationState>(
-        listener: (context, state) {
-          if (state is NotificationSuccess) {
-            notificationLoading = false;
-            notificationList = state.notification;
-            setState(() {});
-          }
-          if (state is NotificationError) {
-            notificationLoading = false;
-            ChangeRoutes.unAuthorizedError(context, state.error);
-            errorMessage = state.error;
-            setState(() {});
-          }
-        },
-        builder: (context, state) {
-          return errorMessage != null
-              ? Center(
-                  child: BodyText(
-                    text: errorMessage!,
-                    fontSize: 14.h,
-                    color: primaryColor,
+    return PopScope(
+      canPop: false,
+      onPopInvoked : (didPop) async{
+        ChangeRoutes.openHomeScreen(context, await getUser());      },
+      child: Scaffold(
+        appBar: appBarWidget(context, 'Notification', () async => ChangeRoutes.openHomeScreen(context, await getUser())),
+        body: BlocConsumer<NotificationBloc, NotificationState>(
+          listener: (context, state) {
+            if (state is NotificationSuccess) {
+              notificationLoading = false;
+              notificationList = state.notification!;
+              setState(() {});
+            }
+            if (state is NotificationError) {
+              notificationLoading = false;
+              ChangeRoutes.unAuthorizedError(context, state.error);
+              errorMessage = state.error;
+              setState(() {});
+            }
+          },
+          builder: (context, state) {
+            return errorMessage != null
+                ? Center(
+                    child: BodyText(
+                      text: errorMessage!,
+                      fontSize: 14.h,
+                      color: primaryColor,
+                    ),
+                  )
+                : notificationLoading
+                    ? const Center(
+                        child: CustomProgressBar(),
+                      )
+                    :  ListView.builder(
+              shrinkWrap: true,
+              padding: const EdgeInsets.all(0),
+              itemCount: notificationList.length,
+              itemBuilder: (context, index) {
+                NotificationData data = notificationList[index];
+                return Container(
+                  margin: EdgeInsets.symmetric(vertical: 4.h, horizontal: 6.h),
+                  padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 8.h),
+                  decoration: defaultDecoration,
+                  child:  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          BodyText(
+                            text: data.notificationTitle ?? '',
+                            align: TextAlign.start,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          BodyText(
+                            text: data.notificationDate ?? '${data.notificationTime}' ?? '',
+                            align: TextAlign.start,
+                            fontSize: 16,
+                          ),
+                        ],
+                      ),
+                      BodyText(
+                        text: "${data.notificationMessage}" ?? '',
+                        align: TextAlign.start,
+                        fontSize: 16,
+                      ),
+                    ],
+                  ));
+              },
+            );
+
+/*                  ListTile(
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        BodyText(
+                          text: data.notificationTitle ?? '',
+                          align: TextAlign.start,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        BodyText(
+                          text: data.notificationDate ?? '${data.notificationTime}' ?? '',
+                          align: TextAlign.start,
+                          fontSize: 16,
+                        ),
+                      ],
+                    ),
+                    subtitle: Flexible(
+                      child: BodyText(
+                        text: data.notificationMessage ?? '',
+                        align: TextAlign.start,
+                        fontSize: 16,
+                      ),
+                    ),
                   ),
-                )
-              : notificationLoading
-                  ? const Center(
-                      child: CustomProgressBar(),
-                    )
-                  : Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 0, vertical: 0),
-                      child: ListView.builder(
-                          padding: const EdgeInsets.all(0),
-                          itemCount: notificationList.length,
-                          itemBuilder: (context, index) {
-                            NotificationData data = notificationList[index];
-                            return Container(
-                              margin: EdgeInsets.symmetric(vertical: 4.h,horizontal: 6.h),
-                              decoration: defaultDecoration,
-                              child: ListTile(
-                                title: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    BodyText(
-                                      text: data.notificationTitle??'',
-                                      align: TextAlign.start,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                     BodyText(
-                                      text: data.notificationDate?? '${data.notificationTime}' ?? ''??'',
-                                      align: TextAlign.start,
-                                      fontSize: 16,
-                                    ),
-                                  ],
-                                ),
-                                subtitle:  Flexible(
-                                    child: BodyText(
-                                  text: data.notificationMessage??'',
-                                  align: TextAlign.start,
-                                  fontSize: 16,
-                                )),
+                );
+              },
+            );*/
+
+            /*ListView.builder(
+                      shrinkWrap: true,
+                        padding: const EdgeInsets.all(0),
+                        itemCount: notificationList.length,
+                        itemBuilder: (context, index) {
+                          NotificationData data = notificationList[index];
+                          return Container(
+                            margin: EdgeInsets.symmetric(vertical: 4.h,horizontal: 6.h),
+                            decoration: defaultDecoration,
+                            child: ListTile(
+                              title: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  BodyText(
+                                    text: data.notificationTitle??'',
+                                    align: TextAlign.start,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                   BodyText(
+                                    text: data.notificationDate?? '${data.notificationTime}' ?? ''??'',
+                                    align: TextAlign.start,
+                                    fontSize: 16,
+                                  ),
+                                ],
                               ),
-                            );
-                          }),
-                    );
-        },
+                              subtitle:   BodyText(
+                                text: data.notificationMessage??'',
+                                align: TextAlign.start,
+                                fontSize: 16,
+                                                            ),
+                            ),
+                          );
+                        });*/
+          },
+        ),
       ),
     );
   }

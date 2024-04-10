@@ -21,7 +21,6 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     on<FetchPaymentListDataEvent>((event, emit) => paymentListData(event));
     on<DistributorOrderPaymentEvent>((event, emit) => makeOrderPaymentRequest(event));
   }
-
   fetchFirm(FetchFirmCustomerEvent event) async {
     Map<String, String> header =  {
       "Authorization": "Bearer ${await getStringPref(userTokenPrefecences)}",

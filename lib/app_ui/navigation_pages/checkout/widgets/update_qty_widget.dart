@@ -75,15 +75,14 @@ class _UpdateQuantityWidgetState extends State<UpdateQuantityWidget> {
     if(from == 'add'){
       qty = '${item.quantity!+1}';
       if (widget.product!.prodInventoryType == 'yes') {
-        if (int.parse(widget.product!.prodInventory!) >= int.parse(qty)) {
+        if (int.parse(widget.product!.availStock!) >= int.parse(qty)) {
           if (int.parse(widget.distributorMinQty!) <= int.parse(qty)) {
             context.read<CheckOutBloc>().add(CheckOutUpdateQuantityEvent(productQty: qty, cartItemId: item.id.toString()));
           } else {
-            snackBar(context,
-                'you can create min ${widget.distributorMinQty} quantity');
+            snackBar(context, 'you can create min ${widget.distributorMinQty} quantity');
           }
         } else {
-          snackBar(context, 'Enter quantity not available.');
+          snackBar(context, '${widget.product!.prodName} ${widget.product!.availStock} quantity available in stock.');
         }
       } else {
         if (int.parse(widget.distributorMinQty!) <= int.parse(qty)) {

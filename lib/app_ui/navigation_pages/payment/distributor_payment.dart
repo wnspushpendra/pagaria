@@ -81,7 +81,7 @@ class _DistributorPaymentScreenState extends State<DistributorPaymentScreen> {
            paymentLoading = false;
             errorMessage = state.error;
             customerPaymentDetailLoading = false;
-            snackBar(context, state.error!);
+           // snackBar(context, state.error!);
             setState(() {});
           }
         },

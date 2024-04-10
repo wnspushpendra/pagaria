@@ -52,23 +52,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       /// ************* update user api submit   **************
       updateProfileDetails(event);
     }
-/*    bool fullName = false, mobileNumber = false, email = false, gender = false, address = false, city = false, state = false, pinCode = false, profileImage = false;
-
-    fullName = event.fullName.isEmpty;
-    mobileNumber = event.mobileNumber.isEmpty;
-    email = event.email.isEmpty;
-    gender = event.gender.isEmpty;
-    address = event.gender.isEmpty;
-    city = event.gender.isEmpty;
-    state = event.gender.isEmpty;
-    pinCode = event.gender.isEmpty;
-    profileImage = event.path.isEmpty;
-
-    if (!fullName && !mobileNumber && !email && !gender && !address && !city && !state && !pinCode) {
-      updateProfileApi(event);
-    } else {
-      emit(ProfileError(fullName: fullName, email: email, mobileNumber: mobileNumber, address: address, city: city, state: state, pinCode: pinCode, gender: gender));
-    }*/
   }
 
   /// ************* update user api   **************
@@ -88,36 +71,34 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     map['email'] = event.email;
     map['date_of_birth'] = event.dob;
     map['gender'] = event.gender;
-    map['address'] = event.address;
-    map['city'] = event.city;
-    map['state'] = event.state;
-    map['zip_code'] = event.pinCode;
+    map['house_number'] = event.houseNo== 'NA' ? '': event.houseNo;
+    map['town'] = event.town== 'NA' ? '': event.town;
+    map['address'] = event.address== 'NA' ? '': event.address;
+    map['city'] = event.city== 'NA' ? '': event.city;
+    map['state'] = event.state == 'NA' ? '': event.state;
+    map['zip_code'] = event.pinCode== 'NA' ? '': event.pinCode;
+    map['landmark'] = event.landmark== 'NA' ? '': event.landmark;
     if (user.roleId == '5') {
       map['firm_name'] = event.firmName;
-      map['aadhar_no'] = event.aadhaarNumber;
-      map['pan_card_no'] = event.panNumber;
-      map['gst_no'] = event.gstNumber;
+      map['aadhar_no'] = event.aadhaarNumber == 'NA' ? '' : event.aadhaarNumber!.replaceAll(' ', '') ;
+      map['pan_card_no'] = event.panNumber== 'NA' ? '': event.panNumber;
+      map['gst_no'] = event.gstNumber== 'NA' ? '': event.gstNumber;
     }
-
-    print(map);
 
     emit(ProfileLoading());
 
     try {
       // request for api
-      UserResponse response = await editMarketExecutiveStatus(
-          event.isNewImage, event.path, header, map, user.roleId.toString());
+      UserResponse response = await editMarketExecutiveStatus(event.isNewImage, event.path, header, map, user.roleId.toString());
       // checking response status and emitting state.
       if (response.status == true) {
         saveUserPref(response.profileData!.user!, userProfileDataPrefecences);
-        User user = await getUserPref(userProfileDataPrefecences);
-        print(user);
         emit(ProfileSuccess(message: response.message.toString()));
       } else {
         emit(ProfileError(errorMessage: response.message.toString()));
       }
     }catch(e){
-      emit(ProfileError(errorMessage: unAuthorization));
+      emit(ProfileError(errorMessage: ''));
     }
   }
 
@@ -137,14 +118,13 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         profileImage = false,aadhaarNumber = false,panCardNumber = false,gstNumber = false,firmName = false;
     fullName = event.fullName.isEmpty;
     mobileNumber = event.mobileNumber.isEmpty;
-    email = event.email.isEmpty;
     gender = event.gender.isEmpty;
-    address = event.gender.isEmpty;
-    city = event.gender.isEmpty;
-    state = event.gender.isEmpty;
+    firmName = event.firmName != null && event.firmName!.isEmpty;
+    // address = event.address.isEmpty;
+   // city = event.city.isEmpty;
+   // state = event.state.isEmpty;
     pinCode = event.gender.isEmpty;
     profileImage = event.path.isEmpty;
-    firmName = event.firmName != null && event.firmName!.isEmpty;
     aadhaarNumber = event.aadhaarNumber != null && event.aadhaarNumber!.isEmpty && event.aadhaarNumber!.length != 12;
     panCardNumber = event.panNumber != null && event.panNumber!.isEmpty && event.panNumber!.length != 10;
     gstNumber = event.gstNumber != null && event.gstNumber!.isEmpty && event.gstNumber!.length != 15;
@@ -152,6 +132,23 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     User user = await getUser();
     if (user.roleId == '4') {
       if (!fullName && !mobileNumber && !email && !gender && !address && !city && !state && !pinCode && !profileImage) {
+        if(event.mobileNumber.isNotEmpty &&  event.mobileNumber.length != 10){
+          emit(ProfileError( aadhaarNumber: true));
+          return false;
+        }
+        if(event.panNumber != null &&  event.panNumber!.length != 10){
+          emit(ProfileError( panNumber: true));
+          return false;
+        }
+        if(event.gstNumber != null &&  event.gstNumber!.length != 15){
+          emit(ProfileError( gst: true));
+          return false;
+        }
+        if(event.pinCode.isNotEmpty && event.pinCode.length != 6){
+          emit(ProfileError( pinCode: true));
+          return false;
+        }
+
         return true;
       } else {
         emit(ProfileError(fullName: fullName, email: email, mobileNumber: mobileNumber, address: address, city: city, state: state, pinCode: pinCode, gender: gender));

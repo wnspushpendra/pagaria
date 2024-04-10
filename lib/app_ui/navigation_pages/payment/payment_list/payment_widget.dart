@@ -16,7 +16,8 @@ class PaymentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return  paymentDetail.amount == null ? const SizedBox.shrink() :
+      Container(
       padding:  EdgeInsets.all(12.h),
       margin:  EdgeInsets.fromLTRB(2.h, 5.h, 2.h, 5.h),
       decoration: defaultDecoration,
@@ -54,17 +55,18 @@ class PaymentWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const BodyText(text: 'Payment Type',),
-                      BodyText(text: paymentDetail.paymentType??'',color: primaryColor,),
+                      BodyText(text: paymentDetail.paymentType??'-',color: primaryColor,),
                     ],
                   ),
                 ),
+
                 Expanded(
                   flex: 1,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const BodyText(text: 'Paid Amount',),
-                      BodyText(text: paymentDetail.amount.toString()??'',color: primaryColor,),
+                       const BodyText(text: 'Paid Amount',),
+                      BodyText(text: '$rupeesSymbol${paymentDetail.amount != null ?paymentDetail.amount.toString() : "0"}',color: primaryColor,),
                     ],
                   ),
                 ),

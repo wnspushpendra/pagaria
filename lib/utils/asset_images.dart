@@ -24,4 +24,5 @@ const changePasswordImage = 'assets/change_password.svg';
 const forgotPasswordImage = 'assets/forgot_password.svg';
 const defaultImage = 'assets/default_image.png';
 const myActivityIcon = 'assets/my_activity.png';
+const profileDefaultImage = 'assets/profile_icon.png';
 

@@ -42,6 +42,9 @@ class Profile {
   String? country;
   String? city;
   String? state;
+  String? houseNo;
+  String? town;
+  String? landmark;
   String? address;
   String? zipCode;
   String? emailVerifiedAt;
@@ -70,6 +73,9 @@ class Profile {
         this.country,
         this.city,
         this.state,
+        this.houseNo,
+        this.town,
+        this.landmark,
         this.address,
         this.zipCode,
         this.emailVerifiedAt,
@@ -98,6 +104,9 @@ class Profile {
     country = json['country'];
     city = json['city'];
     state = json['state'];
+    houseNo = json['house_number'];
+     town = json['town'];
+    landmark = json['landmark'];
     address = json['address'];
     zipCode = json['zip_code'];
     emailVerifiedAt = json['email_verified_at'];
@@ -128,6 +137,9 @@ class Profile {
     data['country'] = country;
     data['city'] = city;
     data['state'] = state;
+    data['house_number'] = houseNo;
+    data['town'] = town;
+    data['landmark'] = landmark;
     data['address'] = address;
     data['zip_code'] = zipCode;
     data['email_verified_at'] = emailVerifiedAt;

@@ -9,6 +9,7 @@ import 'package:webnsoft_solution/app_common_widges/space.dart';
 import 'package:webnsoft_solution/modal/argument_modal/LedgetArgument.dart';
 import 'package:webnsoft_solution/modal/customer_detail.dart';
 import 'package:webnsoft_solution/modal/distributor_list.dart';
+import 'package:webnsoft_solution/modal/login/login_response.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
@@ -17,7 +18,8 @@ import 'package:webnsoft_solution/utils/change_routes.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
 class CustomerListItem extends StatelessWidget {
-  final Customer customerDetails;
+ // final Customer customerDetails;
+  final User customerDetails;
   final String name;
   final String contactNumber;
   final String emailAddress;
@@ -62,7 +64,7 @@ class CustomerListItem extends StatelessWidget {
               ),
               Row(
                 children: [
-                  AssetButton(image: createOrder, onPressed: ()async =>ChangeRoutes.openProductScreen(context, await getUser(), customerDetails.id.toString()) /*Navigator.pushReplacementNamed(context, productRoute,arguments: customerDetails.id.toString())*/),
+                  AssetButton(image: createOrder, onPressed: ()async =>ChangeRoutes.openProductScreen(context, await getUser(), customerDetails/*customerDetails.id.toString()*/) ),
                   //AssetButton(image: createOrder, onPressed: () => Navigator.pushReplacementNamed(context, productRoute,arguments: 'create')),
                   AssetButton(image: visibility, onPressed: () => Navigator.pushReplacementNamed(context, customerDetailRoute,arguments: CustomerDetailModal(customerDetails: customerDetails),)),
                   AssetButton(image: paymentIcon, onPressed: () => Navigator.pushReplacementNamed(context, customerDetailRoute,arguments: CustomerDetailModal(index: 2,customerDetails: customerDetails))),
@@ -98,10 +100,11 @@ class CustomerListItem extends StatelessWidget {
             ],
           ),
            const Space(height:6 ,),
+
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Flexible(
+              customerDetails.address != null ? Flexible(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -109,8 +112,9 @@ class CustomerListItem extends StatelessWidget {
                     NormalText(text: "${customerDetails.address},${customerDetails.city},${customerDetails.state},${customerDetails.zipCode}",color: bodyBlack,),
                   ],
                 ),
-              ),
+              ): const SizedBox.shrink(),
               const Space(width: 4,),
+
               Container(
                 width: 140,
                 padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -126,7 +130,7 @@ class CustomerListItem extends StatelessWidget {
                     onClick: () => Navigator.pushReplacementNamed(context, ledgerRoute,arguments: LedgerArgument(distributorId:  customerDetails.id.toString(),showAppbar: true))),
               )
             ],
-          ),
+          ) ,
         ],
       ),
     );

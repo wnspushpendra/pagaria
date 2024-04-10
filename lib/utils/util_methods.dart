@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:connectivity/connectivity.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:http/http.dart' as http;
@@ -8,6 +9,7 @@ import 'package:location/location.dart';
 import 'package:open_file/open_file.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webnsoft_solution/app_common_widges/app_body_text.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/pdf/pdf_products.dart';
 import 'package:webnsoft_solution/modal/login/login_response.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
@@ -30,7 +32,7 @@ Future<void> backUserHome(BuildContext context) async{
 // back user home screen
 Future<void> backToLogin(BuildContext context) async{
   clearPref();
-  Navigator.pushReplacementNamed(context,  homeRoute );
+  Navigator.pushReplacementNamed(context,  homeRoute);
 }
 
 
@@ -38,9 +40,23 @@ Future<void> backToLogin(BuildContext context) async{
 Future<bool> checkConnection() async {
   var connectivityResult = await Connectivity().checkConnectivity();
   bool connection = connectivityResult != ConnectivityResult.none;
-  print(connection);
   return connectivityResult != ConnectivityResult.none;
 }
+
+ downLoadInvoice(BuildContext context,String pdfUrl,String pdfName) async{
+  snackBar(context, 'file download started');
+  String response = await download(Dio(),pdfUrl,pdfName);
+  if(response == 'failed'){
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      snackBar(context, 'File download failed');
+    });
+  }else{
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      snackBarButton(context, 'Invoice Download', response);
+    });
+  }
+}
+
 
 
 Future<Placemark?> getAddressFromLatLng(LocationData locationData) async{
@@ -58,7 +74,6 @@ Future<Placemark?> getAddressFromLatLng(LocationData locationData) async{
   }
   return null;
 }
-
 
 /// * get user data shared preference
 Future<User> getUser() async{

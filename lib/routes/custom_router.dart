@@ -7,7 +7,6 @@ import 'package:webnsoft_solution/app_ui/navigation_pages/customer/add_customer/
 import 'package:webnsoft_solution/app_ui/navigation_pages/customer/customer_payment/customer_payment.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/customer_by_order/customer_by_order.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/ledger/ledger.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/ledger/ledger_detail.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/ui/distributor/home_distributor.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/ui/home_marketing_executive.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/my_activity/my_activity.dart';
@@ -19,7 +18,6 @@ import 'package:webnsoft_solution/app_ui/navigation_pages/payment/distributor_pa
 import 'package:webnsoft_solution/app_ui/navigation_pages/payment/distributor_payment_by_order.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/payment/payment_detail/payment_detail.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/payment/payment_list/paymens.dart';
-import 'package:webnsoft_solution/app_ui/navigation_pages/payment/payment_list/payment_list.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/checkout/checkout_sceen.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_detail/product_detail.dart';
@@ -29,10 +27,7 @@ import 'package:webnsoft_solution/modal/argument_modal/DistributorPaymentArgumen
 import 'package:webnsoft_solution/modal/argument_modal/LedgetArgument.dart';
 import 'package:webnsoft_solution/modal/argument_modal/ProductArgument.dart';
 import 'package:webnsoft_solution/modal/customer_detail.dart';
-import 'package:webnsoft_solution/modal/distributor_list.dart';
-import 'package:webnsoft_solution/modal/argument_modal/HomeArgument.dart';
 import 'package:webnsoft_solution/modal/login/login_response.dart';
-import 'package:webnsoft_solution/modal/order/order_list_modal.dart';
 import 'package:webnsoft_solution/modal/order/user_role_order_list_modal.dart';
 import 'package:webnsoft_solution/modal/payment/payment_list_modal.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
@@ -65,12 +60,12 @@ class CustomRouter {
       case productRoute:
         return MaterialPageRoute(
             builder: (_) => ProductScreen(
-                  distributorId: arguments as String?,
+              distributor: arguments as User?,
                 ));
       case checkOutRoute:
         return MaterialPageRoute(
             builder: (_) => CheckOutScreen(
-                  distributorId: arguments as String,
+              distributor: arguments as User,
                 ));
       case productDetailRoute:
         return MaterialPageRoute(
@@ -104,16 +99,16 @@ class CustomRouter {
             builder: (_) => const ExecutivePaymentScreen());
       case customerPaymentRoute:
         return MaterialPageRoute(
-            builder: (_) => CustomerPaymentScreen(customer: arguments as Customer,));
+            builder: (_) => CustomerPaymentScreen(customer: arguments as User,));
       case ledgerRoute:
         return MaterialPageRoute(
             builder: (_) =>
                 LedgerScreen(argument: arguments as LedgerArgument));
-      case ledgerDetailRoute:
+
+      // distributor routes
+      case homeDistributorRoute:
         return MaterialPageRoute(
-            builder: (_) => LedgerDetailScreen(
-                  order: arguments as OrderList,
-                ));
+            builder: (_) => HomeDistributorScreen(user: arguments as User,));
       case distributorPaymentRoute:
         return MaterialPageRoute(
             builder: (_) => DistributorPaymentScreen(customerId: arguments as String,));
@@ -121,13 +116,6 @@ class CustomRouter {
         return MaterialPageRoute(
             builder: (_) => DistributorOrderPaymentScreen(argument: arguments as DistributorPaymentArgument,));
 
-      // distributor routes
-
-      case homeDistributorRoute:
-        return MaterialPageRoute(
-            builder: (_) => HomeDistributorScreen(
-                  user: arguments as User,
-                ));
 
       default:
         return MaterialPageRoute(builder: (_) => const LoginScreen());

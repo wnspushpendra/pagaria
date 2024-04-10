@@ -7,6 +7,19 @@ import 'package:webnsoft_solution/modal/checkin_checkout/check_in_status.dart';
 import 'package:webnsoft_solution/modal/checkin_checkout/checkin_checkout.dart';
 import 'package:webnsoft_solution/modal/distributor/distributo_payment_modal.dart';
 import 'package:webnsoft_solution/modal/distributor_list.dart';
+import 'package:webnsoft_solution/modal/login/login_response.dart';
+
+
+
+/// * api for update user fcm token
+Future<UserResponse> userTokenAndDevice(Map<String, String> header, Map<String, dynamic> map) async {
+  var response = await http.post(Uri.parse(baseUrl + updateDeviceTokenApi),
+      headers: header,
+      body: map);
+  UserResponse apiResponse = UserResponse.fromJson(jsonDecode(response.body));
+  return apiResponse;
+}
+
 
 
 /// *  get check in status api for login user
@@ -14,7 +27,6 @@ Future<CheckInDetails> checkInDetailsApi(Map<String, String> header, Map<String,
   var response = await http.post(Uri.parse(baseUrl + checkInStatusApi),
       headers: header,
       body: body);
-  print(response.body);
   CheckInDetails apiResponse = CheckInDetails.fromJson(jsonDecode(response.body));
   return apiResponse;
 }

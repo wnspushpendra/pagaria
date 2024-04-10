@@ -48,6 +48,7 @@ class _ExecutivePaymentScreenState extends State<ExecutivePaymentScreen> {
   int remainingAmount = 0;
   String customerId = '';
   bool? customerSelectError,paymentError, paymentTypeError,paymentLoading,fetchPaymentLoading;
+  String? errorMessage;
 
 
 
@@ -57,7 +58,6 @@ class _ExecutivePaymentScreenState extends State<ExecutivePaymentScreen> {
     context.read<PaymentBloc>().add(FetchFirmCustomerEvent());
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -107,13 +107,22 @@ class _ExecutivePaymentScreenState extends State<ExecutivePaymentScreen> {
               firmCustomerLoading = false;
               paymentLoading = false;
               fetchPaymentLoading = false;
+              if(state.error != null){
+                errorMessage = state.error;
+              }
               paymentErrorState(state);
-              snackBar(context, state.error!);
+            //  snackBar(context, state.error!);
               setState(() {});
             }
           },
           builder: (context, state) {
-            return SingleChildScrollView(
+            return errorMessage != null ? Container(
+              height: MediaQuery.of(context).size.height,
+              alignment: AlignmentDirectional.center,
+              child: BodyText(text: errorMessage!,color: primaryColor,),
+            ):
+
+            SingleChildScrollView(
               child: Container(
                 padding: const EdgeInsets.all(12),
                 child:firmCustomerLoading ?
@@ -127,10 +136,12 @@ class _ExecutivePaymentScreenState extends State<ExecutivePaymentScreen> {
                         hint: firmList.isEmpty ? 'No Firm' : 'Select Firm ',
                         firmList: firmList,
                         selectedFirmValue: firmValue,
-                        onChangeFirm: (value) => setState(() {
+                        onChangeFirm: (value){
                           firmValue = value;
                           customerList = value.allCustomer ?? [];
-                        }), ),
+                          customerValue = null;
+                          setState(() {});
+                        }, ),
                     customerList != null ?  CustomDropDown(
                         type: 'customer',
                         hint: 'Select Customer ',

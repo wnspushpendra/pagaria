@@ -12,3 +12,6 @@ Future<UserResponse> userLoginStatus(Map<String, dynamic> map) async {
   UserResponse apiResponse = UserResponse.fromJson(jsonDecode(response.body));
   return apiResponse;
 }
+
+
+

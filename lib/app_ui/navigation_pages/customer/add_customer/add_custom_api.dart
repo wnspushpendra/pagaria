@@ -15,8 +15,11 @@ Future<AddDistributorResponse> addDistributorStatus(String imagePath, Map<String
   var request = http.MultipartRequest('POST', Uri.parse(baseUrl+addDistributorApi));
   request.headers.addAll(header);
   // Add the image file to the request
-var image = await http.MultipartFile.fromPath('profile_image', imagePath);
-  request.files.add(image);
+
+  if(imagePath.isNotEmpty) {
+    var image = await http.MultipartFile.fromPath('profile_image', imagePath);
+    request.files.add(image);
+  }
   body.forEach((key, value) {
     request.fields[key] = value.toString();
   });

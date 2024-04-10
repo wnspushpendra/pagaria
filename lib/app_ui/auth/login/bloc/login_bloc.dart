@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:webnsoft_solution/app_ui/auth/login/login_api.dart';
 import 'package:webnsoft_solution/app_ui/auth/login/bloc/login_event.dart';
@@ -35,13 +37,21 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
     // emitting login states
     if(response.status == true ){
+      bool isExecutiveOrDistributor = response.profileData!.user!.roleId == '4' || response.profileData!.user!.roleId == '5';
+    if(isExecutiveOrDistributor){
       /// * saving user required information and login status
       setStringPref(userTokenPrefecences, response.profileData!.token!);
       saveUserPref(response.profileData!.user!,userProfileDataPrefecences);
       setBoolPref(userLoginPrefecences,true);
+
       emit(LoginSuccess(user : response.profileData!.user!));
+    }else{
+      emit(LoginError(message: 'No user found.'));
+    }
     }else{
       emit(LoginError(message: response.message));
     }
   }
+
+
 }

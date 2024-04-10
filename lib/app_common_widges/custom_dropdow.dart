@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:webnsoft_solution/app_common_widges/app_body_text.dart';
 import 'package:webnsoft_solution/modal/distributor_list.dart';
 import 'package:webnsoft_solution/modal/firm_customer_modal.dart';
+import 'package:webnsoft_solution/modal/login/login_response.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
 
 
@@ -13,15 +14,18 @@ class CustomDropDown extends StatefulWidget {
   final List<String>? itemList;
   final List<Firm>? firmList;
   final List<AllCustomer>? customerList;
-  final List<Customer>? distributorList;
+  final List<User>? distributorList;
+ // final List<Customer>? distributorList;
   final String? selectedValue;
   final Firm? selectedFirmValue;
   final AllCustomer? selectedCustomerValue;
-  final Customer? selectedDistributorValue;
+  final User? selectedDistributorValue;
+ // final Customer? selectedDistributorValue;
   final ValueChanged<String>? onChangeValue;
   final ValueChanged<Firm>? onChangeFirm;
   final ValueChanged<AllCustomer>? onChangeCustomer;
-  final ValueChanged<Customer>? onChangeDisrtirbutor;
+  final ValueChanged<User>? onChangeDisrtirbutor;
+ // final ValueChanged<Customer>? onChangeDisrtirbutor;
   final bool? fromLanguage;
   final bool? validate;
   final String? errorMessage;
@@ -120,7 +124,7 @@ class _CustomDropDownState extends State<CustomDropDown> {
             }).toList(),
           )
           : widget.type == 'distributor' ?
-          DropdownButton<Customer>(
+          DropdownButton<User>(
             dropdownColor: bodyWhite,
             borderRadius: BorderRadius.circular(8),
             isExpanded: true,
@@ -129,13 +133,13 @@ class _CustomDropDownState extends State<CustomDropDown> {
               padding: const EdgeInsets.symmetric(horizontal: 0),
               child: BodyText(text: widget.hint, color: bodyLightBlack,),
             ),
-            onChanged: (Customer? newValue) {
+            onChanged: (User? newValue) {
               setState(() {
                 widget.onChangeDisrtirbutor!(newValue!);
               });
             },
-            items: widget.distributorList!.map<DropdownMenuItem<Customer>>((Customer value) {
-              return DropdownMenuItem<Customer>(
+            items: widget.distributorList!.map<DropdownMenuItem<User>>((User value) {
+              return DropdownMenuItem<User>(
                 alignment: AlignmentDirectional.centerStart,
                 value: value,
                 child: Padding(

@@ -58,12 +58,11 @@ class _OrderScreenState extends State<OrderScreen> {
 
   @override
   void initState() {
-    context.read<OrderBloc>().add(OrderListFetchEvent(distributorId : widget.distributorId.toString(),fromMenu: widget.fromMenu));
     super.initState();
+    context.read<OrderBloc>().add(OrderListFetchEvent(distributorId : widget.distributorId.toString(),fromMenu: widget.fromMenu));
   }
   @override
   Widget build(BuildContext context) {
-
     return WillPopScope(
       onWillPop: () async {
         ChangeRoutes.openHomeScreen(context, await getUser());
@@ -87,14 +86,14 @@ class _OrderScreenState extends State<OrderScreen> {
               loadOrder = false;
             ChangeRoutes.unAuthorizedError(context, state.error);
               errorMessage = state.error;
-              setState(() => snackBar(context, state.error ) );
+              setState(() {} );
             }
           },
           builder: (context, state) {
             return loadOrder ? const Center(
               child: CustomProgressBar(),
             ) : errorMessage != null? Center(
-              child: BodyText(text: errorMessage!,),
+              child: BodyText(text: errorMessage!,color: primaryColor,),
             ) :
             Container(
               padding: EdgeInsets.all(12.h),
@@ -104,8 +103,7 @@ class _OrderScreenState extends State<OrderScreen> {
                     Order order = orderList[index];
                     String remainingAmount = order.remainingAmount ?? order.totalAmount.toString();
                   var  productList = (json.decode(order.allProduct!) as List).map((data) => OrderProduct.fromJson(data)).toList();
-
-                    return Container(
+                  return Container(
                       padding: EdgeInsets.all(12.h),
                       margin: EdgeInsets.fromLTRB(2.h, 5.h, 2.h, 5.h),
                       decoration: defaultDecoration,

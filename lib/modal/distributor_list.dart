@@ -1,7 +1,9 @@
+import 'package:webnsoft_solution/modal/login/login_response.dart';
+
 class DistributorListResponse {
   bool? status;
   String? message;
-  List<Customer>? customerList;
+  List<User>? customerList;
 
   DistributorListResponse({this.status, this.message, this.customerList});
 
@@ -9,9 +11,9 @@ class DistributorListResponse {
     status = json['status'];
     message = json['message'];
     if (json['record'] != null) {
-      customerList = <Customer>[];
+      customerList = <User>[];
       json['record'].forEach((v) {
-        customerList!.add(Customer.fromJson(v));
+        customerList!.add(User.fromJson(v));
       });
     }
   }
@@ -27,7 +29,7 @@ class DistributorListResponse {
   }
 }
 
-class Customer {
+/*class Customer {
   int? id;
   String? fullName;
   String? roleId;
@@ -158,7 +160,7 @@ class Customer {
     }
     return data;
   }
-}
+}*/
 
 class CreatedByUser {
   int? id;

@@ -4,11 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:webnsoft_solution/app_common_widges/aadhar_card_number_formatter.dart';
 import 'package:webnsoft_solution/app_common_widges/city_state_dropdown.dart';
 import 'package:webnsoft_solution/app_common_widges/custom_appbar.dart';
 import 'package:webnsoft_solution/app_common_widges/custom_button.dart';
 import 'package:webnsoft_solution/app_common_widges/custom_progressbar.dart';
 import 'package:webnsoft_solution/app_common_widges/custom_textfield.dart';
+import 'package:webnsoft_solution/app_common_widges/error_widget.dart';
+import 'package:webnsoft_solution/app_common_widges/gst_number_text_field.dart';
+import 'package:webnsoft_solution/app_common_widges/pancard_text_field.dart';
 import 'package:webnsoft_solution/app_common_widges/space.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/profile/gender_widget.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/profile/bloc/profile_bloc.dart';
@@ -25,9 +29,7 @@ import 'package:webnsoft_solution/utils/util_methods.dart';
 
 class ProfileScreen extends StatefulWidget {
   final User user;
-
   const ProfileScreen({required this.user, super.key});
-
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
@@ -43,11 +45,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController panCardController = TextEditingController();
   TextEditingController gstNumberController = TextEditingController();
   TextEditingController genderController = TextEditingController();
+  TextEditingController houseNoController = TextEditingController();
+  TextEditingController townController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController cityController = TextEditingController();
   TextEditingController streetController = TextEditingController();
   TextEditingController stateController = TextEditingController();
   TextEditingController pinCodeController = TextEditingController();
+  TextEditingController landmarkController = TextEditingController();
 
   bool? isFirstName,
       isFirmName,
@@ -59,10 +64,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
       isValidPanCard,
       isValidGstNumber,
       isGender,
+      isHouseNo,
+      isTown,
       isStreet,
       isCity,
       isState,
-      isPinCode;
+      isPinCode,
+      isLandmark;
   bool editProfile = false, isLoading = false, isNewImage = false;
   String genderValue = '';
   late File file;
@@ -91,6 +99,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     aadharNumberController.text = aadharNumber;
     panCardController.text = user.panCardNo ?? 'NA';
     gstNumberController.text = user.gstNo ?? 'NA';
+    houseNoController.text = user.houseNo ?? 'NA';
+    townController.text = user.houseNo ?? 'NA';
+    landmarkController.text = user.houseNo ?? 'NA';
+    addressController.text = user.address ?? 'NA';
     addressController.text = user.address ?? 'NA';
     cityController.text = user.city ?? 'NA';
     stateController.text = user.state ?? 'NA';
@@ -103,8 +115,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: appBarWidget(context, title, () async {
+    return PopScope(
+      canPop: false,
+      onPopInvoked : (didPop){
         if (editProfile) {
           setState(() {
             editProfile = false;
@@ -112,94 +125,107 @@ class _ProfileScreenState extends State<ProfileScreen> {
           });
         } else {
           backUserHome(context);
-        }
-      }),
-      body: /*profileLoading ? const Center(
-        child: CustomProgressBar(),
-      ) :*/
-          BlocConsumer<ProfileBloc, ProfileState>(
-        listener: (context, profileState) {
-          print(profileState);
-
-          /// * profile fetch  loading state
-          if (profileState is ProfileFetchLoading) {
-            setState(() => profileLoading = true);
-          }
-
-          /// * profile fetch data  state
-          if (profileState is ProfileFetchSuccess) {
-            profileLoading = false;
-            user = profileState.user;
-            setProfileData(user);
-            setState(() {});
-          }
-
-          /// * profile loading state
-          if (profileState is ProfileLoading) {
-            setState(() => isLoading = true);
-          }
-
-          /// * profile success state
-          if (profileState is ProfileSuccess) {
-            cityController.text = selectedCity ?? 'NA';
-            stateController.text = selectedState ?? 'NA';
+        }      },
+      child: Scaffold(
+        appBar: appBarWidget(context, title, () async {
+          if (editProfile) {
             setState(() {
-              isLoading = false;
               editProfile = false;
+              title = 'My Profile';
             });
-            snackBar(context, profileState.message);
+          } else {
+            backUserHome(context);
           }
-          if (profileState is ProfileError) {
-            ChangeRoutes.unAuthorizedError(context, profileState.errorMessage);
-            setState(() => updateProfileErrorState(profileState));
-          }
-        },
-        builder: (context, profileState) {
-          /// * show profile ui
-          return profileLoading
-              ? const Center(
-                  child: CustomProgressBar(),
-                )
-              : SingleChildScrollView(
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        /// * select image from gallery oro capture image
-                        ProfileImageWidget(
-                          showIcon: editProfile ? true : false,
-                          onFileChange: (XFile value) {
-                            setState(() {
-                              isNewImage = true;
-                              networkFile = '';
-                              file = File(value.path);
-                              path = value.path;
-                            });
-                          },
-                          networkUrl: user.profileImageUrl != null
-                              ? user.profileImageUrl!
-                              : '',
-                        ),
+        }),
+        body: /*profileLoading ? const Center(
+          child: CustomProgressBar(),
+        ) :*/
+            BlocConsumer<ProfileBloc, ProfileState>(
+          listener: (context, profileState) {
+            print(profileState);
 
-                        const Space(
-                          height: 18,
-                        ),
+            /// * profile fetch  loading state
+            if (profileState is ProfileFetchLoading) {
+              setState(() => profileLoading = true);
+            }
 
-                        mobileView(),
-                        CustomButton(
-                            buttonText:
-                                editProfile == false ? 'Edit' : 'Update',
-                            showLoading:
-                                editProfile == true ? isLoading : false,
+            /// * profile fetch data  state
+            if (profileState is ProfileFetchSuccess) {
+              profileLoading = false;
+              user = profileState.user;
+              setProfileData(user);
+              setState(() {});
+            }
 
-                            /// * perform action should be update or in update state
-                            onClick: () => profileButtonClick())
-                      ],
+            /// * profile loading state
+            if (profileState is ProfileLoading) {
+              setState(() => isLoading = true);
+            }
+
+            /// * profile success state
+            if (profileState is ProfileSuccess) {
+              cityController.text = selectedCity ?? 'NA';
+              stateController.text = selectedState ?? 'NA';
+              title = 'My Profile';
+              setState(() {
+                isLoading = false;
+                editProfile = false;
+              });
+              snackBar(context, profileState.message);
+            }
+            if (profileState is ProfileError) {
+              ChangeRoutes.unAuthorizedError(context, profileState.errorMessage);
+              updateProfileErrorState(profileState);
+              setState((){});
+            }
+          },
+          builder: (context, profileState) {
+            /// * show profile ui
+            return profileLoading
+                ? const Center(
+                    child: CustomProgressBar(),
+                  )
+                : SingleChildScrollView(
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          /// * select image from gallery oro capture image
+                          ProfileImageWidget(
+                            showIcon: editProfile ? true : false,
+                            onFileChange: (XFile value) {
+                              setState(() {
+                                isNewImage = true;
+                                networkFile = '';
+                                file = File(value.path);
+                                path = value.path;
+                              });
+                            },
+                            networkUrl: user.profileImageUrl != null
+                                ? user.profileImageUrl!
+                                : '',
+                          ),
+
+                          const Space(
+                            height: 18,
+                          ),
+
+                          mobileView(),
+                          CustomButton(
+                              buttonText:
+                                  editProfile == false ? 'Edit' : 'Update',
+                              showLoading:
+                                  editProfile == true ? isLoading : false,
+
+                              /// * perform action should be update or in update state
+                              onClick: () => profileButtonClick())
+                        ],
+                      ),
                     ),
-                  ),
-                );
-        },
+                  );
+          },
+        ),
       ),
     );
   }
@@ -239,7 +265,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             label: email,
             controller: emailController,
             inputFormatter: InputFieldFormatter.emailTextFormat,
-            editable: editProfile,
+            editable: false,
             validate: isEmail,
             errorMessage: emailAddressMessage,
             onTextChange: (value) => setState(() => isEmail = value)),
@@ -275,44 +301,53 @@ class _ProfileScreenState extends State<ProfileScreen> {
               hint: aadhar,
               label: aadhar,
               controller: aadharNumberController,
-              maxLength: 12,
-              inputFormatter: InputFieldFormatter.numberFormat,
+              maxLength: 14,
+              inputFormatter: [AadhaarNumberFormatter()],
+              isMobile: true,
               editable: editProfile,
               validate: isAadharNumber,
-              errorMessage: aadharMessage,
+            //  errorMessage: aadharMessage,
               onTextChange: (value) => setState(() => isAadharNumber = value)),
         if (widget.user.roleId! == '5')
-          CustomTextField(
-              hint: panCardNumber,
-              label: panCardNumber,
+          CustomPanCardField(
               controller: panCardController,
-              inputFormatter: InputFieldFormatter.panCardNumberFormat,
-              maxLength: 10,
-              allCaps: true,
               editable: editProfile,
               validate: isValidPanCard,
-              errorMessage: panCardMessage,
+             // errorMessage: panCardMessage,
               onTextChange: (value) => setState(() => isValidPanCard = value)),
+   if (widget.user.roleId! == '5')
+     CustomerGstNumberTextField(
+         controller: gstNumberController,
+         editable: editProfile,
+         validate: isValidGstNumber,
+         errorMessage: gstNumberMessage,
+         onTextChange: (value) => setState(() => isValidGstNumber = value)),
+        if (widget.user.roleId! == '5')
+
+        CustomTextField(
+            hint: houseNo,
+            label: houseNo,
+            controller: houseNoController,
+            editable: editProfile,
+            validate: isHouseNo,
+          //  errorMessage: houseNoMessage,
+            onTextChange: (value) => setState(() => isHouseNo = value)),
         if (widget.user.roleId! == '5')
           CustomTextField(
-              hint: gstNumber,
-              label: gstNumber,
-              controller: gstNumberController,
-              inputFormatter: InputFieldFormatter.panCardNumberFormat,
-              maxLength: 15,
-              allCaps: true,
-              editable: editProfile,
-              validate: isValidGstNumber,
-              errorMessage: gstNumberMessage,
-              onTextChange: (value) =>
-                  setState(() => isValidGstNumber = value)),
+            hint: town,
+            label: town,
+            controller: townController,
+            editable: editProfile,
+            validate: isTown,
+           // errorMessage: townMessage,
+            onTextChange: (value) => setState(() => isTown = value)),
         CustomTextField(
             hint: street,
             label: street,
             controller: addressController,
             editable: editProfile,
             validate: isStreet,
-            errorMessage: streetMessage,
+          //  errorMessage: streetMessage,
             onTextChange: (value) => setState(() => isStreet = value)),
 
         !editProfile
@@ -321,14 +356,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Expanded(
                     flex: 1,
                     child: CustomTextField(
-                        hint: city,
-                        label: city,
-                        controller: cityController,
+                        hint: state,
+                        label: state,
+                        controller: stateController,
                         editable: editProfile,
-                        validate: isCity,
-                        errorMessage: cityMessage,
+                        validate: isState,
+                       // errorMessage: stateMessage,
                         onTextChange: (value) =>
-                            setState(() => isCity = value)),
+                            setState(() => isState = value)),
                   ),
                   Space(
                     width: 10.h,
@@ -336,14 +371,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Expanded(
                     flex: 1,
                     child: CustomTextField(
-                        hint: state,
-                        label: state,
-                        controller: stateController,
+                        hint: city,
+                        label: city,
+                        controller: cityController,
                         editable: editProfile,
-                        validate: isState,
-                        errorMessage: stateMessage,
+                        validate: isCity,
+                      //  errorMessage: cityMessage,
                         onTextChange: (value) =>
-                            setState(() => isState = value)),
+                            setState(() => isCity = value)),
                   ),
                 ],
               )
@@ -358,15 +393,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   selectedCity = value;
                 },
               ),
+
         CustomTextField(
             hint: pinCode,
             label: pinCode,
             controller: pinCodeController,
             editable: editProfile,
+            inputFormatter: InputFieldFormatter.numberFormat,
             validate: isPinCode,
             maxLength: 6,
-            errorMessage: pinCodeMessage,
-            onTextChange: (value) => setState(() => isPinCode = value)),
+            isMobile: true,
+           errorMessage: pinCodeMessage, onTextChange: (value) => setState(() => isPinCode = value)
+        ),
+        if (widget.user.roleId! == '5')
+          CustomTextField(
+            hint: landmark,
+            label: landmark,
+            controller: landmarkController,
+            editable: editProfile,
+            //validate: isLandmark,
+            errorMessage: landmarkMessage,
+            onTextChange: (value) => setState(() => isLandmark = value)),
       ],
     );
   }
@@ -381,9 +428,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             fullName: fullNameController.text,
             mobileNumber: mobileNumberController.text,
             email: emailController.text,
+            houseNo: houseNoController.text,
+            town: townController.text,
             address: addressController.text,
-            city: cityController.text,
-            state: stateController.text,
+            city: selectedCity!,
+            state: selectedState!,
+            landmark: landmarkController.text,
             pinCode: pinCodeController.text,
             gender: genderValue,
             path: path,
@@ -399,10 +449,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
             email: emailController.text,
             aadhaarNumber: aadharNumberController.text,
             panNumber: panCardController.text,
+            houseNo: houseNoController.text,
+            town: townController.text,
             address: addressController.text,
             gstNumber: gstNumberController.text,
             city: selectedCity ?? '',
             state: selectedState ?? '',
+            landmark: landmarkController.text,
             pinCode: pinCodeController.text,
             gender: genderValue,
             path: path,
@@ -427,12 +480,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     isFirstName = profileState.fullName;
     isMobileNumber = profileState.mobileNumber;
     isEmail = profileState.email;
-    isAadharNumber = profileState.aadharNumber;
+    isAadharNumber = profileState.aadhaarNumber;
     isValidPanCard = profileState.panNumber;
+    isValidGstNumber = profileState.gst;
     isStreet = profileState.address;
     isCity = profileState.city;
     isState = profileState.state;
     isPinCode = profileState.pinCode;
     isGender = profileState.gender;
+
   }
 }

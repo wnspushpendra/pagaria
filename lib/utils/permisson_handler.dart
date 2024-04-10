@@ -1,16 +1,13 @@
-
 import 'package:permission_handler/permission_handler.dart';
 
-Future<bool> handleStoragePermission() async{
+Future<bool> handleStoragePermission() async {
   var status = await Permission.storage.status;
-  if(status.isDenied){
+  if (status.isDenied) {
     Map<Permission, PermissionStatus> statuses = await [
       Permission.camera,
-      Permission.storage, // Permission.camera,
-      Permission.notification, // Permission.camera,
+      Permission.storage,
+       Permission.notification,
     ].request();
   }
   return true;
-
-
 }

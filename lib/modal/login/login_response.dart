@@ -14,10 +14,10 @@ class UserResponse {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['status'] = this.status;
-    data['message'] = this.message;
-    if (this.profileData != null) {
-      data['record'] = this.profileData!.toJson();
+    data['status'] = status;
+    data['message'] = message;
+    if (profileData != null) {
+      data['record'] = profileData!.toJson();
     }
     return data;
   }
@@ -36,9 +36,9 @@ class ProfileData {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['token'] = this.token;
-    if (this.user != null) {
-      data['user'] = this.user!.toJson();
+    data['token'] = token;
+    if (user != null) {
+      data['user'] = user!.toJson();
     }
     return data;
   }
@@ -49,25 +49,31 @@ class User {
   String? fullName;
   String? roleId;
   String? registeredId;
-  String? domain;
+  Null? domain;
   String? contactNo;
   String? email;
-  String? dob;
   String? gender;
+  String? dateOfBirth;
   String? profileImage;
   String? profileImageUrl;
   String? gstNo;
   String? firmName;
   String? aadharNo;
   String? panCardNo;
+  String? country;
   String? city;
   String? state;
   String? address;
   String? zipCode;
+  String? landmark;
+  String? town;
+  String? houseNumber;
   String? emailVerifiedAt;
   String? userStatus;
   String? createdById;
   String? adminId;
+  String? deviceType;
+  String? deviceToken;
   String? createdAt;
   String? updatedAt;
 
@@ -79,22 +85,28 @@ class User {
         this.domain,
         this.contactNo,
         this.email,
-        this.dob,
         this.gender,
+        this.dateOfBirth,
         this.profileImage,
         this.profileImageUrl,
         this.gstNo,
         this.firmName,
         this.aadharNo,
         this.panCardNo,
+        this.country,
         this.city,
         this.state,
         this.address,
         this.zipCode,
+        this.landmark,
+        this.town,
+        this.houseNumber,
         this.emailVerifiedAt,
         this.userStatus,
         this.createdById,
         this.adminId,
+        this.deviceType,
+        this.deviceToken,
         this.createdAt,
         this.updatedAt});
 
@@ -106,22 +118,28 @@ class User {
     domain = json['domain'];
     contactNo = json['contact_no'];
     email = json['email'];
-    dob = json['dob'];
     gender = json['gender'];
+    dateOfBirth = json['date_of_birth'];
     profileImage = json['profile_image'];
     profileImageUrl = json['profile_image_url'];
     gstNo = json['gst_no'];
     firmName = json['firm_name'];
     aadharNo = json['aadhar_no'];
     panCardNo = json['pan_card_no'];
+    country = json['country'];
     city = json['city'];
     state = json['state'];
     address = json['address'];
     zipCode = json['zip_code'];
+    landmark = json['landmark'];
+    town = json['town'];
+    houseNumber = json['house_number'];
     emailVerifiedAt = json['email_verified_at'];
     userStatus = json['user_status'];
     createdById = json['created_by_id'];
     adminId = json['admin_id'];
+    deviceType = json['device_type'];
+    deviceToken = json['device_token'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
   }
@@ -135,22 +153,28 @@ class User {
     data['domain'] = domain;
     data['contact_no'] = contactNo;
     data['email'] = email;
-    data['dob'] = dob;
     data['gender'] = gender;
+    data['date_of_birth'] = dateOfBirth;
     data['profile_image'] = profileImage;
     data['profile_image_url'] = profileImageUrl;
     data['gst_no'] = gstNo;
     data['firm_name'] = firmName;
     data['aadhar_no'] = aadharNo;
     data['pan_card_no'] = panCardNo;
+    data['country'] = country;
     data['city'] = city;
     data['state'] = state;
     data['address'] = address;
     data['zip_code'] = zipCode;
+    data['landmark'] = landmark;
+    data['town'] = town;
+    data['house_number'] = houseNumber;
     data['email_verified_at'] = emailVerifiedAt;
     data['user_status'] = userStatus;
     data['created_by_id'] = createdById;
     data['admin_id'] = adminId;
+    data['device_type'] = deviceType;
+    data['device_token'] = deviceToken;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
     return data;

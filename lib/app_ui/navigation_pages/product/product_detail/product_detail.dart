@@ -60,7 +60,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   String itemPrice = '';
   bool? productAddRemove;
   String prodMinQty  = '';
-
+  bool outOfStock = false;
 
   @override
   void initState() {
@@ -85,7 +85,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     var product = widget.productArgument.product;
-    if (product!.isCart != null && product.isCart!.isNotEmpty) {
+    if(product!.prodInventoryType! == "yes" && int.parse(product.prodMinDistrubutorQty!) > int.parse(product.availStock!)){
+      outOfStock = true;
+    }
+
+    if (product.isCart != null && product.isCart!.isNotEmpty) {
       productAddRemove = true;
       cartItem.id = product.isCart![0].id;
       cartItem.quantity = int.parse(quantity); // this line need to cross verify
@@ -101,8 +105,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         appBar: appBarWidget(
             context,
             'Product Detail',
-            () => Navigator.pushReplacementNamed(context, productRoute,
-                arguments: widget.productArgument.distributorId)
+            () => Navigator.pushReplacementNamed(context, productRoute, arguments: widget.productArgument.distributorId)
         ),
         body: BlocConsumer<CheckOutBloc, CheckOutState>(
           listener: (context, state) {
@@ -166,10 +169,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                   ),
                                   if(product.prodInventoryType == 'yes')
                                   BodyText(
-                                    text: "Stock :  ${product.availStock}",
-                                    fontSize: 16.h,
-                                    color: Colors.green,
-                                    fontWeight: FontWeight.bold,
+                                    text: "Stock Quantity :  ${product.availStock}, Minimum Purchase Quantity : ${product.prodMinDistrubutorQty!}",
+                                    fontSize: 14.h,
+                                    color: outOfStock == true ? Colors.red : Colors.green,fontWeight: FontWeight.bold,
                                   ),
                                   const Space(height: 12,),
                                   BodyText(
@@ -193,8 +195,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                                 child: SizedBox(
                                                   height: 120,
                                                   width: 120,
-                                                  child: CachedNetworkImage(
-                                                      imageUrl: image.galleryImageUrl!),
+                                                  child: CachedNetworkImage(imageUrl: image.galleryImageUrl!),
                                                 ),
                                               );
                                             }),
@@ -226,7 +227,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         bottom: 0,
                         right: 0,
                         left: 0,
-                        child: Container(
+                        child: outOfStock == true ?  Container(
+                          width: MediaQuery.of(context).size.width,
+                            height: 40.h,
+                            color: Colors.red,
+                            alignment: Alignment.center,
+                            child: BodyText(text: 'Out Of Stock',color: bodyWhite,fontWeight: FontWeight.bold,fontSize: 18.h,)) :
+                        Container(
                           decoration: defaultDecoration,
                           child: product.isCart != null &&
                                   product.isCart!.isNotEmpty

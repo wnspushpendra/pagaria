@@ -19,6 +19,7 @@ import 'package:webnsoft_solution/app_ui/navigation_pages/payment/bloc/payment_e
 import 'package:webnsoft_solution/app_ui/navigation_pages/payment/bloc/payment_state.dart';
 import 'package:webnsoft_solution/modal/distributor_list.dart';
 import 'package:webnsoft_solution/modal/firm_customer_modal.dart';
+import 'package:webnsoft_solution/modal/login/login_response.dart';
 import 'package:webnsoft_solution/modal/order/order_list_modal.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
@@ -36,10 +37,12 @@ class SpecificCustomerOrder extends StatefulWidget {
 }
 
 class _SpecificCustomerOrderState extends State<SpecificCustomerOrder> {
-  List<Customer> customerList = [];
+  List<User> customerList = [];
+  //List<Customer> customerList = [];
   bool customerLoading = true;
   bool? paymentLoading;
-  Customer? customerValue;
+  User? customerValue;
+ // Customer? customerValue;
   String customerId = '';
 
 
@@ -139,7 +142,7 @@ class _SpecificCustomerOrderState extends State<SpecificCustomerOrder> {
   proceedToOrder() async {
     if (customerId.isNotEmpty) {
       paymentLoading = true; setState(() {});
-      ChangeRoutes.openProductScreen(context, await getUser(), customerId);
+      ChangeRoutes.openProductScreen(context, await getUser(), customerValue);
     } else {
       snackBar(context, 'Select any customer');
     }

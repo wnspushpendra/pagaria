@@ -53,6 +53,7 @@ class _DistributorOrderPaymentScreenState
   int remainingAmount = 0;
   String customerId = '';
   bool? customerSelectError, paymentError, paymentTypeError, paymentLoading;
+  String? errorMessage;
 
   @override
   void initState() {
@@ -61,107 +62,116 @@ class _DistributorOrderPaymentScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: appBarWidget(
-          context,
-          payment,
-              () =>
-              Navigator.pushReplacementNamed(context, orderRoute, arguments: true)),
-      body: BlocConsumer<PaymentBloc, PaymentState>(
-        listener: (context, state) {
-          if(state is PaymentSuccess){
-            if(state.paymentRecord != null){
-              ChangeRoutes.openOrderScreen(context, true);
-            }
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) async => ChangeRoutes.openOrderScreen(context, true),
+      child: Scaffold(
+        appBar: appBarWidget(
+            context,
+            payment,
+                () => ChangeRoutes.openOrderScreen(context, true)),
+              //  Navigator.pushReplacementNamed(context, orderRoute, arguments: true)),
+        body: BlocConsumer<PaymentBloc, PaymentState>(
+          listener: (context, state) {
+            if(state is PaymentSuccess){
+              if(state.paymentRecord != null){
+                ChangeRoutes.openOrderScreen(context, true);
+              }
 
-           // Navigator.pushReplacementNamed(context, orderRoute, arguments: true);
-          }
-          if(state is PaymentError){
-            ChangeRoutes.unAuthorizedError(context, state.error);
-            paymentLoading = false;
-            snackBar(context, state.error!);
-            setState(() {});
-          }
-        },
-        builder: (context, state) {
-          return SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  CustomDropDown(
-                    hint: selectPaymentOption,
-                    itemList: paymentOption,
-                    selectedValue: paymentType,
-                    onChangeValue: (value) {
-                      paymentType = value;
-                      if (value == cashPayment) {
-                        paymentTransferType = 'cash';
-                      } else if (value == upiPayment) {
-                        paymentTransferType = 'upi_payment';
-                      } else if (value == qrCodePayment) {
-                        paymentTransferType = 'qr_code_scan';
-                      } else if (value == cardPayment) {
-                        paymentTransferType = 'card_payment';
-                      } else if (value == bankPayment) {
-                        paymentTransferType = 'bank_transfer';
-                      }
-                      setState(() {});
-                    },
-                    type: '',
-                  ),
-                  paymentType != null
-                      ? CustomTextField(
-                      hint: referenceNumberMessage,
-                      label: referenceNumberMessage,
-                      controller: referenceIdController,
-                      onTextChange: (value) {})
-                      : Container(),
-                  const Space(
-                    height: 8,
-                  ),
-                  paymentType != null
-                      ? Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CustomButton(
-                          buttonHeight: 40,
-                          buttonWidth: 130,
-                          margin: 0,
-                          buttonTextSize: 14,
-                          buttonColor: bodyLightBlack,
-                          buttonText: attachment,
-                          onClick: () {
-                            pickSingleFile().then((value) {
-                              if (value != null) {
-                                path = value.path;
-                                file = File(value.path);
-                                setState(() {});
-                              }
-                            });
-                          }),
-                      const Space(
-                        width: 10,
-                      ),
-                      file == null
-                          ? Container()
-                          : Expanded(flex: 1, child: Image.file(file!))
-                    ],
-                  )
-                      : Container(),
-                  paymentType != null
-                      ? CustomButton(
-                      buttonText:
-                      'Pay $rupeesSymbol ${widget.argument.totalAmount}',
-                      showLoading: paymentLoading,
-                      onClick: () => makePayment())
-                      : Container()
-                ],
+             // Navigator.pushReplacementNamed(context, orderRoute, arguments: true);
+            }
+            if(state is PaymentError){
+              errorMessage = state.error;
+              ChangeRoutes.unAuthorizedError(context, state.error);
+              paymentLoading = false;
+              setState(() {});
+            }
+          },
+          builder: (context, state) {
+            return errorMessage != null ? Container(
+              height: MediaQuery.of(context).size.height,
+              alignment: AlignmentDirectional.center,
+              child: BodyText(text: errorMessage!,color: primaryColor,),
+            )
+              : SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    CustomDropDown(
+                      hint: selectPaymentOption,
+                      itemList: paymentOption,
+                      selectedValue: paymentType,
+                      onChangeValue: (value) {
+                        paymentType = value;
+                        if (value == cashPayment) {
+                          paymentTransferType = 'cash';
+                        } else if (value == upiPayment) {
+                          paymentTransferType = 'upi_payment';
+                        } else if (value == qrCodePayment) {
+                          paymentTransferType = 'qr_code_scan';
+                        } else if (value == cardPayment) {
+                          paymentTransferType = 'card_payment';
+                        } else if (value == bankPayment) {
+                          paymentTransferType = 'bank_transfer';
+                        }
+                        setState(() {});
+                      },
+                      type: '',
+                    ),
+                    paymentType != null
+                        ? CustomTextField(
+                        hint: referenceNumberMessage,
+                        label: referenceNumberMessage,
+                        controller: referenceIdController,
+                        onTextChange: (value) {})
+                        : Container(),
+                    const Space(
+                      height: 8,
+                    ),
+                    paymentType != null
+                        ? Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomButton(
+                            buttonHeight: 40,
+                            buttonWidth: 130,
+                            margin: 0,
+                            buttonTextSize: 14,
+                            buttonColor: bodyLightBlack,
+                            buttonText: attachment,
+                            onClick: () {
+                              pickSingleFile().then((value) {
+                                if (value != null) {
+                                  path = value.path;
+                                  file = File(value.path);
+                                  setState(() {});
+                                }
+                              });
+                            }),
+                        const Space(
+                          width: 10,
+                        ),
+                        file == null
+                            ? Container()
+                            : Expanded(flex: 1, child: Image.file(file!))
+                      ],
+                    )
+                        : Container(),
+                    paymentType != null
+                        ? CustomButton(
+                        buttonText:
+                        'Pay $rupeesSymbol ${widget.argument.totalAmount}',
+                        showLoading: paymentLoading,
+                        onClick: () => makePayment())
+                        : Container()
+                  ],
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

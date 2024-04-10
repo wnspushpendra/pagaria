@@ -13,6 +13,7 @@ import 'package:webnsoft_solution/app_ui/navigation_pages/payment/bloc/payment_b
 import 'package:webnsoft_solution/app_ui/navigation_pages/payment/bloc/payment_event.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/payment/bloc/payment_state.dart';
 import 'package:webnsoft_solution/modal/distributor_list.dart';
+import 'package:webnsoft_solution/modal/login/login_response.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
 import 'package:webnsoft_solution/utils/app_message.dart';
 import 'package:webnsoft_solution/utils/app_regex.dart';
@@ -21,7 +22,8 @@ import 'package:webnsoft_solution/utils/change_routes.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
 class CustomerPaymentScreen extends StatefulWidget {
-  final Customer customer;
+  //final Customer customer;
+  final User customer;
   const CustomerPaymentScreen( {required this.customer,super.key});
 
   @override
@@ -40,6 +42,7 @@ class _CustomerPaymentScreenState extends State<CustomerPaymentScreen> {
   int remainingAmount = 0;
   String customerId = '';
   bool? customerSelectError,paymentError, paymentTypeError,paymentLoading;
+  String? errorMessage;
 
 
   @override
@@ -73,14 +76,21 @@ class _CustomerPaymentScreenState extends State<CustomerPaymentScreen> {
             setState(() {});
           }
           if(state is PaymentError){
+
             customerPaymentDetailLoading = false;
             paymentLoading = false;
-            snackBar(context, state.error!);
+            errorMessage = state.error!;
+         //   snackBar(context, state.error!);
             setState(() {});
           }
         },
         builder: (context, state) {
-          return SingleChildScrollView(
+          return dueAmount == '0' ? Container(
+            height: MediaQuery.of(context).size.height,
+            alignment: AlignmentDirectional.center,
+            child: const BodyText(text: 'No due payment.',color: primaryColor,),
+          ):
+          SingleChildScrollView(
             child: Container(
               padding: const EdgeInsets.all(12),
               child:  customerPaymentDetailLoading ?

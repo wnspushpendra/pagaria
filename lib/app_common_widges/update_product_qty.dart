@@ -80,16 +80,14 @@ Future<String?> quantityDialog(BuildContext context, CartItem cartItem,
                               onClick: () {
                                 String quantity = quantityController.text;
                                 if (product.prodInventoryType == 'yes') {
-                                  if (int.parse(product.prodInventory!) >= int.parse(quantity)) {
+                                  if (int.parse(product.availStock!) >= int.parse(quantity)) {
                                     if (int.parse(prodMinQty) <= int.parse(quantity)) {
                                       context.read<CheckOutBloc>().add(CheckOutUpdateQuantityEvent(productQty: quantityController.text, cartItemId: cartItem.id.toString()));
                                     } else {
-                                      snackBar(context,
-                                          'you can create min $prodMinQty quantity');
+                                      snackBar(context, 'you can create min $prodMinQty quantity');
                                     }
                                   } else {
-                                    snackBar(context, 'Enter quantity not available.');
-                                    //  snackBar(context, 'You can order minimum $minimumQty for this item');
+                                    snackBar(context, '${product.prodName} ${product.availStock} quantity available in stock.');
                                   }
                                 } else {
                                   if (int.parse(prodMinQty) <= int.parse(quantity)) {

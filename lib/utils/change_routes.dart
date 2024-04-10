@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:webnsoft_solution/modal/argument_modal/DistributorPaymentArgument.dart';
+import 'package:webnsoft_solution/modal/argument_modal/LedgetArgument.dart';
 import 'package:webnsoft_solution/modal/login/login_response.dart';
 import 'package:webnsoft_solution/modal/order/user_role_order_list_modal.dart';
 import 'package:webnsoft_solution/modal/payment/payment_list_modal.dart';
-import 'package:webnsoft_solution/modal/payment/payment_modal.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
 import 'package:webnsoft_solution/utils/app_preferences.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
 
 class ChangeRoutes{
-
 
 // getting header
   static Future<Map<String, String>> getHeaders() async {
@@ -61,13 +60,18 @@ class ChangeRoutes{
   static openResetPasswordScreen(BuildContext context) async{
     Navigator.pushReplacementNamed(context, resetPasswordRoute,arguments: await getUser());
   }
-  static openProductScreen(BuildContext context, User user,String? distributorId) async{
-    Navigator.pushReplacementNamed(context, productRoute,arguments:  user.roleId =='5' ? user.id.toString() : distributorId);
+  static openProductScreen(BuildContext context, User user,User? distributor/*String? distributorId*/) async{
+    Navigator.pushReplacementNamed(context, productRoute,arguments:  user.roleId =='5' ? user : distributor);
   }
 
   static openProductDetailScreen(BuildContext context,String? id){
     Navigator.pushReplacementNamed(context, paymentRoute,arguments: id);
   }
+
+  static openCheckOutScreen(BuildContext context,User? user){
+    Navigator.pushReplacementNamed(context, checkOutRoute, arguments: user );
+  }
+ //   Navigator.pushReplacementNamed(context, checkOutRoute, arguments: widget.distributorId  }
   static openCustomerScreen(BuildContext context,String? id){
     Navigator.pushReplacementNamed(context, customerListRoute);
   }
@@ -97,5 +101,7 @@ class ChangeRoutes{
   static openCustomerForOrderScreen(BuildContext context){
     Navigator.pushReplacementNamed(context, customerForOrderRoute);
   }
+  static openLedgerScreen(BuildContext context,String userId, bool fromDistributor){
+    Navigator.pushReplacementNamed(context, ledgerRoute,arguments: LedgerArgument(distributorId:  userId,showAppbar: true,fromDistributor: true));  }
 
 }
