@@ -3,10 +3,10 @@ import 'package:webnsoft_solution/modal/product_list.dart';
 
 class ProductArgument{
   String productId;
-  String? distributorId;
+  User? distributor;
   Product? product;
   Product? totalAmount;
-  ProductArgument({required this.productId, this.distributorId,this.product,this.totalAmount});
+  ProductArgument({required this.productId, this.distributor,this.product,this.totalAmount});
 
 
 }

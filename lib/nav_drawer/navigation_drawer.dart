@@ -47,7 +47,6 @@ class MyDrawer extends StatelessWidget {
                               ChangeRoutes.openHomeScreen(context, user);
                            //   Navigator.pushReplacementNamed(context,user.roleId =='4' ? homeRoute : homeDistributorRoute,arguments:  await getUser());
                             }),
-                        const Space(height: 10,),
                         /**** moving to user profile page *********/
                         DrawerItem(
                             name: profile,
@@ -64,7 +63,6 @@ class MyDrawer extends StatelessWidget {
                               Scaffold.of(context).closeDrawer();
                               ChangeRoutes.openMyActivityScreen(context);
                             }) : Container(),
-                        const Space(height: 10,),
                         /**** moving to user profile page *********/
                         user.roleId == '5' ?    DrawerItem(
                             name:'My Ledger' ,
@@ -81,7 +79,6 @@ class MyDrawer extends StatelessWidget {
                               Scaffold.of(context).closeDrawer();
                               ChangeRoutes.openProductScreen(context, user,null);
                             }),
-                        const Space(height: 10,),
                         /**** moving to customer page *********/
                      user.roleId == '4' ?    DrawerItem(
                             name: customer,
@@ -90,7 +87,6 @@ class MyDrawer extends StatelessWidget {
                               Scaffold.of(context).closeDrawer();
                               Navigator.pushReplacementNamed(context, customerListRoute);
                             }) : Container(),
-                        const Space(height: 10,),
                         /**** moving to order list page *********/
                         DrawerItem(
                             name: orders,
@@ -100,7 +96,6 @@ class MyDrawer extends StatelessWidget {
                               ChangeRoutes.openOrderScreen(context, true);
                            //   Navigator.pushReplacementNamed(context, orderRoute,arguments: true);
                             }),
-                        const Space(height: 10,),
                         /**** moving to payment  page *********/
                         DrawerItem(
                             name: payment,
@@ -110,7 +105,6 @@ class MyDrawer extends StatelessWidget {
                               ChangeRoutes.openExecutivePaymentScreen(context, user);
                              // Navigator.pushReplacementNamed(context, paymentRoute);
                             }),
-                        const Space(height: 10,),
                         /**** moving to reset password page *********/
                         DrawerItem(
                             name: resetPassword,
@@ -119,13 +113,12 @@ class MyDrawer extends StatelessWidget {
                               Scaffold.of(context).closeDrawer();
                               Navigator.pushReplacementNamed(context, resetPasswordRoute,arguments: await getUser());
                             }),
-                        const Space(height: 10,),
                         /**** logout user *********/
                         DrawerItem(
                             name: logout,
                             icon: logoutIcon,
                             onPressed: () => logoutDialog(context)),
-                        const Space(height: 10,),
+                        const Space(height: 4,),
                       ],
                     ),
                   )

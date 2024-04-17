@@ -20,7 +20,6 @@ import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_bloc/p
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/product_bloc/product_event.dart';
 import 'package:webnsoft_solution/modal/checkin_checkout/check_in_status.dart';
 import 'package:webnsoft_solution/modal/checkin_checkout/checkin_checkout.dart';
-import 'package:webnsoft_solution/modal/distributor_list.dart';
 import 'package:webnsoft_solution/modal/login/login_response.dart';
 import 'package:webnsoft_solution/nav_drawer/navigation_drawer.dart';
 import 'package:webnsoft_solution/routes/route_constatns.dart';
@@ -70,7 +69,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final double deviceWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       key: _key,

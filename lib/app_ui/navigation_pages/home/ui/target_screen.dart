@@ -46,12 +46,27 @@ class _TargetScreenState extends State<TargetScreen> {
       listener: (context, state) {
         if (state is TargetSuccess) {
           targetLoading = false;
-          targetList = state.targetList;
-          if (targetList.isNotEmpty) {
+         var myTargetsList = state.targetList;
+          if (myTargetsList.isNotEmpty) {
+
+            for (var target in myTargetsList) {
+              if(target.type == 'oneMonth' && target.target != '0'){
+                targetList.add(Target(type: 'Month',target: target.target,achievedTarget: target.achievedTarget));
+              }
+              if(target.type == 'quarterlyMonth' && target.target != '0'){
+                targetList.add(Target(type: 'Quarterly',target: target.target,achievedTarget: target.achievedTarget));
+              }
+              if(target.type == 'sixMonth' && target.target != '0'){
+                targetList.add(Target(type: 'Half Yearly',target: target.target,achievedTarget: target.achievedTarget));
+              }
+              if(target.type == 'tweelveMonth' && target.target != '0'){
+                targetList.add(Target(type: 'Yearly',target: target.target,achievedTarget: target.achievedTarget));
+              }
+            }
+
             target = targetList[0].target.toString();
             achieveTarget = targetList[0].achievedTarget.toString();
             remainingTarget = '${int.parse(target) - int.parse (achieveTarget)}';
-
             int targetValue = int.parse(target);
             int achieveValue = int.parse(achieveTarget);
             if(achieveValue > targetValue){
@@ -68,8 +83,6 @@ class _TargetScreenState extends State<TargetScreen> {
           targetLoading = false;
           error = state.error;
           ChangeRoutes.unAuthorizedError(context,state.error);
-
-          // snackBar(context, state.error);
         }
       },
       builder: (context, state) {
@@ -90,42 +103,39 @@ class _TargetScreenState extends State<TargetScreen> {
                           itemBuilder: (context, index) {
                             var targetData = targetList[index];
                             var targetType = targetData.type;
-                            var type = targetType == 'oneMonth'
-                                ? 'Month'
-                                : targetType == 'quarterlyMonth'
-                                    ? 'Quarterly'
-                                    : targetType == 'sixMonth'
-                                        ? 'Half Yearly'
-                                        : targetType == 'tweelveMonth'
-                                            ? 'Yearly'
-                                            : '';
+                            var type = targetType == 'oneMonth' ? 'Month' : targetType == 'quarterlyMonth' ? 'Quarterly' : targetType == 'sixMonth' ? 'Half Yearly' : targetType == 'tweelveMonth' ? 'Yearly' : '';
 
                             return GestureDetector(
                               onTap: () {
                                 targetIndex = index;
-                                target = targetData.target.toString();
-                                achieveTarget = targetData.achievedTarget.toString();
-                                remainingTarget = '${int.parse(target) - int.parse(achieveTarget)}';
-                                int targetValue = int.parse(target);
-                                int achieveValue = int.parse(achieveTarget);
-                                if(achieveValue > targetValue){
-                                  remainingTarget = 'Well Work 👍';
-                                  percent = 1;
+                                if(targetData.target == '0'){
+                                  target = 'Not Target';
+                                  achieveTarget = '-';
+                                  remainingTarget = '-';
                                 }else{
-                                  percent = achieveValue/targetValue;
+                                  target = targetData.target.toString();
+                                  achieveTarget = targetData.achievedTarget.toString();
+                                  remainingTarget = '${int.parse(target) - int.parse(achieveTarget)}';
+                                  int targetValue = int.parse(target);
+                                  int achieveValue = int.parse(achieveTarget);
+                                  if(achieveValue > targetValue){
+                                    remainingTarget = 'Well Work 👍';
+                                    percent = 1;
+                                  }else{
+                                    percent = achieveValue/targetValue;
+                                  }
                                 }
+
                                 setState(() {});
                               },
                               child: Padding(
                                 padding: EdgeInsets.fromLTRB(0.h, 4.h, 0, 0),
                                 child: BodyText(
-                                  text: type,
+                                  text: targetData.type.toString(),
                                   fontSize: 14,
                                   align: TextAlign.start,
                                   fontWeight: FontWeight.bold,
-                                  color: index == targetIndex
-                                      ? Colors.green
-                                      : bodyBlack,
+                                  color: index == targetIndex ? Colors.green : bodyBlack,
                                 ),
                               ),
                             );

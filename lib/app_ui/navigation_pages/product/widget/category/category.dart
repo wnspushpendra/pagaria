@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/product/widget/category/category_item.dart';
 import 'package:webnsoft_solution/modal/category_list.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
@@ -21,7 +22,7 @@ class _CategoryState extends State<Category> {
     return Stack(
       children: [
         SizedBox(
-          height: 120,
+          height: 120.h,
           child: ListView.builder(
             controller:_controller ,
               shrinkWrap: true,
@@ -36,8 +37,8 @@ class _CategoryState extends State<Category> {
                   },
                   child: Container(
                     alignment: Alignment.center,
-                    margin: const EdgeInsets.all(4),
-                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 4),
+                    margin:  EdgeInsets.symmetric(horizontal: 6.h,vertical: 6.h),
+                    padding:  EdgeInsets.symmetric(horizontal: 6.h,vertical: 1.h),
                     decoration: BoxDecoration(
                         color: bodyWhite,
                         border: Border.all(

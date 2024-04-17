@@ -115,7 +115,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                 : cartList.isEmpty
                     ? Center(
                         child: MaterialButton(
-                          onPressed: () => Navigator.pushReplacementNamed(context, productRoute, arguments: 'create'),
+                          onPressed: () async => ChangeRoutes.openProductScreen(context, await getUser(), widget.distributor),/*Navigator.pushReplacementNamed(context, productRoute, arguments: 'create'),*/
                           child: const BodyText(text: 'No item added click me to add  ', fontSize: 14),
                         ),
                       )
@@ -191,8 +191,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                                         setState(() {});
                                                         snackBar(context, state.error);
                                                       }
-
-                                                    },
+                                                      },
                                                     builder: (context, state) {
                                                       return cartItem.id == cartId && checkOutDeleteLoading ?
                                                       const Padding(

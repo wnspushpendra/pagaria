@@ -33,7 +33,6 @@ import 'package:webnsoft_solution/utils/app_strings.dart';
 import 'package:webnsoft_solution/utils/asset_images.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:webnsoft_solution/utils/change_routes.dart';
-import 'package:webnsoft_solution/utils/dialogs.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
 class ProductDetailScreen extends StatefulWidget {
@@ -98,14 +97,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
     return WillPopScope(
       onWillPop: () async{
-        Navigator.pushReplacementNamed(context, productRoute, arguments: widget.productArgument.distributorId)    ;
+        ChangeRoutes.openProductScreen(context,await getUser(), widget.productArgument.distributor );
+       // Navigator.pushReplacementNamed(context, productRoute, arguments: widget.productArgument.distributorId)    ;
         return true;
       },
       child: Scaffold(
         appBar: appBarWidget(
             context,
             'Product Detail',
-            () => Navigator.pushReplacementNamed(context, productRoute, arguments: widget.productArgument.distributorId)
+            () async =>  ChangeRoutes.openProductScreen(context,await getUser(), widget.productArgument.distributor)
         ),
         body: BlocConsumer<CheckOutBloc, CheckOutState>(
           listener: (context, state) {
@@ -221,7 +221,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     ),
                   ),
                 ),
-                widget.productArgument.distributorId == null
+                widget.productArgument.distributor == null
                     ? const SizedBox.shrink()
                     : Positioned(
                         bottom: 0,
@@ -259,7 +259,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                             margin: 0,
                                             radius: 0,
                                             buttonColor: Colors.green,
-                                            onClick: () => Navigator.pushReplacementNamed(context, checkOutRoute,arguments: widget.productArgument.distributorId!)
+                                            onClick: () => Navigator.pushReplacementNamed(context, checkOutRoute,arguments: widget.productArgument.distributor!)
                                         ))
                                   ],
                                 )

@@ -51,7 +51,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 initializeDependencies() async {
   WidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = MyHttpOverrides();
-  await FlutterDownloader.initialize();
+ // await FlutterDownloader.initialize();
   handleStoragePermission().then((value) {});
   checkLocationPermission();
   await Firebase.initializeApp(

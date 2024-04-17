@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -35,11 +36,11 @@ import 'package:webnsoft_solution/utils/util_methods.dart';
 class ProductList extends StatefulWidget {
   final String userRole;
   final List<Product> productList;
-  final User? user;
+  final User? distributor;
  // final String? distributorId;
   // final String from;
 
-  const ProductList({required this.userRole,required this.productList, super.key, required this.user,});
+  const ProductList({required this.userRole,required this.productList, super.key, required this.distributor,});
 
   @override
   State<ProductList> createState() => _ProductListState();
@@ -120,7 +121,7 @@ class _ProductListState extends State<ProductList> {
 
           return GestureDetector(
             onTap: () {
-              ChangeRoutes.openCheckOutScreen(context, widget.user);
+             // ChangeRoutes.openProductDetailScreen(context, ProductArgument(productId: product.id.toString(),product: product,distributor: widget.distributor));
 /*
               Navigator.pushReplacementNamed(context, productDetailRoute, arguments: ProductArgument(productId: product.id.toString(),product: product,distributorId: widget.distributorId));
 */
@@ -135,11 +136,14 @@ class _ProductListState extends State<ProductList> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  CachedNetworkImage(
-                    imageUrl: product.prodImageUrl.toString(),
-                    fit: BoxFit.contain,
-                    height: 126,
-                    width: MediaQuery.of(context).size.width,
+                  GestureDetector(
+                    onTap: ()=>  ChangeRoutes.openProductDetailScreen(context, ProductArgument(productId: product.id.toString(),product: product,distributor: widget.distributor)),
+                    child: CachedNetworkImage(
+                      imageUrl: product.prodImageUrl.toString(),
+                      fit: BoxFit.contain,
+                      height: 126,
+                      width: MediaQuery.of(context).size.width,
+                    ),
                   ),
                   const Space(
                     height: 4,
@@ -163,11 +167,11 @@ class _ProductListState extends State<ProductList> {
                         fontWeight: FontWeight.bold,
                         fontSize: 14,
                       ),
-                      widget.user != null && outOfStock == true ?  BodyText(text: 'Out Of Stock',color: Colors.red,fontWeight: FontWeight.bold,fontSize: 14.h,) :
+                      widget.distributor != null && outOfStock == true ?  BodyText(text: 'Out Of Stock',color: Colors.red,fontWeight: FontWeight.bold,fontSize: 14.h,) :
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          widget.user != null
+                          widget.distributor != null
                               ? product.isCart!.isEmpty
                                   ? BlocConsumer<ProductBloc, ProductState>(
                                       listener: (context, state) {
@@ -197,7 +201,10 @@ class _ProductListState extends State<ProductList> {
                                         product.id != productId ?
                                           AssetButton(
                                           image: cartIcon,
-                                          padding: 0,
+                                          paddingVertical: 0,
+                                          paddingHorizontal: 8.h,
+                                          width: 30,
+                                          height: 30,
                                           onPressed: () {
                                             if(cartLoading == false){
                                               selectedIndex = index;

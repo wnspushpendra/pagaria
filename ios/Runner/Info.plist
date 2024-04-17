@@ -64,5 +64,36 @@
         <string>Please grant microphone access</string>
 
 
+        <key>UIBackgroundModes</key>
+        <array>
+          <string>fetch</string>
+          <string>remote-notification</string>
+        </array>
+
+
+        <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+        <string>We need you location even if the app is in the background</string>
+        <key>NSLocationAlwaysUsageDescription</key>
+        <string>We need to  access your location </string>
+        <key>UIBackgroundModes</key>
+        <array>
+            <string>location</string>
+        </array>
+
+
+
+
+
+
+
+
+
+
+
+
+        <key>FLTEnableImpeller</key>
+        <false />
+
+
 </dict>
 </plist>

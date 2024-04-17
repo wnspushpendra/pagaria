@@ -38,7 +38,7 @@ import 'package:webnsoft_solution/utils/change_routes.dart';
 import 'package:webnsoft_solution/utils/util_methods.dart';
 
 class ProductScreen extends StatefulWidget {
- // final String? distributorId;
+  // final String? distributorId;
   final User? distributor;
 
   const ProductScreen({this.distributor, super.key});
@@ -110,7 +110,7 @@ class _ProductScreenState extends State<ProductScreen> {
               color: bodyWhite,
             ),
             actions: [
-             // widget.user!.distributorId != null
+              // widget.user!.distributorId != null
               widget.distributor != null
                   ? BlocConsumer<CheckOutBloc, CheckOutState>(
                       listener: (context, state) {
@@ -127,8 +127,10 @@ class _ProductScreenState extends State<ProductScreen> {
                           child: Stack(
                             children: [
                               IconButton(
-                                  onPressed: () => ChangeRoutes.openCheckOutScreen(context,widget.distributor),
-                                     /* Navigator.pushReplacementNamed(context, checkOutRoute, arguments: widget.distributorId*/
+                                  onPressed: () =>
+                                      ChangeRoutes.openCheckOutScreen(
+                                          context, widget.distributor),
+                                  /* Navigator.pushReplacementNamed(context, checkOutRoute, arguments: widget.distributorId*/
                                   icon: Image.asset(
                                     cartIcon,
                                     height: 30,
@@ -148,7 +150,7 @@ class _ProductScreenState extends State<ProductScreen> {
                       },
                     )
                   : Container(),
-           //   widget.distributorId == null
+              //   widget.distributorId == null
               widget.distributor == null
                   ? productList.isNotEmpty
                       ? AssetButton(
@@ -156,7 +158,8 @@ class _ProductScreenState extends State<ProductScreen> {
                           color: bodyWhite,
                           onPressed: () async {
                             snackBar(context, 'downloading product list data');
-                            File pdfFile = await ProductsPdf().generateProductPdf(productList);
+                            File pdfFile = await ProductsPdf()
+                                .generateProductPdf(productList);
                             saveAndOpenPdf(pdfFile);
                           })
                       : Container()
@@ -166,7 +169,7 @@ class _ProductScreenState extends State<ProductScreen> {
           body: Stack(
             children: [
               Container(
-                margin: EdgeInsets.only(top: height*0.24),
+                margin: EdgeInsets.only(top: height * 0.24),
                 height: height,
                 child: BlocConsumer<ProductBloc, ProductState>(
                   listener: (context, productState) {
@@ -183,7 +186,8 @@ class _ProductScreenState extends State<ProductScreen> {
                     }
                     if (productState is ProductError) {
                       errorMessage = productState.error;
-                      ChangeRoutes.unAuthorizedError(context, productState.error);
+                      ChangeRoutes.unAuthorizedError(
+                          context, productState.error);
                       setState(() {});
                     }
                   },
@@ -196,15 +200,15 @@ class _ProductScreenState extends State<ProductScreen> {
                             child: ProductList(
                               userRole: userRole,
                               productList: filterProductList,
-                            user: widget.distributor,
-                            //  distributorId: widget.distributorId,
+                              distributor: widget.distributor,
+                              //  distributorId: widget.distributorId,
                             ),
                           );
                   },
                 ),
               ),
               Container(
-                height: height*0.28.h,
+                height: height * 0.28.h,
                 child: Column(
                   children: [
                     Container(
@@ -214,44 +218,11 @@ class _ProductScreenState extends State<ProductScreen> {
                           hint: search,
                           label: search,
                           controller: searchProductController,
-                          onTextChange: (value) =>
-                              filteredProductList(searchProductController.text)),
+                          onTextChange: (value) => filteredProductList(
+                              searchProductController.text)),
                     ),
-                    /*  Container(
-                      margin: EdgeInsets.fromLTRB(0, height * 0.15, 0, height * 0.15 ),
-                      child: BlocConsumer<ProductBloc, ProductState>(
-                        listener: (context, productState) {
-                          if (productState is ProductLoading) {
-                            setState(() => productLoading = true);
-                          }
-                          if (productState is ProductSuccess) {
-                            productLoading = false;
-                            setState(() {
-                              productList = productState.productList;
-                              userRole = productState.userRole!;
-                              filterProductList = productList;
-                            });
-                          }
-                          if(productState is ProductError){
-                            errorMessage = productState.error;
-                            ChangeRoutes.unAuthorizedError(context, productState.error);
-                            setState(() {});
-
-                          }
-                        },
-                        builder: (context, state) {
-                          return productLoading
-                              ? const CustomProgressBar(heightV: 300,)
-                              : ProductList(
-                                userRole: userRole,
-                                productList: filterProductList,
-                                distributorId: widget.distributorId,
-                              );
-                        },
-                      ),
-                    ),*/
                     SizedBox(
-                      height: height * 0.2,
+                      height: height * 0.14,
                       child: BlocConsumer<CategoryBloc, CategoryState>(
                           listener: (context, categoryState) {
                         if (categoryState is CategoryLoading) {
@@ -268,15 +239,12 @@ class _ProductScreenState extends State<ProductScreen> {
                                   catName: 'Pagaria Products',
                                 ));
                             if (categoryList.isNotEmpty) {
-                              context
-                                  .read<ProductBloc>()
-                                  .add(ProductLoadEvent(categoryId: '0'));
+                              context.read<ProductBloc>().add(ProductLoadEvent(categoryId: '0'));
                             }
                           });
                         }
                         if (categoryState is CategoryError) {
-                          ChangeRoutes.unAuthorizedError(
-                              context, categoryState.error);
+                          ChangeRoutes.unAuthorizedError(context, categoryState.error);
                           errorMessage = categoryState.error;
                           loadCategory = false;
                           setState(() {});
@@ -297,9 +265,7 @@ class _ProductScreenState extends State<ProductScreen> {
                                     child: Category(
                                       categoryList: categoryList,
                                       onClick: (String catId) => context
-                                          .read<ProductBloc>()
-                                          .add(ProductLoadEvent(
-                                              categoryId: catId)),
+                                          .read<ProductBloc>().add(ProductLoadEvent(categoryId: catId)),
                                     ),
                                   );
                       }),

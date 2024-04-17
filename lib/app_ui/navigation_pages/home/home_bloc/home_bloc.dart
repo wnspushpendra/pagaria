@@ -89,10 +89,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       if (response.status == true && response.checkInOutRecord != null) {
         emit(HomeSuccess(checkInOutRecord: response.checkInOutRecord!));
       } else {
+        if(response.status == false && response.message == unAuthorization){
+          emit(HomeError(error: unAuthorization));
+        }
         emit(HomeError(error: response.message.toString()));
       }
     } catch (e) {
-      emit(HomeError(error: unAuthorization));
+      emit(HomeError(error: e.toString()));
     }
   }
 
@@ -115,10 +118,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       if (response.status == true && response.customerList != null && response.customerList!.isNotEmpty) {
         emit(HomeSuccess(distributorList: response.customerList!));
       } else {
+        if(response.status == false && response.message == unAuthorization){
+          emit(HomeError(error: unAuthorization));
+        }
         emit(HomeError(error: response.message.toString()));
       }
     } catch (e) {
-      emit(HomeError(error: unAuthorization));
+      emit(HomeError(error: e.toString()));
     }
   }
 
@@ -140,15 +146,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       DistributorPaymentModal response =
           await distributorPayments(header, body);
       if (response.status == true) {
-        emit(HomeSuccess(
-            recentOrderList: response.recentPayment!,
-            pendingOrderList: response.duePayment,
-            completedOrderList: response.completedPayment));
+        emit(HomeSuccess(recentOrderList: response.recentPayment!, pendingOrderList: response.duePayment, completedOrderList: response.completedPayment));
       } else {
+        if(response.status == false && response.message == unAuthorization){
+          emit(HomeError(error: unAuthorization));
+        }
         emit(HomeError(error: response.message.toString()));
       }
     } catch (e) {
-      emit(HomeError(error: unAuthorization));
+      emit(HomeError(error: e.toString()));
     }
   }
 

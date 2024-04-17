@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:webnsoft_solution/modal/argument_modal/DistributorPaymentArgument.dart';
 import 'package:webnsoft_solution/modal/argument_modal/LedgetArgument.dart';
+import 'package:webnsoft_solution/modal/argument_modal/ProductArgument.dart';
 import 'package:webnsoft_solution/modal/login/login_response.dart';
 import 'package:webnsoft_solution/modal/order/user_role_order_list_modal.dart';
 import 'package:webnsoft_solution/modal/payment/payment_list_modal.dart';
@@ -64,8 +65,8 @@ class ChangeRoutes{
     Navigator.pushReplacementNamed(context, productRoute,arguments:  user.roleId =='5' ? user : distributor);
   }
 
-  static openProductDetailScreen(BuildContext context,String? id){
-    Navigator.pushReplacementNamed(context, paymentRoute,arguments: id);
+  static openProductDetailScreen(BuildContext context,ProductArgument argument){
+    Navigator.pushReplacementNamed(context, productDetailRoute, arguments : argument);
   }
 
   static openCheckOutScreen(BuildContext context,User? user){
