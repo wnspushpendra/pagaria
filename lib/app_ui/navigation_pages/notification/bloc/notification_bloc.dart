@@ -42,7 +42,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
         emit(NotificationError(error: responseData['message']));
       }
     } catch (e) {
-      emit(NotificationError(error: unAuthorization));
+      emit(NotificationError(error: e.toString()));
     }
 
 

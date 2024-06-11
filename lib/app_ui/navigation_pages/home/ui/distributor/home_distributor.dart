@@ -1,18 +1,24 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:webnsoft_solution/app_common_widges/app_body_text.dart';
+import 'package:webnsoft_solution/app_common_widges/custom_button.dart';
 import 'package:webnsoft_solution/app_common_widges/custom_progressbar.dart';
 
 import 'package:webnsoft_solution/app_common_widges/space.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/home_bloc/home_bloc.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/home_bloc/home_event.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/home_bloc/home_state.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/home/ui/distributor/featured_product.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/ui/tabs/disributor_payment.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/notification/notification_count.dart';
 import 'package:webnsoft_solution/modal/argument_modal/DistributorHomeArgument.dart';
 import 'package:webnsoft_solution/modal/distributor/distributo_payment_modal.dart';
 import 'package:webnsoft_solution/modal/login/login_response.dart';
+import 'package:webnsoft_solution/modal/product_list.dart';
 import 'package:webnsoft_solution/nav_drawer/navigation_drawer.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
 import 'package:webnsoft_solution/utils/app_strings.dart';
@@ -37,12 +43,41 @@ class _HomeDistributorScreenState extends State<HomeDistributorScreen> {
   String? errorMessage;
   bool distributorLoading = true;
   String? count;
+  ScrollController _scrollController = ScrollController();
+  bool _isAtBottom = false;
 
   @override
   void initState() {
     context.read<HomeBloc>().add(FirebaseTokenEvent());
     context.read<HomeBloc>().add(HomeFetchDistributorPaymentEvent());
     super.initState();
+    _scrollController.addListener(_scrollListener);
+
+  }
+
+  void _scrollListener() {
+    if (_scrollController.position.atEdge) {
+      if (_scrollController.position.pixels != 0) {
+        setState(() {
+          _isAtBottom = true;
+        });
+      } else {
+        setState(() {
+          _isAtBottom = false;
+        });
+      }
+    } else {
+      setState(() {
+        _isAtBottom = false;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_scrollListener);
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -50,7 +85,7 @@ class _HomeDistributorScreenState extends State<HomeDistributorScreen> {
     final double deviceHeight = MediaQuery.of(context).size.height;
 
     return DefaultTabController(
-      length: 3,
+      length: 4,
       child: Scaffold(
         key: _key,
         drawer: MyDrawer(user: widget.user),
@@ -135,55 +170,76 @@ class _HomeDistributorScreenState extends State<HomeDistributorScreen> {
                           color: primaryColor,
                         ),
                       )
-                    : ListView(
-                        children: [
-                          SizedBox(
-                            height: 50,
-                            child: TabBar(
-                              tabAlignment: TabAlignment.start,
-                              isScrollable: true,
-                              tabs: [
-                                Container(
-                                  padding:
+                    : Stack(
+                      children: [
+                        ListView(
+                            children: [
+                              SizedBox(
+                                height: 50,
+                                child: TabBar(
+                                  tabAlignment: TabAlignment.start,
+                                  isScrollable: true,
+                                  tabs: [
+                                    Container(
+                                      padding:
                                       const EdgeInsets.symmetric(vertical: 8.0),
-                                  child:
-                                      const BodyText(text: 'Pending Payment'),
-                                ),
-                                Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 8.0),
-                                    child:
-                                        const BodyText(text: "Recent Payment")),
-                                Container(
-                                  padding:
+                                      child:
+                                          const BodyText(text: 'Featured Products'),
+                                    ),
+                                    Container(
+                                      padding:
                                       const EdgeInsets.symmetric(vertical: 8.0),
-                                  child:
-                                      const BodyText(text: 'Completed Payment'),
+                                      child:
+                                          const BodyText(text: 'Pending Payment'),
+                                    ),
+                                    Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 8.0),
+                                        child:
+                                            const BodyText(text: "Recent Payment")),
+                                    Container(
+                                      padding:
+                                          const EdgeInsets.symmetric(vertical: 8.0),
+                                      child:
+                                          const BodyText(text: 'Completed Payment'),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
+                              ),
+                              Container(
+                                height: deviceHeight - 130,
+                                margin: const EdgeInsets.only(bottom: 60),
+                                child: TabBarView(
+                                  children: [
+                                    const FeaturedProductScreen(),
+                                    DistributorPayments(
+                                        argument: DistributorHomeArgument(
+                                            status: 'pending',
+                                            orderList: pendingPaymentList)),
+                                    DistributorPayments(
+                                        argument: DistributorHomeArgument(
+                                            status: 'recent',
+                                            orderList: recentPaymentList)),
+                                    DistributorPayments(
+                                        argument: DistributorHomeArgument(
+                                            status: 'completed',
+                                            orderList: completedPaymentList)),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
-                          SizedBox(
-                            height: deviceHeight - 130,
-                            child: TabBarView(
-                              children: [
-                                DistributorPayments(
-                                    argument: DistributorHomeArgument(
-                                        status: 'pending',
-                                        orderList: pendingPaymentList)),
-                                DistributorPayments(
-                                    argument: DistributorHomeArgument(
-                                        status: 'recent',
-                                        orderList: recentPaymentList)),
-                                DistributorPayments(
-                                    argument: DistributorHomeArgument(
-                                        status: 'completed',
-                                        orderList: completedPaymentList)),
-                              ],
-                            ),
-                          ),
-                        ],
-                      );
+
+                       /* Positioned(
+                          bottom: 0,
+                          left: 10.h,
+                          child: CustomButton(buttonText: order,
+                              buttonWidth: 140.h,
+                              radius: 30.h,
+                              onClick: (){}),
+                        )*/
+                      ],
+                    );
           },
         ),
       ),

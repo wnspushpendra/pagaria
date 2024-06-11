@@ -58,6 +58,9 @@ class ChangeRoutes{
   static openMyActivityScreen(BuildContext context) async{
     Navigator.pushReplacementNamed(context, myActivityRoute,);
   }
+  static openMyVisitScreen(BuildContext context) async{
+    Navigator.pushReplacementNamed(context, myVisitRoute,);
+  }
   static openResetPasswordScreen(BuildContext context) async{
     Navigator.pushReplacementNamed(context, resetPasswordRoute,arguments: await getUser());
   }

@@ -98,7 +98,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         emit(ProfileError(errorMessage: response.message.toString()));
       }
     }catch(e){
-      emit(ProfileError(errorMessage: ''));
+      emit(ProfileError(errorMessage: e.toString()));
     }
   }
 

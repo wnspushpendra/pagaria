@@ -23,6 +23,9 @@ class MyActivityBloc extends Bloc<MyActivityEvent, MyActivityState> {
     // form body data
     Map<String, dynamic> body = <String, dynamic>{};
     body['user_id'] =  user.id.toString();
+    if(event.fromShopVisit == true){
+      body['status_type'] =  'shop_check_in';
+    }
 
     try {
       MyActivityModal response = await myActivity(header, body);
@@ -33,7 +36,7 @@ class MyActivityBloc extends Bloc<MyActivityEvent, MyActivityState> {
         emit(MyActivityError(error: response.message.toString()));
       }
     }catch(e){
-      emit(MyActivityError(error: unAuthorization));
+      emit(MyActivityError(error: e.toString()));
     }
 
   }

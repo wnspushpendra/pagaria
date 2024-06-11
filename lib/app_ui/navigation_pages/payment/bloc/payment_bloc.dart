@@ -118,7 +118,7 @@ try {
         emit(PaymentError(error: response.message.toString()));
       }
     }catch(e){
-      emit(PaymentError(error: unAuthorization));
+      emit(PaymentError(error: e.toString()));
     }
   }
 
@@ -165,7 +165,7 @@ try {
         emit(PaymentError(error: response.message.toString()));
       }
     }catch(e){
-      emit(PaymentError(error: unAuthorization));
+      emit(PaymentError(error: e.toString()));
     }
   }
 

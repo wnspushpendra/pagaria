@@ -18,10 +18,11 @@ class HomeSuccess extends HomeState {
   final List<DistributorPayment>? recentOrderList;
   final List<DistributorPayment>? pendingOrderList;
   final List<DistributorPayment>? completedOrderList;
+  final bool? fromShopCheckIn;
 
 
 
-  HomeSuccess({ this.distributorList,this.checkInData,this.checkInOutRecord,this.recentOrderList,this.pendingOrderList,this.completedOrderList});
+  HomeSuccess({ this.distributorList,this.checkInData,this.checkInOutRecord,this.recentOrderList,this.pendingOrderList,this.completedOrderList,this.fromShopCheckIn});
 }
 class HomeCheckInStatusSuccess extends HomeState {
   final CheckInData checkInData;

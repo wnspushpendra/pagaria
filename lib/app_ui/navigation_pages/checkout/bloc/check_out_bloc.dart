@@ -44,8 +44,7 @@ class CheckOutBloc extends Bloc<CheckOutEvent, CheckOutState> {
         emit(CheckOutError(error: response.message.toString()));
       }
     } catch (e) {
-      emit(CheckOutError(error: ''));
-      //   emit(CheckOutError(error: unAuthorization));
+        emit(CheckOutError(error: e.toString()));
     }
   }
 
@@ -75,7 +74,7 @@ class CheckOutBloc extends Bloc<CheckOutEvent, CheckOutState> {
       emit(CheckOutError(error: response.message.toString()));
     }
   }catch(e){
-      emit(CheckOutError(error: unAuthorization));
+      emit(CheckOutError(error: e.toString()));
     }}
 
   void cartItemCount(CartItemCountEvent event) async {
@@ -100,7 +99,7 @@ class CheckOutBloc extends Bloc<CheckOutEvent, CheckOutState> {
         emit(CheckOutError(error: response.message.toString()));
       }
     } catch (e) {
-     // emit(CheckOutError(error: unAuthorization));
+      emit(CheckOutError(error: e.toString()));
     }
   }
 

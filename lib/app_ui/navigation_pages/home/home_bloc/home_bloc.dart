@@ -1,9 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:location_platform_interface/location_platform_interface.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/home_bloc/home_apis.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/home_bloc/home_event.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/home_bloc/home_state.dart';
@@ -24,9 +21,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<HomeTargetFetchEvent>((event, emit) {fetchTargetApi(event);});
     on<HomeCustomerFetchEvent>((event, emit) => fetchCustomerApi(event));
     on<HomeCheckInStatusEvent>((event, emit) => checkInOutStatusApi(event));
-    on<HomeCheckInOutUpdateEvent>((event, emit) {
-      checkInOutApi(event);
-    });
+    on<HomeCheckInOutUpdateEvent>((event, emit) {checkInOutApi(event);});
     on<HomeFetchDistributorPaymentEvent>((event, emit) {
       fetchDistributorPayments(event);
     });
@@ -55,7 +50,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         emit(HomeCheckInOurError(error: response.message.toString()));
       }
     } catch (e) {
-      emit(HomeCheckInOurError(error: unAuthorization));
+      emit(HomeCheckInOurError(error: e.toString()));
     }
   }
 
@@ -72,7 +67,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     String address = '${event.placeMark?.street}, ${event.placeMark?.locality}, ${event.placeMark?.administrativeArea}, ${event.placeMark?.country}';
     String zipCode = '${event.placeMark?.postalCode}';
 
-    String status = event.checkInOutStatus == 'check_in' ? 'check_out' : 'check_in';
+    String status = event.checkInOutStatus == 'check_in' ? 'check_out' : event.checkInOutStatus == 'shop_check_in' ? 'shop_check_in' : 'check_in';
 
     Map<String, dynamic> body = <String, dynamic>{};
     body['marketing_executive_id'] = user.id.toString();
@@ -82,12 +77,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     body['address'] = address;
     body['zip_code'] = zipCode;
 
-    emit(HomeCheckInOutLoading());
-
     try {
       CheckInCheckOutResponse response = await checkInOutUpdateApi(header, body);
       if (response.status == true && response.checkInOutRecord != null) {
-        emit(HomeSuccess(checkInOutRecord: response.checkInOutRecord!));
+        emit(HomeSuccess(checkInOutRecord: response.checkInOutRecord!, fromShopCheckIn :  event.checkInOutStatus == 'shop_check_in' ? true : false ));
       } else {
         if(response.status == false && response.message == unAuthorization){
           emit(HomeError(error: unAuthorization));

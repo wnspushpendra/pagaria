@@ -54,7 +54,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
         emit(OrderError(error: response.message.toString()));
       }
     }catch(e){
-      emit(OrderError(error: unAuthorization));
+      emit(OrderError(error: e.toString()));
     }
   }
 

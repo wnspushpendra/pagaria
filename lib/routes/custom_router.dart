@@ -10,6 +10,7 @@ import 'package:webnsoft_solution/app_ui/navigation_pages/ledger/ledger.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/ui/distributor/home_distributor.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/home/ui/home_marketing_executive.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/my_activity/my_activity.dart';
+import 'package:webnsoft_solution/app_ui/navigation_pages/my_activity/my_shop_visits.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/notification/notification.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/order/create_order/create_order.dart';
 import 'package:webnsoft_solution/app_ui/navigation_pages/order/order_list/order.dart';
@@ -52,6 +53,9 @@ class CustomRouter {
       case myActivityRoute:
         return MaterialPageRoute(
             builder: (_) => const UserActivity());
+       case myVisitRoute:
+        return MaterialPageRoute(
+            builder: (_) => const MyShopVisitActivity());
       case resetPasswordRoute:
         return MaterialPageRoute(
             builder: (_) => ResetPassword(

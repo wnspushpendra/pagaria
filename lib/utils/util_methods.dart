@@ -123,6 +123,13 @@ String getHHMMFromHHMMSS(String timeString) {
   return formattedTime;
 }
 
+/// * get day from date
+String getDayName(String dateString) {
+  DateTime date = DateTime.parse(dateString);
+  String dayName = DateFormat('EEEE').format(date);
+  return dayName;
+}
+
 
 
 /// * showing a snackBar

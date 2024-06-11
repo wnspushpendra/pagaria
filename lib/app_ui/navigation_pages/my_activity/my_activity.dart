@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -70,8 +71,8 @@ class _UserActivityState extends State<UserActivity> {
                           MyActivityData data = myActivityList[index];
                           bool checkIn = data.status == 'check_out';
                           return Container(
-                            margin: EdgeInsets.symmetric(vertical: 4.h,horizontal: 8.h),
-                            padding: EdgeInsets.symmetric(vertical: 4.h,horizontal: 8.h),
+                            margin: EdgeInsets.symmetric(vertical: 8.h,horizontal: 8.h),
+                            padding: EdgeInsets.symmetric(vertical: 8.h,horizontal: 8.h),
                             decoration: defaultDecoration,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -88,7 +89,7 @@ class _UserActivityState extends State<UserActivity> {
                                               text: data.date != null
                                                   ? getDDMMYYYYDateStringDate(
                                                       data.date!)
-                                                  : '',fontSize: 14.h,),
+                                                  : '',fontSize: 16.h,fontWeight: FontWeight.bold,),
                                         ],
                                       ),
                                     ),
@@ -99,7 +100,7 @@ class _UserActivityState extends State<UserActivity> {
                                         children: [
                                            BodyText(text: 'Working hours',fontSize: 14.h,),
                                           BodyText(
-                                              text: data.totalWorkingTime != null ? getHHMMFromHHMMSS(data.totalWorkingTime!) : '',fontSize: 14.h,),
+                                              text: data.totalWorkingTime != null ? getHHMMFromHHMMSS(data.totalWorkingTime!) : '',fontSize: 16.h,fontWeight: FontWeight.bold,),
                                         ],
                                       ),
                                     ),
@@ -130,12 +131,13 @@ class _UserActivityState extends State<UserActivity> {
                                   ],
                                 ),
                                 Space(height: 2.h,),
-                                Row(
+                                Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    BodyText(text: 'CheckIn Address: ',fontSize: 13.h,align: TextAlign.start,color: Colors.green,),
-                                     Flexible(child: BodyText(text: '${data.addressCheckin} ${data.zipCodeCheckin} ',fontSize: 13.h,align: TextAlign.start,)),
+                                    BodyText(text: 'CheckIn Address: ',fontSize: 13.h,align: TextAlign.start,),
+                                     Flexible(child: BodyText(text: '${data.addressCheckin} ${data.zipCodeCheckin} ',fontSize: 16.h,align: TextAlign.start,)),
                                   ],
                                 ),
                                 Space(height: 2.h,),

@@ -43,7 +43,7 @@ class LedgerBloc extends Bloc<LedgerEvent, LedgerState> {
         emit(LedgerError(error: response.message.toString()));
       }
     }catch(e){
-      emit((LedgerError(error: unAuthorization)));
+      emit((LedgerError(error: e.toString())));
     }
   }
 

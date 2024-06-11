@@ -37,10 +37,12 @@ class _NotificationListState extends State<NotificationList> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvoked : (didPop) async{
-        ChangeRoutes.openHomeScreen(context, await getUser());      },
+      onPopInvoked: (didPop) async {
+        ChangeRoutes.openHomeScreen(context, await getUser());
+      },
       child: Scaffold(
-        appBar: appBarWidget(context, 'Notification', () async => ChangeRoutes.openHomeScreen(context, await getUser())),
+        appBar: appBarWidget(context, 'Notification',
+            () async => ChangeRoutes.openHomeScreen(context, await getUser())),
         body: BlocConsumer<NotificationBloc, NotificationState>(
           listener: (context, state) {
             if (state is NotificationSuccess) {
@@ -68,108 +70,46 @@ class _NotificationListState extends State<NotificationList> {
                     ? const Center(
                         child: CustomProgressBar(),
                       )
-                    :  ListView.builder(
-              shrinkWrap: true,
-              padding: const EdgeInsets.all(0),
-              itemCount: notificationList.length,
-              itemBuilder: (context, index) {
-                NotificationData data = notificationList[index];
-                return Container(
-                  margin: EdgeInsets.symmetric(vertical: 4.h, horizontal: 6.h),
-                  padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 8.h),
-                  decoration: defaultDecoration,
-                  child:  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          BodyText(
-                            text: data.notificationTitle ?? '',
-                            align: TextAlign.start,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          BodyText(
-                            text: data.notificationDate ?? '${data.notificationTime}' ?? '',
-                            align: TextAlign.start,
-                            fontSize: 16,
-                          ),
-                        ],
-                      ),
-                      BodyText(
-                        text: "${data.notificationMessage}" ?? '',
-                        align: TextAlign.start,
-                        fontSize: 16,
-                      ),
-                    ],
-                  ));
-              },
-            );
-
-/*                  ListTile(
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        BodyText(
-                          text: data.notificationTitle ?? '',
-                          align: TextAlign.start,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        BodyText(
-                          text: data.notificationDate ?? '${data.notificationTime}' ?? '',
-                          align: TextAlign.start,
-                          fontSize: 16,
-                        ),
-                      ],
-                    ),
-                    subtitle: Flexible(
-                      child: BodyText(
-                        text: data.notificationMessage ?? '',
-                        align: TextAlign.start,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                );
-              },
-            );*/
-
-            /*ListView.builder(
-                      shrinkWrap: true,
+                    : ListView.builder(
+                        shrinkWrap: true,
                         padding: const EdgeInsets.all(0),
                         itemCount: notificationList.length,
                         itemBuilder: (context, index) {
                           NotificationData data = notificationList[index];
                           return Container(
-                            margin: EdgeInsets.symmetric(vertical: 4.h,horizontal: 6.h),
-                            decoration: defaultDecoration,
-                            child: ListTile(
-                              title: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              margin: EdgeInsets.symmetric(vertical: 4.h, horizontal: 6.h),
+                              padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 8.h),
+                              decoration: defaultDecoration,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  BodyText(
-                                    text: data.notificationTitle??'',
-                                    align: TextAlign.start,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      BodyText(
+                                        text: data.notificationTitle ?? '',
+                                        align: TextAlign.start,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      BodyText(
+                                        text: data.notificationDate ??
+                                            '${data.notificationTime}' ??
+                                            '',
+                                        align: TextAlign.start,
+                                        fontSize: 16,
+                                      ),
+                                    ],
                                   ),
-                                   BodyText(
-                                    text: data.notificationDate?? '${data.notificationTime}' ?? ''??'',
+                                  BodyText(
+                                    text: "${data.notificationMessage}" ?? '',
                                     align: TextAlign.start,
                                     fontSize: 16,
                                   ),
                                 ],
-                              ),
-                              subtitle:   BodyText(
-                                text: data.notificationMessage??'',
-                                align: TextAlign.start,
-                                fontSize: 16,
-                                                            ),
-                            ),
-                          );
-                        });*/
+                              ));
+                        },
+                      );
           },
         ),
       ),

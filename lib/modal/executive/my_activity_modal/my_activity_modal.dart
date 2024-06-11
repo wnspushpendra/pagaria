@@ -114,4 +114,29 @@ class MyActivityData {
     data['updated_at'] = updatedAt;
     return data;
   }
+
+  // Method to convert MyActivityData to a map
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'marketing_executive_id': marketingExecutiveId,
+      'date': date,
+      'check_in_datetime': checkInDatetime,
+      'check_out_datetime': checkOutDatetime,
+      'check_in_time': checkInTime,
+      'check_out_time': checkOutTime,
+      'total_working_time': totalWorkingTime,
+      'latitude_checkin': latitudeCheckin,
+      'longitude_checkin': longitudeCheckin,
+      'address_checkin': addressCheckin,
+      'zip_code_checkin': zipCodeCheckin,
+      'latitude_checkout': latitudeCheckout,
+      'longitude_checkout': longitudeCheckout,
+      'address_checkout': addressCheckout,
+      'zip_code_checkout': zipCodeCheckout,
+      'status': status,
+      'created_at': createdAt,
+      'updated_at': updatedAt,
+    };
+  }
 }

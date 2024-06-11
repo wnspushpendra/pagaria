@@ -47,7 +47,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
         emit(CategoryError(error: response.message.toString()));
       }
     } catch (e) {
-      emit(CategoryError(error: unAuthorization));
+      emit(CategoryError(error: e.toString()));
     }
   }
 }

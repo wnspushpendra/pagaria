@@ -4,6 +4,7 @@ const String homeRoute = 'home';
 const String notificationRoute = 'notification';
 const String profileRoute = 'profile';
 const String myActivityRoute = 'my-activity';
+const String myVisitRoute = 'my-visit';
 const String resetPasswordRoute = 'reset-password';
 const String productRoute = 'product';
 const String productDetailRoute = 'product-detail';

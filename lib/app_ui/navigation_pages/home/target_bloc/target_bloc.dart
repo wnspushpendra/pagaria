@@ -43,7 +43,7 @@ class TargetBloc extends Bloc<TargetEvent, TargetState> {
         emit(TargetError(error: response.message.toString()));
       }
     } catch (e) {
-      emit(TargetError(error: unAuthorization));
+      emit(TargetError(error: e.toString()));
     }
   }
 }

@@ -11,7 +11,6 @@ import 'package:webnsoft_solution/app_ui/navigation_pages/home/target_bloc/targe
 import 'package:webnsoft_solution/modal/executive/target_modal.dart';
 import 'package:webnsoft_solution/utils/app_colors.dart';
 import 'package:webnsoft_solution/utils/change_routes.dart';
-import 'package:webnsoft_solution/utils/util_methods.dart';
 
 /// ***************
 ///  widget for showing marketing executive target on home page
@@ -48,7 +47,6 @@ class _TargetScreenState extends State<TargetScreen> {
           targetLoading = false;
          var myTargetsList = state.targetList;
           if (myTargetsList.isNotEmpty) {
-
             for (var target in myTargetsList) {
               if(target.type == 'oneMonth' && target.target != '0'){
                 targetList.add(Target(type: 'Month',target: target.target,achievedTarget: target.achievedTarget));
@@ -102,8 +100,6 @@ class _TargetScreenState extends State<TargetScreen> {
                           itemCount: targetList.length,
                           itemBuilder: (context, index) {
                             var targetData = targetList[index];
-                            var targetType = targetData.type;
-                            var type = targetType == 'oneMonth' ? 'Month' : targetType == 'quarterlyMonth' ? 'Quarterly' : targetType == 'sixMonth' ? 'Half Yearly' : targetType == 'tweelveMonth' ? 'Yearly' : '';
 
                             return GestureDetector(
                               onTap: () {

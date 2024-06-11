@@ -46,7 +46,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         emit(ProductError(error: response.message.toString()));
       }
     }catch(e){
-      emit(ProductError(error: unAuthorization));
+      emit(ProductError(error: e.toString()));
     }
 
 
@@ -76,7 +76,7 @@ try {
     emit(ProductError(error: response.message.toString()));
   }
 }catch(e){
-  emit(ProductError(error: unAuthorization));
+  emit(ProductError(error: e.toString()));
 }
   }
   void removeFromCart(RemoveProductCartEvent event) async{
@@ -101,7 +101,7 @@ try {
     emit(ProductError(error: response.message.toString()));
   }
 }catch(e){
-  emit(ProductError(error: unAuthorization));
+  emit(ProductError(error: e.toString()));
 }
 
   }
@@ -129,7 +129,7 @@ try {
         emit(ProductError(error: response.message.toString()));
       }
     }catch(e){
-      emit(ProductError(error: unAuthorization));
+      emit(ProductError(error: e.toString()));
     }
 
   }

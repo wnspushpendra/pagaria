@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:webnsoft_solution/app_common_widges/app_body_text.dart';
@@ -37,10 +38,11 @@ class ProductList extends StatefulWidget {
   final String userRole;
   final List<Product> productList;
   final User? distributor;
+  final bool? showNewIcon;
  // final String? distributorId;
   // final String from;
 
-  const ProductList({required this.userRole,required this.productList, super.key, required this.distributor,});
+  const ProductList({required this.userRole,required this.productList, super.key, required this.distributor,this.showNewIcon});
 
   @override
   State<ProductList> createState() => _ProductListState();
@@ -59,7 +61,6 @@ class _ProductListState extends State<ProductList> {
   int? productId;
   bool cartLoading = false;
   String prodMinQty = '';
-
 
 
 
@@ -107,7 +108,6 @@ class _ProductListState extends State<ProductList> {
           if(product.prodInventoryType == "yes" && int.parse(product.prodMinDistrubutorQty!) > int.parse(product.availStock!)){
             outOfStock = true;
           }
-          print(outOfStock);
           CartItem cartItem = CartItem();
           if(product.isCart!.isNotEmpty){
             cartItem.id = product.isCart?[0].id;
@@ -122,107 +122,112 @@ class _ProductListState extends State<ProductList> {
           return GestureDetector(
             onTap: () {
              // ChangeRoutes.openProductDetailScreen(context, ProductArgument(productId: product.id.toString(),product: product,distributor: widget.distributor));
-/*
-              Navigator.pushReplacementNamed(context, productDetailRoute, arguments: ProductArgument(productId: product.id.toString(),product: product,distributorId: widget.distributorId));
-*/
-            },
-            child: Container(
-              padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                border: Border.all(width: 0.1, color: Colors.black12),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                    onTap: ()=>  ChangeRoutes.openProductDetailScreen(context, ProductArgument(productId: product.id.toString(),product: product,distributor: widget.distributor)),
-                    child: CachedNetworkImage(
-                      imageUrl: product.prodImageUrl.toString(),
-                      fit: BoxFit.contain,
-                      height: 126,
-                      width: MediaQuery.of(context).size.width,
-                    ),
-                  ),
-                  const Space(
-                    height: 4,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      BodyText(
-                        text: product.prodName.toString(),
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      NormalText(
-                        text: product.prodShortDescription ?? '',
-                        textSize: 12,
-                        color: bodyLightBlack,
-                      ),
-                      BodyText(
-                        text: rupeesSymbol + productPrice!,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                      ),
-                      widget.distributor != null && outOfStock == true ?  BodyText(text: 'Out Of Stock',color: Colors.red,fontWeight: FontWeight.bold,fontSize: 14.h,) :
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          widget.distributor != null
-                              ? product.isCart!.isEmpty
-                                  ? BlocConsumer<ProductBloc, ProductState>(
-                                      listener: (context, state) {
-                                        if(state is CartProductLoading){
-                                          cartLoading = true;
-                                          setState(() {});
-                                        }
-                                        if(state is CartProductAddSuccess){
-                                          cartLoading = false;
-                                          cartProduct = state.cartProduct;
-                                          if(selectedIndex == index){
-                                            IsCart cartItem = IsCart();
-                                            cartItem.id = cartProduct.id;
-                                            cartItem.quantity = cartProduct.quantity;
-                                            cartItem.amount = cartProduct.amount;
-                                            product.isCart!.add(cartItem);
-                                            productAddRemove = true;
-                                            context.read<CheckOutBloc>().add(CartItemCountEvent());
-                                            setState(() {});
-                                          }
-                                        }
-                                        },
 
-                                 builder: (context, state) {
-                                        return product.id == productId && cartLoading ?
-                                            const CustomProgressBar(widthV: 15,heightV: 15,) :
-                                        product.id != productId ?
-                                          AssetButton(
-                                          image: cartIcon,
-                                          paddingVertical: 0,
-                                          paddingHorizontal: 8.h,
-                                          width: 30,
-                                          height: 30,
-                                          onPressed: () {
-                                            if(cartLoading == false){
-                                              selectedIndex = index;
-                                              setState(() => productId = product.id!);
+            },
+            child: Stack(
+              children: [
+                Container(
+                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 0.1, color: Colors.black12),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap: ()=>  ChangeRoutes.openProductDetailScreen(context, ProductArgument(productId: product.id.toString(),product: product,distributor: widget.distributor)),
+                        child: CachedNetworkImage(
+                          imageUrl: product.prodImageUrl.toString(),
+                          fit: BoxFit.contain,
+                          height: 126,
+                          width: MediaQuery.of(context).size.width,
+                        ),
+                      ),
+                      const Space(
+                        height: 4,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          BodyText(
+                            text: product.prodName.toString(),
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          NormalText(
+                            text: product.prodShortDescription ?? '',
+                            textSize: 12,
+                            color: bodyLightBlack,
+                          ),
+                          BodyText(
+                            text: rupeesSymbol + productPrice!,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                          widget.distributor != null && outOfStock == true ?  BodyText(text: 'Out Of Stock',color: Colors.red,fontWeight: FontWeight.bold,fontSize: 14.h,) :
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              widget.distributor != null
+                                  ? product.isCart!.isEmpty
+                                      ? BlocConsumer<ProductBloc, ProductState>(
+                                          listener: (context, state) {
+                                            if(state is CartProductLoading){
                                               cartLoading = true;
-                                              context.read<ProductBloc>().add(AddProductCartEvent(productId: product.id.toString()));
+                                              setState(() {});
                                             }
-                                          }) : Container();
-                                          },
-                                        )
-                              : UpdateQuantityWidget(product : product,cartItem: cartItem,productName: product.prodName, quantity: cartItem.quantity!.toString(),distributorMinQty: prodMinQty, productAddRemove: productAddRemove,iconSize:24,textSize: 16,)
-                              : Container()
+                                            if(state is CartProductAddSuccess){
+                                              cartLoading = false;
+                                              cartProduct = state.cartProduct;
+                                              if(selectedIndex == index){
+                                                IsCart cartItem = IsCart();
+                                                cartItem.id = cartProduct.id;
+                                                cartItem.quantity = cartProduct.quantity;
+                                                cartItem.amount = cartProduct.amount;
+                                                product.isCart!.add(cartItem);
+                                                productAddRemove = true;
+                                                context.read<CheckOutBloc>().add(CartItemCountEvent());
+                                                setState(() {});
+                                              }
+                                            }
+                                            },
+
+                                     builder: (context, state) {
+                                            return product.id == productId && cartLoading ?
+                                                const CustomProgressBar(widthV: 15,heightV: 15,) :
+                                            product.id != productId ?
+                                              AssetButton(
+                                              image: cartIcon,
+                                              paddingVertical: 0,
+                                              paddingHorizontal: 8.h,
+                                              width: 30,
+                                              height: 30,
+                                              onPressed: () {
+                                                if(cartLoading == false){
+                                                  selectedIndex = index;
+                                                  setState(() => productId = product.id!);
+                                                  cartLoading = true;
+                                                  context.read<ProductBloc>().add(AddProductCartEvent(productId: product.id.toString()));
+                                                }
+                                              }) : Container();
+                                              },
+                                            )
+                                  : UpdateQuantityWidget(product : product,cartItem: cartItem,productName: product.prodName, quantity: cartItem.quantity!.toString(),distributorMinQty: prodMinQty, productAddRemove: productAddRemove,iconSize:24,textSize: 16,)
+                                  : Container()
+                            ],
+                          )
                         ],
                       )
                     ],
-                  )
-                ],
-              ),
+                  ),
+                ),
+               widget.showNewIcon == true ? Positioned(
+                  right: 0,
+                    child: Image.asset(newImage,width: 40,)) : const SizedBox.shrink(),
+              ],
             ),
           );
         });

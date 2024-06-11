@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:webnsoft_solution/app_common_widges/app_body_text.dart';
 import 'package:webnsoft_solution/app_common_widges/custom_button.dart';
@@ -41,12 +42,12 @@ class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
   String checkInOUt = 'Check-In';
   String checkInStatus = 'check_out';
-  String checkInOutTime = '';
+  String checkInOutTime = '',lastShopVisitedTime = '';
   CheckInOutRecord? checkInOutRecord;
   CheckInData checkInData = CheckInData();
 
   bool homeLoading = false;
-  bool checkInOutLoading = false;
+  bool checkInOutLoading = false,visitLoading = false;
   List<User> customerList = [];
  // List<Customer> customerList = [];
   LocationData? locationData;
@@ -122,9 +123,9 @@ class _HomeScreenState extends State<HomeScreen> {
           if (homeState is HomeLoading) {
             setState(() => homeLoading = true);
           }
-          if (homeState is HomeCheckInOutLoading) {
+      /*    if (homeState is HomeCheckInOutLoading) {
             setState(() => checkInOutLoading = true);
-          }
+          }*/
           if (homeState is HomeCheckInOutSuccess) {
            setState(() {
              checkInOutRecord = homeState.checkInOutRecord;
@@ -145,14 +146,21 @@ class _HomeScreenState extends State<HomeScreen> {
               setState(() {});
             }
             if(homeState.checkInOutRecord != null){
-              checkInOutRecord = homeState.checkInOutRecord!;
-              if(checkInOutRecord!.status == 'check_in'){
-                checkInOutTime = checkInOutRecord!.checkInDatetime??'';//"${checkInData.date??''} ${checkInData.checkInTime ??''}";
-                checkInStatus = 'check_in';
+              if(homeState.fromShopCheckIn == true){
+                visitLoading = false;
+                DateTime now = DateTime.now();
+                lastShopVisitedTime = DateFormat('dd-MM-yyyy HH:mm').format(now);
               }else{
-                checkInOutTime = checkInOutRecord!.checkOutDatetime??'';//"${checkInData.date??''} ${checkInData.checkOutTime??''}";
-                checkInStatus = 'check_out';
+                checkInOutRecord = homeState.checkInOutRecord!;
+                if(checkInOutRecord!.status == 'check_in'){
+                  checkInOutTime = checkInOutRecord!.checkInDatetime??'';//"${checkInData.date??''} ${checkInData.checkInTime ??''}";
+                  checkInStatus = 'check_in';
+                }else{
+                  checkInOutTime = checkInOutRecord!.checkOutDatetime??'';//"${checkInData.date??''} ${checkInData.checkOutTime??''}";
+                  checkInStatus = 'check_out';
+                }
               }
+
               setState(() {});
             }
             if(homeState.distributorList != null){
@@ -163,6 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
           if(homeState is HomeCheckInOurError){
             ChangeRoutes.unAuthorizedError(context,homeState.error);
             checkInOutLoading = false;
+            visitLoading = false;
             setState(() {});
           }
         },
@@ -184,8 +193,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               children: [
                                 BodyText(
                                   text:  checkInStatus == 'check_in'
-                                      ? 'Working Status'//'Check-In'
-                                      : 'Working Status',
+                                      ? 'My Working Status'//'Check-In'
+                                      : 'My Working Status',
                                   fontSize: 16.h,
                                 ),
                                  BodyText(
@@ -215,6 +224,47 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                       ),
+                      Container(
+                        padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 12.h),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            visitLoading ? Container() :    Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                BodyText(
+                                  text:  'Add Shop Visited',
+                                  fontSize: 16.h,
+                                ),
+                                lastShopVisitedTime.isNotEmpty ? BodyText(
+                                  text: lastShopVisitedTime,
+                                  color: primaryColor,
+                                  fontWeight: FontWeight.bold,
+                                ) : Container()
+                              ],
+                            ),
+                            CustomButton(
+                                buttonText: 'Visit Shop',
+                                buttonWidth: 120.h,
+                                buttonHeight: 40.h,
+                                margin: 0,
+                                buttonColor:  primaryColor,
+                                buttonTextSize: 12,
+                                showLoading: visitLoading,
+                                onClick: () async  {
+                                  locationData = await  checkLocationPermission();
+                                  if(locationData != null){
+                                    visitLoading = true; setState(() {});
+                                    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                                      context.read<HomeBloc>().add(HomeCheckInOutUpdateEvent(checkInOutStatus : 'shop_check_in',locationData : locationData!,placeMark : placeMark));
+                                    });
+                                  }
+                                })
+                          ],
+                        ),
+                      ),
+
                       Container(
                           decoration: defaultDecoration,
                           margin: EdgeInsets.all(8.h),

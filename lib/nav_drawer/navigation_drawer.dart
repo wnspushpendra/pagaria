@@ -63,6 +63,14 @@ class MyDrawer extends StatelessWidget {
                               Scaffold.of(context).closeDrawer();
                               ChangeRoutes.openMyActivityScreen(context);
                             }) : Container(),
+                        /**** moving to My Shop Visit  page *********/
+                        user.roleId == '4' ?    DrawerItem(
+                            name:'My Shop Visit' ,
+                            icon: visitIcon,
+                            onPressed: () async{
+                              Scaffold.of(context).closeDrawer();
+                              ChangeRoutes.openMyVisitScreen(context);
+                            }) : Container(),
                         /**** moving to user profile page *********/
                         user.roleId == '5' ?    DrawerItem(
                             name:'My Ledger' ,
