@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "997708011154",
+    "project_id": "pagaria-application",
+    "storage_bucket": "pagaria-application.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:997708011154:android:87db5d49122f5a68aef84b",
+        "android_client_info": {
+          "package_name": "com.webnsoft.solution.webnsoft_solution"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANdipyxlywQd-0xSjCKSmTAwhGsQcPG40"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
